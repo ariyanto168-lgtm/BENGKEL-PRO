@@ -1,4 +1,4 @@
-const CACHE_NAME = "bengkel-pro-static-v2";
+const CACHE_NAME = "bengkel-pro-static-v2.1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,7 +6,8 @@ const ASSETS = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
   "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
-  "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+  "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js",
+  "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"
 ];
 
 self.addEventListener("install", event => {
@@ -27,7 +28,6 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const url = event.request.url;
-  // Permintaan ke Google Apps Script selalu langsung ke jaringan
   if (url.includes("script.google.com")) return;
 
   event.respondWith(
