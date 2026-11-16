@@ -1,18 +1,14 @@
-const CACHE_NAME = "bengkel-pro-static-v2.1";
+const CACHE_NAME = "bengkel-pro-v2.4";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
-  "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
-  "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
-  "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js",
-  "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"
+  "./logobengkelpro.png"
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).catch(() => {})
   );
   self.skipWaiting();
 });
@@ -27,22 +23,21 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
-  const url = event.request.url;
-  if (url.includes("script.google.com")) return;
+  if (event.request.method !== "GET") return;
+  const url = new URL(event.request.url);
+  if (url.hostname.includes("script.google.com") || url.hostname.includes("googleusercontent.com")) {
+    return;
+  }
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      const networkFetch = fetch(event.request)
-        .then(res => {
-          if (res && res.status === 200 && event.request.method === "GET") {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-          }
-          return res;
-        })
-        .catch(() => cached);
-
-      return cached || networkFetch;
-    })
+    fetch(event.request)
+      .then(res => {
+        if (res && res.status === 200 && url.origin === location.origin) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
