@@ -461,7 +461,7 @@
           </div>
         </div>
 
-        <!-- TAB 5: LAPORAN KEUANGAN, OPERASIONAL & LABA BERSIH (ADMIN ONLY) -->
+        <!-- TAB 5: LAPORAN KEUANGAN, KOMISI MEKANIK & LABA BERSIH (ADMIN ONLY) -->
         <div class="tab-pane fade admin-only" id="tabKeuangan">
           <div class="card card-soft p-3 mb-3">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -507,12 +507,48 @@
           <!-- PROPORSI PENDAPATAN VS HPP VS OPERASIONAL -->
           <div class="card card-soft p-3 mb-3" id="finMarginBox"></div>
 
+          <!-- KALKULATOR & REKAP KOMISI MEKANIK OTOMATIS -->
+          <div class="card card-soft p-3 mb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+              <div>
+                <h6 class="fw-bold mb-0 small"><i class="bi bi-calculator text-primary me-1"></i>Kalkulator & Rekap Komisi Mekanik Otomatis</h6>
+                <small class="text-muted">Dihitung otomatis dari persentase <strong>Biaya Jasa</strong> tiap unit yang dikerjakan.</small>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <label for="komisiDefaultRate" class="small text-muted mb-0 text-nowrap">Tarif Default (%):</label>
+                <input type="number" id="komisiDefaultRate" min="0" max="100" value="40"
+                       class="form-control form-control-sm text-center fw-bold" style="width:72px"
+                       oninput="resetAndRenderKomisi()">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover table-sm align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Mekanik</th>
+                    <th class="text-center">Unit</th>
+                    <th class="text-end">Total Omzet Jasa</th>
+                    <th class="text-center" style="width:95px">Komisi (%)</th>
+                    <th class="text-end">Nominal Komisi</th>
+                    <th class="text-end">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="komisiTableBody"></tbody>
+                <tfoot class="table-light fw-bold" id="komisiTableFoot"></tfoot>
+              </table>
+            </div>
+            <div class="text-muted mt-2" style="font-size:11px">
+              <i class="bi bi-info-circle me-1"></i>Tip: Ubah angka <strong>Komisi (%)</strong> di tabel untuk simulasi, atau klik <strong>Catat Biaya</strong> untuk memasukkan komisi mekanik ke Pengeluaran Operasional.
+            </div>
+          </div>
+
           <!-- MODUL PENGELUARAN OPERASIONAL BENGKEL -->
           <div class="card card-soft p-3 mb-3">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
               <div>
                 <h6 class="fw-bold mb-0 small"><i class="bi bi-receipt-cutoff text-danger me-1"></i>Pengeluaran Operasional Bengkel</h6>
-                <small class="text-muted">Listrik, komisi/gaji mekanik, alat bengkel, sewa & operasional harian.</small>
+                <small class="text-muted">Gaji/komisi mekanik dibayarkan, listrik, alat bengkel, sewa & operasional harian.</small>
               </div>
               <button type="button" class="btn btn-danger btn-sm" onclick="openExpenseModal()">
                 <i class="bi bi-plus-lg"></i> Tambah Pengeluaran
@@ -567,7 +603,7 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h6 class="fw-bold mb-0">Manajemen Login Admin & Mekanik</h6>
-                <small class="text-muted">Atur PIN dan peran akses staf bengkel.</small>
+                <small class="text-muted">Atur PIN, peran akses, dan persentase komisi jasa mekanik.</small>
               </div>
               <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ Tambah Akun</button>
             </div>
@@ -578,6 +614,7 @@
                     <th>Username</th>
                     <th>Nama Lengkap</th>
                     <th>Role</th>
+                    <th>Komisi Jasa</th>
                     <th>Status</th>
                     <th>Aksi</th>
                   </tr>
@@ -654,7 +691,7 @@
     </section>
 
     <footer class="text-center text-muted small mt-4">
-      Bengkel Pro v2.4 • Powered By Ari GPM
+      Bengkel Pro v2.5 • Powered By Ari GPM
     </footer>
   </main>
 </div>
@@ -665,6 +702,28 @@
 <!-- =====================================
      MODALS
      ===================================== -->
+
+<!-- MODAL DETAIL KOMISI MEKANIK -->
+<div class="modal fade" id="modalDetailKomisi" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <div>
+          <h6 class="modal-title fw-bold" id="titleDetailKomisi">Rincian Komisi Mekanik</h6>
+          <small class="text-muted" id="subDetailKomisi"></small>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="bodyDetailKomisi"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-danger btn-sm fw-semibold" id="btnPayFromDetail">
+          <i class="bi bi-receipt me-1"></i> Catat ke Pengeluaran
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL PENGELUARAN OPERASIONAL (ADMIN) -->
 <div class="modal fade" id="modalExpense" tabindex="-1">
@@ -850,7 +909,8 @@
           </div>
           <div class="col-md-6">
             <label class="form-label small fw-semibold">Mekanik Penanggung Jawab</label>
-            <input id="srvMekanik" class="form-control form-control-sm" placeholder="Nama mekanik">
+            <input id="srvMekanik" list="listMekanik" class="form-control form-control-sm" placeholder="Pilih atau ketik nama mekanik">
+            <datalist id="listMekanik"></datalist>
           </div>
           <div class="col-md-6">
             <label class="form-label small fw-semibold">Catatan Tambahan</label>
@@ -1008,11 +1068,19 @@
         <input id="usrUsername" class="form-control form-control-sm mb-2">
         <label class="form-label small">Nama Lengkap *</label>
         <input id="usrNama" class="form-control form-control-sm mb-2">
-        <label class="form-label small">Hak Akses (Role)</label>
-        <select id="usrRole" class="form-select form-select-sm mb-2">
-          <option value="mekanik">Mekanik</option>
-          <option value="admin">Admin</option>
-        </select>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small">Hak Akses</label>
+            <select id="usrRole" class="form-select form-select-sm" onchange="onRoleSelectChange()">
+              <option value="mekanik">Mekanik</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label small">Komisi Jasa (%)</label>
+            <input id="usrKomisi" type="number" min="0" max="100" value="40" class="form-control form-control-sm">
+          </div>
+        </div>
         <label class="form-label small">PIN Login *</label>
         <input id="usrPin" inputmode="numeric" class="form-control form-control-sm mb-2">
         <div class="form-check">
@@ -1076,8 +1144,10 @@ let state = {
   servis: [],
   parts: [],
   users: [],
+  staffNames: [],
   expenses: [],
-  publicBoard: []
+  publicBoard: [],
+  komisiOverrides: {}
 };
 
 const $ = id => document.getElementById(id);
@@ -1431,6 +1501,7 @@ async function syncAllData() {
     state.servis = r.servis || [];
     state.parts = r.parts || [];
     state.users = r.users || [];
+    state.staffNames = r.staffNames || [];
     state.expenses = r.expenses || [];
     localStorage.setItem(CACHE_KEY, JSON.stringify({
       servis: state.servis, parts: state.parts, expenses: state.expenses, publicBoard: state.publicBoard
@@ -1574,7 +1645,15 @@ function renderServisTable() {
 // ========================================
 // FORM SERVIS & SPAREPART DINAMIS
 // ========================================
+function populateMechanicDatalist() {
+  const names = new Set(state.staffNames || []);
+  state.users.forEach(u => { if (u.aktif && u.nama) names.add(u.nama); });
+  state.servis.forEach(s => { if (s.mekanik) names.add(s.mekanik); });
+  $("listMekanik").innerHTML = [...names].map(n => `<option value="${esc(n)}">`).join("");
+}
+
 function openServisModal(id = "", prefill = null) {
+  populateMechanicDatalist();
   $("selectPartStok").innerHTML = `<option value="">-- Pilih dari Stok --</option>` +
     state.parts.map(p => `<option value="${esc(p.id)}">${esc(p.namaPart)} (Stok: ${p.stok} | ${rupiah(p.hargaJual)})</option>`).join("");
 
@@ -1721,14 +1800,14 @@ async function saveServis() {
 // ========================================
 // PENGELUARAN OPERASIONAL BENGKEL (ADMIN)
 // ========================================
-function openExpenseModal(id = "") {
+function openExpenseModal(id = "", prefill = null) {
   const exp = id ? state.expenses.find(x => x.id === id) : null;
   $("titleModalExpense").textContent = exp ? "Edit Pengeluaran Operasional" : "Catat Pengeluaran Operasional";
   $("expId").value = exp ? exp.id : "";
-  $("expTanggal").value = exp ? exp.tanggal : todayWIB();
-  $("expKategori").value = exp ? exp.kategori : "Gaji / Komisi Mekanik";
-  $("expKeterangan").value = exp ? exp.keterangan : "";
-  $("expNominal").value = exp ? exp.nominal : 0;
+  $("expTanggal").value = exp ? exp.tanggal : (prefill?.tanggal || todayWIB());
+  $("expKategori").value = exp ? exp.kategori : (prefill?.kategori || "Gaji / Komisi Mekanik");
+  $("expKeterangan").value = exp ? exp.keterangan : (prefill?.keterangan || "");
+  $("expNominal").value = exp ? exp.nominal : (prefill?.nominal || 0);
   $("expMetode").value = exp ? exp.metode : "Tunai";
   showModal("modalExpense");
 }
@@ -1760,6 +1839,201 @@ async function saveExpense() {
   } finally {
     btn.disabled = false;
   }
+}
+
+// ========================================
+// KALKULATOR & REKAP KOMISI MEKANIK OTOMATIS
+// ========================================
+function resetAndRenderKomisi() {
+  state.komisiOverrides = {};
+  renderKomisiMekanik();
+}
+
+function getMechanicCommissionSummary(rows) {
+  const defaultRate = Math.min(100, Math.max(0, Number($("komisiDefaultRate")?.value ?? 40)));
+  const map = new Map();
+
+  rows.forEach(r => {
+    const rawName = String(r.mekanik || "").trim();
+    const displayName = rawName || "Belum Ditentukan";
+    const key = displayName.toLowerCase();
+
+    if (!map.has(key)) {
+      const matchedUser = state.users.find(u =>
+        String(u.nama || "").trim().toLowerCase() === key ||
+        String(u.username || "").trim().toLowerCase() === key
+      );
+
+      let rate = defaultRate;
+      let rateSource = "Default";
+
+      if (state.komisiOverrides[key] !== undefined) {
+        rate = state.komisiOverrides[key];
+        rateSource = "Simulasi";
+      } else if (matchedUser) {
+        rate = Number(matchedUser.komisiPersen ?? defaultRate);
+        rateSource = "Akun";
+      }
+
+      map.set(key, {
+        key,
+        nama: matchedUser ? matchedUser.nama : displayName,
+        role: matchedUser ? matchedUser.role : "",
+        rate,
+        rateSource,
+        unitCount: 0,
+        totalJasa: 0,
+        tickets: []
+      });
+    }
+
+    const entry = map.get(key);
+    entry.unitCount += 1;
+    entry.totalJasa += Number(r.omzetJasa || 0);
+    entry.tickets.push(r);
+  });
+
+  return [...map.values()]
+    .map(m => ({
+      ...m,
+      komisiNominal: Math.round(m.totalJasa * (m.rate / 100))
+    }))
+    .sort((a, b) => b.totalJasa - a.totalJasa);
+}
+
+function updateMechanicRateOverride(key, val) {
+  const parsed = Math.min(100, Math.max(0, Number(val || 0)));
+  state.komisiOverrides[key] = parsed;
+  renderKomisiMekanik();
+}
+
+function renderKomisiMekanik(cachedRows = null) {
+  if (!state.user || state.user.role !== "admin") return;
+  const rows = cachedRows || getFilteredFinancialRows();
+  const summary = getMechanicCommissionSummary(rows);
+
+  let totalUnit = 0, totalJasa = 0, totalKomisi = 0;
+
+  $("komisiTableBody").innerHTML = summary.length
+    ? summary.map(m => {
+        totalUnit += m.unitCount;
+        totalJasa += m.totalJasa;
+        totalKomisi += m.komisiNominal;
+
+        return `
+          <tr>
+            <td>
+              <strong>${esc(m.nama)}</strong>
+              ${m.role ? `<span class="badge bg-info-subtle text-info-emphasis ms-1">${esc(m.role)}</span>` : ""}
+              <div class="text-muted" style="font-size:11px">Tarif: ${esc(m.rateSource)}</div>
+            </td>
+            <td class="text-center"><span class="badge bg-primary-subtle text-primary">${m.unitCount} unit</span></td>
+            <td class="text-end">${rupiah(m.totalJasa)}</td>
+            <td class="text-center">
+              <input type="number" min="0" max="100" value="${m.rate}"
+                     class="form-control form-control-sm text-center fw-semibold px-1"
+                     onchange="updateMechanicRateOverride('${esc(m.key)}', this.value)">
+            </td>
+            <td class="text-end fw-bold text-primary">${rupiah(m.komisiNominal)}</td>
+            <td class="text-end text-nowrap">
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-primary py-0 px-2" onclick="openDetailKomisiModal('${esc(m.key)}')">
+                  Detail
+                </button>
+                <button type="button" class="btn btn-outline-danger py-0 px-2" title="Catat ke Pengeluaran"
+                        onclick="catatKomisiKePengeluaran('${esc(m.key)}')">
+                  <i class="bi bi-cash"></i> Catat
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("")
+    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada transaksi jasa mekanik pada periode ini.</td></tr>`;
+
+  $("komisiTableFoot").innerHTML = summary.length
+    ? `
+      <tr>
+        <td>TOTAL KOMISI MEKANIK</td>
+        <td class="text-center">${totalUnit} unit</td>
+        <td class="text-end">${rupiah(totalJasa)}</td>
+        <td class="text-center">-</td>
+        <td class="text-end text-primary">${rupiah(totalKomisi)}</td>
+        <td></td>
+      </tr>
+    `
+    : "";
+}
+
+function openDetailKomisiModal(key) {
+  const rows = getFilteredFinancialRows();
+  const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
+  if (!m) return;
+
+  $("titleDetailKomisi").textContent = `Rincian Jasa & Komisi: ${m.nama}`;
+  $("subDetailKomisi").textContent = `${m.unitCount} Unit • Tarif Komisi ${m.rate}% • Total Komisi: ${rupiah(m.komisiNominal)}`;
+
+  $("bodyDetailKomisi").innerHTML = `
+    <div class="table-responsive">
+      <table class="table table-sm align-middle small mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Tanggal & Kode</th>
+            <th>Motor / Plat</th>
+            <th>Tindakan</th>
+            <th class="text-end">Biaya Jasa</th>
+            <th class="text-end">Komisi (${m.rate}%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${m.tickets.map(t => {
+            const kom = Math.round(Number(t.omzetJasa || 0) * (m.rate / 100));
+            return `
+              <tr>
+                <td><strong>${esc(t.kodeServis)}</strong><div class="text-muted">${esc(t.tanggalMasuk)}</div></td>
+                <td>${esc(t.motor)} (${esc(t.plat || "-")})</td>
+                <td>${esc(t.tindakan || t.keluhan || "-")}</td>
+                <td class="text-end">${rupiah(t.omzetJasa)}</td>
+                <td class="text-end fw-bold text-primary">${rupiah(kom)}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+        <tfoot class="table-light fw-bold">
+          <tr>
+            <td colspan="3">TOTAL</td>
+            <td class="text-end">${rupiah(m.totalJasa)}</td>
+            <td class="text-end text-primary">${rupiah(m.komisiNominal)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
+
+  $("btnPayFromDetail").onclick = () => {
+    hideModal("modalDetailKomisi");
+    catatKomisiKePengeluaran(key);
+  };
+
+  showModal("modalDetailKomisi");
+}
+
+function catatKomisiKePengeluaran(key) {
+  const rows = getFilteredFinancialRows();
+  const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
+  if (!m) return;
+
+  if (m.komisiNominal <= 0) {
+    return toast("Nominal komisi Rp0, tidak perlu dicatat ke pengeluaran.", "warning");
+  }
+
+  const periodeText = $("finAllMonths").checked ? "Semua Periode" : ($("finMonth").value || todayWIB().slice(0, 7));
+  openExpenseModal("", {
+    tanggal: todayWIB(),
+    kategori: "Gaji / Komisi Mekanik",
+    keterangan: `Komisi Mekanik ${m.nama} (${periodeText} • ${m.unitCount} unit • ${m.rate}%)`,
+    nominal: m.komisiNominal
+  });
 }
 
 // ========================================
@@ -1894,6 +2168,9 @@ function renderKeuangan() {
     </div>
   `;
 
+  // Render Kalkulator & Rekap Komisi Mekanik
+  renderKomisiMekanik(rows);
+
   // Render tabel pengeluaran operasional
   $("expenseTableBody").innerHTML = expRows.length
     ? expRows.map(e => `
@@ -1955,6 +2232,8 @@ function renderKeuangan() {
 function exportKeuanganCSV() {
   const rows = getFilteredFinancialRows();
   const expRows = getFilteredExpenseRows();
+  const komisiRows = getMechanicCommissionSummary(rows);
+
   if (!rows.length && !expRows.length) {
     return toast("Tidak ada data keuangan untuk diekspor.", "warning");
   }
@@ -1974,7 +2253,7 @@ function exportKeuanganCSV() {
   const labaBersih = sumMarginServis - sumExp;
 
   const lines = [
-    [csvEsc("LAPORAN KEUANGAN & LABA BERSIH - " + BENGKEL_INFO.nama)],
+    [csvEsc("LAPORAN KEUANGAN, KOMISI MEKANIK & LABA BERSIH - " + BENGKEL_INFO.nama)],
     [csvEsc("Periode: " + periodeLabel), csvEsc("Basis: " + ($("finBasis").value === "done" ? "Realisasi Selesai" : "Semua Tiket Aktif"))],
     [],
     [csvEsc("RINGKASAN LABA RUGI")],
@@ -1986,18 +2265,31 @@ function exportKeuanganCSV() {
     [csvEsc("Total Pengeluaran Operasional"), sumExp],
     [csvEsc("LABA BERSIH"), labaBersih],
     [],
-    [csvEsc("RINCIAN TRANSAKSI SERVIS")],
-    ["Tanggal", "Kode Servis", "Pelanggan", "Motor", "Plat Nomor", "Status", "Omzet Jasa", "Penjualan Sparepart", "Total Omzet", "HPP Modal", "Margin Servis"].map(csvEsc)
+    [csvEsc("REKAP KOMISI MEKANIK")],
+    ["Nama Mekanik", "Jumlah Unit", "Total Omzet Jasa", "Tarif Komisi (%)", "Nominal Komisi"].map(csvEsc)
   ];
+
+  let totalKomUnit = 0, totalKomJasa = 0, totalKomNominal = 0;
+  komisiRows.forEach(m => {
+    totalKomUnit += m.unitCount;
+    totalKomJasa += m.totalJasa;
+    totalKomNominal += m.komisiNominal;
+    lines.push([m.nama, m.unitCount, m.totalJasa, m.rate, m.komisiNominal].map(csvEsc));
+  });
+  lines.push(["TOTAL KOMISI MEKANIK", totalKomUnit, totalKomJasa, "", totalKomNominal].map(csvEsc));
+
+  lines.push([]);
+  lines.push([csvEsc("RINCIAN TRANSAKSI SERVIS")]);
+  lines.push(["Tanggal", "Kode Servis", "Pelanggan", "Motor", "Plat Nomor", "Mekanik", "Status", "Omzet Jasa", "Penjualan Sparepart", "Total Omzet", "HPP Modal", "Margin Servis"].map(csvEsc));
 
   rows.forEach(r => {
     lines.push([
-      r.tanggalMasuk, r.kodeServis, r.nama, r.motor, r.plat || "-", r.status,
+      r.tanggalMasuk, r.kodeServis, r.nama, r.motor, r.plat || "-", r.mekanik || "-", r.status,
       r.omzetJasa, r.jualPart, r.totalOmzet, r.hppPart, r.marginServis
     ].map(csvEsc));
   });
 
-  lines.push(["TOTAL SERVIS", "", "", "", "", "", sumJasa, sumPart, sumOmzet, sumHpp, sumMarginServis].map(csvEsc));
+  lines.push(["TOTAL SERVIS", "", "", "", "", "", "", sumJasa, sumPart, sumOmzet, sumHpp, sumMarginServis].map(csvEsc));
   lines.push([]);
   lines.push([csvEsc("RINCIAN PENGELUARAN OPERASIONAL")]);
   lines.push(["Tanggal", "Kategori", "Keterangan", "Metode", "Nominal", "Dicatat Oleh"].map(csvEsc));
@@ -2016,7 +2308,7 @@ function exportKeuanganCSV() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  toast("File CSV laporan keuangan & operasional berhasil diunduh.", "success");
+  toast("File CSV laporan keuangan & komisi mekanik berhasil diunduh.", "success");
 }
 
 // ========================================
@@ -2172,6 +2464,7 @@ function renderUserTable() {
       <td><strong>${esc(u.username)}</strong></td>
       <td>${esc(u.nama)}</td>
       <td><span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span></td>
+      <td><strong>${Number(u.komisiPersen ?? 0)}%</strong></td>
       <td>${u.aktif ? '<span class="text-success">Aktif</span>' : '<span class="text-muted">Nonaktif</span>'}</td>
       <td>
         <div class="btn-group btn-group-sm">
@@ -2183,12 +2476,20 @@ function renderUserTable() {
   `).join("");
 }
 
+function onRoleSelectChange() {
+  const role = $("usrRole").value;
+  if (!$("usrId").value) {
+    $("usrKomisi").value = role === "mekanik" ? 40 : 0;
+  }
+}
+
 function openUserModal(id = "") {
   const u = id ? state.users.find(x => x.id === id) : null;
   $("usrId").value = u ? u.id : "";
   $("usrUsername").value = u ? u.username : "";
   $("usrNama").value = u ? u.nama : "";
   $("usrRole").value = u ? u.role : "mekanik";
+  $("usrKomisi").value = u ? Number(u.komisiPersen ?? 0) : 40;
   $("usrPin").value = u ? u.pin : "";
   $("usrAktif").checked = u ? u.aktif : true;
   showModal("modalUser");
@@ -2200,13 +2501,15 @@ async function saveUser() {
     username: $("usrUsername").value.trim(),
     nama: $("usrNama").value.trim(),
     role: $("usrRole").value,
+    komisiPersen: Number($("usrKomisi").value || 0),
     pin: $("usrPin").value.trim(),
     aktif: $("usrAktif").checked
   };
   const r = await apiPost({ action: "saveUser", auth: state.auth, data });
   if (!r.success) return toast(r.message, "danger");
   hideModal("modalUser");
-  toast("Akun disimpan.", "success");
+  state.komisiOverrides = {};
+  toast("Akun & tarif komisi disimpan.", "success");
   await syncAllData();
 }
 
@@ -2529,7 +2832,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $("finMonth").value = todayWIB().slice(0, 7);
 
-  // Tampilkan panduan install khusus Safari iOS jika belum terpasang
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (isIOS && !isStandaloneMode() && !sessionStorage.getItem("bengkel_install_dismissed")) {
     $("installBannerDesc").textContent = "Ketuk ikon Bagikan (Share) di Safari lalu pilih 'Tambah ke Layar Utama'.";
