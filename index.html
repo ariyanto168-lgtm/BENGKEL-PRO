@@ -77,6 +77,17 @@
       border: 1px solid #e2e8f0;
       border-radius: 12px;
     }
+    #qrReaderBox {
+      width: 100%;
+      min-height: 250px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #0f172a;
+    }
+    #qrReaderBox video {
+      border-radius: 14px;
+      object-fit: cover;
+    }
     #printArea { display: none; }
 
     /* FORMAT CETAK THERMAL 58MM */
@@ -133,6 +144,9 @@
           <strong id="labelUser">Administrator</strong>
         </div>
         <div class="d-flex gap-2">
+          <button class="btn btn-warning btn-sm py-0 px-2 fw-semibold" onclick="openScannerModal('staff')">
+            <i class="bi bi-qr-code-scan"></i> Scan Tiket
+          </button>
           <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData()">
             <i class="bi bi-arrow-repeat"></i> Sync
           </button>
@@ -184,9 +198,14 @@
           <div class="row g-3">
             <div class="col-md-7">
               <div class="card card-soft p-3 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
                   <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-1"></i>Antrean Aktif Bengkel</h6>
-                  <button class="btn btn-primary btn-sm" onclick="openServisModal()">+ Servis Baru</button>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-outline-dark btn-sm" onclick="openScannerModal('staff')">
+                      <i class="bi bi-qr-code-scan"></i> Scan QR
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openServisModal()">+ Servis Baru</button>
+                  </div>
                 </div>
                 <div class="table-responsive">
                   <table class="table table-sm align-middle mb-0 small">
@@ -217,9 +236,14 @@
           <div class="card card-soft p-3">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <h6 class="fw-bold mb-0">Manajemen Tiket Servis</h6>
-              <button class="btn btn-primary btn-sm" onclick="openServisModal()">
-                <i class="bi bi-plus-lg"></i> Tambah Servis Masuk
-              </button>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-dark btn-sm" onclick="openScannerModal('staff')">
+                  <i class="bi bi-qr-code-scan me-1"></i>Scan Tiket QR
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openServisModal()">
+                  <i class="bi bi-plus-lg"></i> Tambah Servis Masuk
+                </button>
+              </div>
             </div>
 
             <div class="row g-2 mb-3">
@@ -347,12 +371,22 @@
          PORTAL PELANGGAN PUBLIK (SELALU AKTIF)
          ===================================== -->
     <section class="card card-soft p-3 p-md-4 mb-3">
-      <h5 class="fw-bold mb-1"><i class="bi bi-qr-code-scan text-primary me-2"></i>Cek Status Servis Motor</h5>
-      <p class="text-muted small mb-3">Scan QR pada nota/tiket atau masukkan Kode Servis & 4 digit terakhir nomor HP Anda.</p>
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+        <h5 class="fw-bold mb-0"><i class="bi bi-qr-code-scan text-primary me-2"></i>Cek Status Servis Motor</h5>
+        <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" onclick="openScannerModal('public')">
+          <i class="bi bi-camera me-1"></i> Scan QR Nota
+        </button>
+      </div>
+      <p class="text-muted small mb-3">Scan QR pada nota/tiket lewat kamera HP atau masukkan Kode Servis & 4 digit terakhir nomor HP Anda.</p>
 
       <div class="row g-2">
         <div class="col-md-5">
-          <input id="kodeCari" class="form-control" placeholder="Kode Servis (cth: SRV-261116-XXXX)">
+          <div class="input-group">
+            <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode Servis (cth: SRV-261116-XXXX)">
+            <button class="btn btn-outline-secondary" type="button" title="Scan QR dengan Kamera" onclick="openScannerModal('public')">
+              <i class="bi bi-qr-code-scan"></i>
+            </button>
+          </div>
         </div>
         <div class="col-md-4">
           <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Terakhir HP">
@@ -397,7 +431,7 @@
     </section>
 
     <footer class="text-center text-muted small mt-4">
-      Bengkel Pro v2.0 • Powered By Ari GPM
+      Bengkel Pro v2.1 • Powered By Ari GPM
     </footer>
   </main>
 </div>
@@ -406,8 +440,37 @@
 <div id="printArea"></div>
 
 <!-- =====================================
-     MODALS (LOGIN, SERVIS, QR, PART, USER, RIWAYAT, KONFIRMASI)
+     MODALS
      ===================================== -->
+
+<!-- MODAL PEMINDAI QR KAMERA HP -->
+<div class="modal fade" id="modalScanner" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header border-0 pb-1">
+        <div>
+          <h6 class="modal-title fw-bold" id="scannerTitle">Scan QR Code</h6>
+          <small class="text-muted" id="scannerSubtitle">Arahkan kamera ke QR Code pada tiket atau nota servis.</small>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-2">
+        <div id="qrReaderBox" class="mb-2"></div>
+        <div id="scannerStatus" class="small text-center text-muted mb-2">Menyiapkan kamera...</div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <button type="button" id="btnSwitchCam" class="btn btn-outline-secondary btn-sm d-none" onclick="switchCamera()">
+            <i class="bi bi-arrow-repeat me-1"></i>Ganti Kamera
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="$('qrFileInput').click()">
+            <i class="bi bi-image me-1"></i>Scan dari Foto/Galeri
+          </button>
+          <input type="file" id="qrFileInput" accept="image/*" class="d-none" onchange="scanFromFile(event)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL LOGIN -->
 <div class="modal fade" id="modalAuth" tabindex="-1">
@@ -682,6 +745,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
 // ========================================
 // KONFIGURASI BACKEND & STATE
@@ -726,6 +790,158 @@ function showModal(id) {
 function hideModal(id) {
   const inst = bootstrap.Modal.getInstance($(id));
   if (inst) inst.hide();
+}
+
+// ========================================
+// PEMINDAI QR CODE KAMERA HP (HTML5-QRCODE)
+// ========================================
+let qrScanner = null;
+let currentScanMode = "public";
+let availableCameras = [];
+let currentCamIndex = 0;
+
+function extractKodeServis(rawText) {
+  const text = String(rawText || "").trim();
+  try {
+    const url = new URL(text);
+    const paramKode = url.searchParams.get("kode");
+    if (paramKode) return paramKode.trim().toUpperCase();
+  } catch (_) {}
+  const match = text.match(/SRV-[A-Z0-9-]+/i);
+  return (match ? match[0] : text).toUpperCase();
+}
+
+function openScannerModal(mode = "public") {
+  if (typeof Html5Qrcode === "undefined") {
+    return toast("Library pemindai QR belum termuat. Periksa koneksi internet.", "danger");
+  }
+
+  currentScanMode = mode;
+  $("scannerTitle").textContent = mode === "staff"
+    ? "Scan QR Tiket Motor (Staf)"
+    : "Scan QR Nota / Tiket Servis";
+  $("scannerSubtitle").textContent = mode === "staff"
+    ? "Arahkan kamera ke label QR motor untuk membuka form servis."
+    : "Arahkan kamera ke QR Code pada nota untuk mengisi kode servis otomatis.";
+  $("scannerStatus").textContent = "Menyiapkan kamera...";
+  $("btnSwitchCam").classList.add("d-none");
+
+  const modalEl = $("modalScanner");
+  modalEl.addEventListener("shown.bs.modal", startCameraScanner, { once: true });
+  showModal("modalScanner");
+}
+
+async function startCameraScanner() {
+  try {
+    await stopScanner();
+    qrScanner = new Html5Qrcode("qrReaderBox");
+    availableCameras = await Html5Qrcode.getCameras();
+
+    if (!availableCameras || !availableCameras.length) {
+      $("scannerStatus").textContent = "Kamera tidak ditemukan. Gunakan tombol Scan dari Foto/Galeri.";
+      return;
+    }
+
+    // Prioritaskan kamera belakang (environment / back / rear)
+    const backIdx = availableCameras.findIndex(c =>
+      /back|rear|belakang|environment/i.test(c.label || "")
+    );
+    currentCamIndex = backIdx >= 0 ? backIdx : availableCameras.length - 1;
+
+    if (availableCameras.length > 1) {
+      $("btnSwitchCam").classList.remove("d-none");
+    }
+
+    await runCameraById(availableCameras[currentCamIndex].id);
+  } catch (err) {
+    $("scannerStatus").textContent = "Izin kamera ditolak atau tidak tersedia. Gunakan Scan dari Foto/Galeri.";
+  }
+}
+
+async function runCameraById(cameraId) {
+  if (!qrScanner) return;
+  $("scannerStatus").textContent = "Arahkan kotak pemindai ke QR Code...";
+  await qrScanner.start(
+    cameraId,
+    { fps: 12, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
+    decodedText => handleQrDetected(decodedText),
+    () => {}
+  );
+}
+
+async function switchCamera() {
+  if (!availableCameras || availableCameras.length < 2) return;
+  try {
+    if (qrScanner && qrScanner.isScanning) {
+      await qrScanner.stop();
+    }
+    currentCamIndex = (currentCamIndex + 1) % availableCameras.length;
+    await runCameraById(availableCameras[currentCamIndex].id);
+  } catch (e) {
+    toast("Gagal mengganti kamera.", "warning");
+  }
+}
+
+async function scanFromFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  try {
+    await stopScanner();
+    qrScanner = new Html5Qrcode("qrReaderBox");
+    $("scannerStatus").textContent = "Membaca QR dari gambar...";
+    const decodedText = await qrScanner.scanFile(file, true);
+    event.target.value = "";
+    await handleQrDetected(decodedText);
+  } catch (e) {
+    event.target.value = "";
+    $("scannerStatus").textContent = "QR Code tidak terbaca pada gambar tersebut.";
+    toast("QR Code tidak ditemukan di gambar.", "warning");
+  }
+}
+
+async function stopScanner() {
+  if (qrScanner) {
+    try {
+      if (qrScanner.isScanning) {
+        await qrScanner.stop();
+      }
+      qrScanner.clear();
+    } catch (_) {}
+    qrScanner = null;
+  }
+}
+
+async function handleQrDetected(decodedText) {
+  const kode = extractKodeServis(decodedText);
+  if (!kode) return;
+
+  await stopScanner();
+  hideModal("modalScanner");
+
+  if (currentScanMode === "staff" && state.user) {
+    let tiket = state.servis.find(x => String(x.kodeServis).toUpperCase() === kode);
+    if (!tiket) {
+      toast("Menyinkronkan data tiket terbaru...", "info");
+      await syncAllData();
+      tiket = state.servis.find(x => String(x.kodeServis).toUpperCase() === kode);
+    }
+
+    if (tiket) {
+      toast("Tiket ditemukan: " + tiket.kodeServis, "success");
+      openServisModal(tiket.id);
+    } else {
+      toast("Tiket servis " + kode + " tidak ditemukan.", "danger");
+    }
+  } else {
+    $("kodeCari").value = kode;
+    toast("Kode servis terdeteksi: " + kode, "success");
+    if (/^\d{4}$/.test($("hpCari").value.trim())) {
+      cariServisPublik();
+    } else {
+      $("hpCari").focus();
+    }
+  }
 }
 
 // ========================================
@@ -801,7 +1017,6 @@ function applyRoleUI() {
     document.querySelectorAll(".admin-only").forEach(el => {
       el.classList.toggle("d-none", !isAdmin);
     });
-    // Mekanik tidak dapat ubah biaya jasa jika edit tiket lama
     $("srvJasa").readOnly = !isAdmin;
   }
 }
@@ -954,7 +1169,6 @@ function renderServisTable() {
 // FORM SERVIS & SPAREPART DINAMIS
 // ========================================
 function openServisModal(id = "", prefill = null) {
-  // Isi dropdown sparepart dari database stok
   $("selectPartStok").innerHTML = `<option value="">-- Pilih dari Stok --</option>` +
     state.parts.map(p => `<option value="${esc(p.id)}">${esc(p.namaPart)} (Stok: ${p.stok} | ${rupiah(p.hargaJual)})</option>`).join("");
 
@@ -1120,7 +1334,7 @@ function renderPelangganTable() {
   );
 
   $("pelangganTableBody").innerHTML = list.length
-    ? list.map((c, idx) => `
+    ? list.map(c => `
         <tr>
           <td><strong>${esc(c.nama)}</strong><div class="text-muted">${esc(c.telepon)}</div></td>
           <td>${esc([...c.motors].join(", "))}<div class="text-muted">${esc([...c.plats].join(", "))}</div></td>
@@ -1513,7 +1727,12 @@ if ("serviceWorker" in navigator) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Baca parameter ?kode= dari hasil scan QR Code
+  // Matikan kamera otomatis setiap kali modal scanner ditutup
+  $("modalScanner").addEventListener("hidden.bs.modal", () => {
+    stopScanner();
+  });
+
+  // Baca parameter ?kode= dari hasil scan QR Code eksternal
   const urlKode = new URLSearchParams(window.location.search).get("kode");
   if (urlKode) {
     $("kodeCari").value = urlKode.toUpperCase();
