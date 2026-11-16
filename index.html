@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bengkel Pro">
   <title>Bengkel Pro — Sistem Manajemen Servis Motor</title>
+  <link rel="icon" type="image/png" href="logobengkelpro.png">
+  <link rel="apple-touch-icon" href="logobengkelpro.png">
   <link rel="manifest" href="manifest.json">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -24,20 +29,52 @@
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
       color: #fff;
       border-radius: 0 0 24px 24px;
-      padding: 20px 0 26px;
+      padding: 18px 0 24px;
       box-shadow: 0 6px 20px rgba(15, 23, 42, .18);
     }
-    .brand-icon {
-      width: 48px;
-      height: 48px;
-      background: #fff;
-      color: var(--navy);
-      border-radius: 14px;
+    .brand-logo-wrap {
+      width: 52px;
+      height: 52px;
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 4px;
       display: grid;
       place-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 11px;
+    }
+    .brand-fallback {
+      color: var(--navy);
       font-size: 24px;
       font-weight: 800;
     }
+
+    /* INSTALL BANNER PROMINENT */
+    .install-banner {
+      background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, .12);
+    }
+    .install-banner-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: contain;
+      background: #fff;
+      padding: 3px;
+      border: 1px solid #dbeafe;
+      flex-shrink: 0;
+    }
+
     .card-soft {
       border: 0;
       border-radius: 16px;
@@ -47,12 +84,12 @@
       border: 0;
       border-radius: 14px;
       background: #fff;
-      padding: 14px 16px;
+      padding: 13px 14px;
       box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
       height: 100%;
     }
-    .kpi-label { font-size: 12px; color: #64748b; }
-    .kpi-val { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .kpi-label { font-size: 11.5px; color: #64748b; }
+    .kpi-val { font-size: 17.5px; font-weight: 700; margin-top: 3px; }
     .nav-pills .nav-link {
       border-radius: 10px;
       font-weight: 600;
@@ -88,6 +125,32 @@
       border-radius: 14px;
       object-fit: cover;
     }
+
+    /* CANVAS TANDA TANGAN DIGITAL */
+    .sig-pad-wrap {
+      background: #ffffff;
+      border: 1.5px dashed #94a3b8;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sig-canvas {
+      display: block;
+      width: 100%;
+      height: 105px;
+      touch-action: none;
+      cursor: crosshair;
+      background: transparent;
+    }
+    .sig-guide {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 22px;
+      border-bottom: 1px dotted #cbd5e1;
+      pointer-events: none;
+    }
+
     #printArea { display: none; }
 
     /* FORMAT CETAK THERMAL 58MM */
@@ -110,6 +173,33 @@
       .p-line { border-top: 1px dashed #000; margin: 6px 0; }
       .p-row { display: flex; justify-content: space-between; gap: 4px; }
       .p-qr img, .p-qr canvas { margin: 6px auto !important; display: block !important; }
+      .p-sig-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        text-align: center;
+        margin-top: 4px;
+      }
+      .p-sig-box {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .p-sig-img {
+        max-width: 100%;
+        max-height: 42px;
+        object-fit: contain;
+        filter: contrast(250%);
+      }
+      .p-sig-name {
+        border-top: 1px solid #000;
+        font-size: 9px;
+        padding-top: 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   </style>
 </head>
@@ -121,14 +211,18 @@
     <div class="container" style="max-width:960px">
       <div class="d-flex justify-content-between align-items-center gap-2">
         <div class="d-flex align-items-center gap-3">
-          <div class="brand-icon"><i class="bi bi-wrench-adjustable-circle-fill"></i></div>
+          <div class="brand-logo-wrap">
+            <img src="logobengkelpro.png" alt="Logo Bengkel Pro" class="brand-logo-img"
+                 onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none')">
+            <i class="bi bi-wrench-adjustable-circle-fill brand-fallback d-none"></i>
+          </div>
           <div>
             <h1 class="h5 mb-0 fw-bold">BENGKEL PRO</h1>
             <small class="opacity-75">Sistem Manajemen Servis, Stok & QR Motor</small>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold d-none">
+          <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold d-none" onclick="triggerInstallApp()">
             <i class="bi bi-download"></i> Install
           </button>
           <button id="btnAuth" class="btn btn-light btn-sm fw-semibold" onclick="openAuthModal()">
@@ -158,6 +252,30 @@
 
   <main class="container" style="max-width:960px">
 
+    <!-- INSTALL BANNER PWA (DENGAN LOGO APLIKASI & PINTASAN) -->
+    <section id="installBannerBox" class="install-banner mb-3 d-none">
+      <div class="d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <img src="logobengkelpro.png" alt="Bengkel Pro" class="install-banner-icon"
+               onerror="this.style.display='none'">
+          <div>
+            <div class="fw-bold small text-dark">Install Aplikasi Bengkel Pro</div>
+            <div class="text-muted" style="font-size:11.5px" id="installBannerDesc">
+              Pasang pintasan logo ke layar utama HP untuk akses cepat & mode offline.
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+          <button type="button" id="btnBannerInstall" class="btn btn-primary btn-sm fw-semibold px-3" onclick="triggerInstallApp()">
+            Install
+          </button>
+          <button type="button" class="btn btn-link btn-sm text-muted p-1" title="Tutup" onclick="dismissInstallBanner()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
     <!-- =====================================
          WORKSPACE ADMIN & MEKANIK (TERPROTEKSI)
          ===================================== -->
@@ -181,6 +299,11 @@
         <li class="nav-item">
           <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabStok">
             <i class="bi bi-box-seam me-1"></i>Stok Sparepart
+          </button>
+        </li>
+        <li class="nav-item admin-only">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabKeuangan" onclick="renderKeuangan()">
+            <i class="bi bi-graph-up-arrow me-1"></i>Laporan Keuangan
           </button>
         </li>
         <li class="nav-item admin-only">
@@ -338,7 +461,107 @@
           </div>
         </div>
 
-        <!-- TAB 5: AKUN & HAK AKSES (ADMIN ONLY) -->
+        <!-- TAB 5: LAPORAN KEUANGAN, OPERASIONAL & LABA BERSIH (ADMIN ONLY) -->
+        <div class="tab-pane fade admin-only" id="tabKeuangan">
+          <div class="card card-soft p-3 mb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <h6 class="fw-bold mb-0"><i class="bi bi-cash-coin text-success me-1"></i>Laporan Keuangan & Laba Bersih</h6>
+                <small class="text-muted">Omzet jasa & sparepart dikurangi HPP modal dan pengeluaran operasional bengkel.</small>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-danger btn-sm fw-semibold" onclick="openExpenseModal()">
+                  <i class="bi bi-dash-circle me-1"></i>Catat Pengeluaran
+                </button>
+                <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="exportKeuanganCSV()">
+                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV / Excel
+                </button>
+              </div>
+            </div>
+
+            <!-- FILTER PERIODE & BASIS -->
+            <div class="row g-2 align-items-end">
+              <div class="col-6 col-md-4">
+                <label class="form-label small fw-semibold mb-1">Filter Bulan</label>
+                <input type="month" id="finMonth" class="form-control form-control-sm" onchange="renderKeuangan()">
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="form-check mb-1">
+                  <input class="form-check-input" type="checkbox" id="finAllMonths" onchange="toggleFinMonth()">
+                  <label class="form-check-label small" for="finAllMonths">Semua Bulan</label>
+                </div>
+              </div>
+              <div class="col-12 col-md-5">
+                <label class="form-label small fw-semibold mb-1">Basis Pendapatan Servis</label>
+                <select id="finBasis" class="form-select form-select-sm" onchange="renderKeuangan()">
+                  <option value="done">Realisasi (Selesai & Sudah Diambil)</option>
+                  <option value="all">Semua Tiket Aktif (Non-Batal)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 KPI KEUANGAN -->
+          <div class="row g-2 mb-3" id="finKpiContainer"></div>
+
+          <!-- PROPORSI PENDAPATAN VS HPP VS OPERASIONAL -->
+          <div class="card card-soft p-3 mb-3" id="finMarginBox"></div>
+
+          <!-- MODUL PENGELUARAN OPERASIONAL BENGKEL -->
+          <div class="card card-soft p-3 mb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+              <div>
+                <h6 class="fw-bold mb-0 small"><i class="bi bi-receipt-cutoff text-danger me-1"></i>Pengeluaran Operasional Bengkel</h6>
+                <small class="text-muted">Listrik, komisi/gaji mekanik, alat bengkel, sewa & operasional harian.</small>
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" onclick="openExpenseModal()">
+                <i class="bi bi-plus-lg"></i> Tambah Pengeluaran
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover table-sm align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Kategori</th>
+                    <th>Keterangan</th>
+                    <th>Metode</th>
+                    <th class="text-end">Nominal</th>
+                    <th class="text-end">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="expenseTableBody"></tbody>
+                <tfoot class="table-light fw-bold" id="expenseTableFoot"></tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- TABEL RINCIAN LABA KOTOR PER TRANSAKSI SERVIS -->
+          <div class="card card-soft p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0 small">Rincian Pendapatan & Margin per Transaksi Servis</h6>
+              <span class="badge bg-light text-dark border" id="finCountBadge">0 Transaksi</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover table-sm align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Tgl & Kode</th>
+                    <th>Pelanggan / Unit</th>
+                    <th class="text-end">Omzet Jasa</th>
+                    <th class="text-end">Jual Part</th>
+                    <th class="text-end">HPP Modal</th>
+                    <th class="text-end">Margin Servis</th>
+                  </tr>
+                </thead>
+                <tbody id="finTableBody"></tbody>
+                <tfoot class="table-light fw-bold" id="finTableFoot"></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: AKUN & HAK AKSES (ADMIN ONLY) -->
         <div class="tab-pane fade admin-only" id="tabUsers">
           <div class="card card-soft p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -382,7 +605,7 @@
       <div class="row g-2">
         <div class="col-md-5">
           <div class="input-group">
-            <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode Servis (cth: SRV-261116-XXXX)">
+            <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode Servis (cth: SRV-261117-XXXX)">
             <button class="btn btn-outline-secondary" type="button" title="Scan QR dengan Kamera" onclick="openScannerModal('public')">
               <i class="bi bi-qr-code-scan"></i>
             </button>
@@ -431,7 +654,7 @@
     </section>
 
     <footer class="text-center text-muted small mt-4">
-      Bengkel Pro v2.1 • Powered By Ari GPM
+      Bengkel Pro v2.4 • Powered By Ari GPM
     </footer>
   </main>
 </div>
@@ -442,6 +665,60 @@
 <!-- =====================================
      MODALS
      ===================================== -->
+
+<!-- MODAL PENGELUARAN OPERASIONAL (ADMIN) -->
+<div class="modal fade" id="modalExpense" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <h6 class="modal-title fw-bold" id="titleModalExpense">Catat Pengeluaran Operasional</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="expId">
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Tanggal *</label>
+            <input type="date" id="expTanggal" class="form-control form-control-sm">
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Kategori *</label>
+            <select id="expKategori" class="form-select form-select-sm">
+              <option value="Gaji / Komisi Mekanik">Gaji / Komisi Mekanik</option>
+              <option value="Listrik & Air">Listrik & Air</option>
+              <option value="Alat & Perlengkapan">Alat & Perlengkapan</option>
+              <option value="Sewa Tempat">Sewa Tempat</option>
+              <option value="Konsumsi & Umum">Konsumsi & Umum</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold">Keterangan Pengeluaran *</label>
+            <input id="expKeterangan" class="form-control form-control-sm" placeholder="cth: Token listrik bengkel / Komisi servis harian">
+          </div>
+          <div class="col-7">
+            <label class="form-label small fw-semibold">Nominal (Rp) *</label>
+            <input type="number" id="expNominal" min="0" value="0" class="form-control form-control-sm">
+          </div>
+          <div class="col-5">
+            <label class="form-label small fw-semibold">Metode Bayar</label>
+            <select id="expMetode" class="form-select form-select-sm">
+              <option value="Tunai">Tunai</option>
+              <option value="Transfer">Transfer</option>
+              <option value="QRIS">QRIS</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+        <button type="button" id="btnSaveExpense" class="btn btn-danger btn-sm fw-semibold" onclick="saveExpense()">
+          <i class="bi bi-save me-1"></i> Simpan Pengeluaran
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL PEMINDAI QR KAMERA HP -->
 <div class="modal fade" id="modalScanner" tabindex="-1">
@@ -491,7 +768,7 @@
   </div>
 </div>
 
-<!-- MODAL FORM SERVIS -->
+<!-- MODAL FORM SERVIS + TANDA TANGAN DIGITAL -->
 <div class="modal fade" id="modalServis" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content rounded-4 border-0">
@@ -578,6 +855,40 @@
           <div class="col-md-6">
             <label class="form-label small fw-semibold">Catatan Tambahan</label>
             <input id="srvCatatan" class="form-control form-control-sm">
+          </div>
+        </div>
+
+        <!-- CANVAS TANDA TANGAN DIGITAL SERAH TERIMA -->
+        <div class="bg-light p-2 p-md-3 rounded-3 mb-2 border">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small fw-bold"><i class="bi bi-pen me-1 text-primary"></i>Tanda Tangan Serah Terima Motor</span>
+            <small class="text-muted">Gunakan jari pada kotak di bawah</small>
+          </div>
+          <div class="row g-2">
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="small fw-semibold mb-0">Tanda Tangan Mekanik</label>
+                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" onclick="clearSignature('mekanik')">
+                  <i class="bi bi-eraser"></i> Ulangi
+                </button>
+              </div>
+              <div class="sig-pad-wrap">
+                <canvas id="canvasTtdMekanik" class="sig-canvas" width="280" height="105"></canvas>
+                <div class="sig-guide"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="small fw-semibold mb-0">Tanda Tangan Pelanggan</label>
+                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" onclick="clearSignature('pelanggan')">
+                  <i class="bi bi-eraser"></i> Ulangi
+                </button>
+              </div>
+              <div class="sig-pad-wrap">
+                <canvas id="canvasTtdPelanggan" class="sig-canvas" width="280" height="105"></canvas>
+                <div class="sig-guide"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -765,6 +1076,7 @@ let state = {
   servis: [],
   parts: [],
   users: [],
+  expenses: [],
   publicBoard: []
 };
 
@@ -776,6 +1088,8 @@ const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
 const rupiah = n => new Intl.NumberFormat("id-ID", {
   style: "currency", currency: "IDR", maximumFractionDigits: 0
 }).format(Number(n || 0));
+
+const todayWIB = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
 
 function toast(msg, type = "dark") {
   const el = $("liveToast");
@@ -790,6 +1104,91 @@ function showModal(id) {
 function hideModal(id) {
   const inst = bootstrap.Modal.getInstance($(id));
   if (inst) inst.hide();
+}
+
+// ========================================
+// ENGINE CANVAS TANDA TANGAN DIGITAL
+// ========================================
+const sigPads = {
+  mekanik: { canvasId: "canvasTtdMekanik", hasStrokes: false, drawing: false },
+  pelanggan: { canvasId: "canvasTtdPelanggan", hasStrokes: false, drawing: false }
+};
+
+function initSignaturePads() {
+  Object.keys(sigPads).forEach(key => {
+    const pad = sigPads[key];
+    const canvas = $(pad.canvasId);
+    const ctx = canvas.getContext("2d");
+
+    const getCoords = e => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) * (canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (canvas.height / rect.height)
+      };
+    };
+
+    canvas.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      canvas.setPointerCapture(e.pointerId);
+      pad.drawing = true;
+      pad.hasStrokes = true;
+      const pt = getCoords(e);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.6;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(pt.x, pt.y);
+    });
+
+    canvas.addEventListener("pointermove", e => {
+      if (!pad.drawing) return;
+      e.preventDefault();
+      const pt = getCoords(e);
+      ctx.lineTo(pt.x, pt.y);
+      ctx.stroke();
+    });
+
+    const endStroke = e => {
+      if (!pad.drawing) return;
+      pad.drawing = false;
+      try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+
+    canvas.addEventListener("pointerup", endStroke);
+    canvas.addEventListener("pointercancel", endStroke);
+  });
+}
+
+function clearSignature(key) {
+  const pad = sigPads[key];
+  if (!pad) return;
+  const canvas = $(pad.canvasId);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pad.hasStrokes = false;
+  pad.drawing = false;
+}
+
+function loadSignatureImage(key, dataUrl) {
+  clearSignature(key);
+  if (!dataUrl || !String(dataUrl).startsWith("data:image/")) return;
+  const pad = sigPads[key];
+  const canvas = $(pad.canvasId);
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    pad.hasStrokes = true;
+  };
+  img.src = dataUrl;
+}
+
+function getSignatureDataUrl(key) {
+  const pad = sigPads[key];
+  if (!pad || !pad.hasStrokes) return "";
+  return $(pad.canvasId).toDataURL("image/png");
 }
 
 // ========================================
@@ -842,7 +1241,6 @@ async function startCameraScanner() {
       return;
     }
 
-    // Prioritaskan kamera belakang (environment / back / rear)
     const backIdx = availableCameras.findIndex(c =>
       /back|rear|belakang|environment/i.test(c.label || "")
     );
@@ -1033,8 +1431,9 @@ async function syncAllData() {
     state.servis = r.servis || [];
     state.parts = r.parts || [];
     state.users = r.users || [];
+    state.expenses = r.expenses || [];
     localStorage.setItem(CACHE_KEY, JSON.stringify({
-      servis: state.servis, parts: state.parts, publicBoard: state.publicBoard
+      servis: state.servis, parts: state.parts, expenses: state.expenses, publicBoard: state.publicBoard
     }));
     applyRoleUI();
     renderAllWorkspace();
@@ -1061,7 +1460,10 @@ function renderAllWorkspace() {
   renderServisTable();
   renderPelangganTable();
   renderPartTable();
-  if (state.user && state.user.role === "admin") renderUserTable();
+  if (state.user && state.user.role === "admin") {
+    renderKeuangan();
+    renderUserTable();
+  }
 }
 
 function renderDashboard() {
@@ -1070,7 +1472,7 @@ function renderDashboard() {
   const selesai = state.servis.filter(x => ["Selesai", "Sudah diambil"].includes(x.status));
   const lowParts = state.parts.filter(p => Number(p.stok) <= Number(p.minStok));
 
-  const bulanIni = new Date().toISOString().slice(0, 7);
+  const bulanIni = todayWIB().slice(0, 7);
   const omzetBulan = selesai
     .filter(x => String(x.tanggalMasuk).startsWith(bulanIni))
     .reduce((sum, x) => sum + Number(x.estimasiTotal || 0), 0);
@@ -1136,32 +1538,36 @@ function renderServisTable() {
   });
 
   $("servisTableBody").innerHTML = filtered.length
-    ? filtered.map(s => `
-        <tr>
-          <td>
-            <strong>${esc(s.kodeServis)}</strong>
-            <div class="text-muted">${esc(s.tanggalMasuk)}</div>
-          </td>
-          <td>
-            <strong>${esc(s.nama)}</strong> <span class="text-muted">(${esc(s.telepon)})</span>
-            <div>${esc(s.motor)} • <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
-          </td>
-          <td>
-            ${statusBadge(s.status)}
-            <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
-          </td>
-          <td class="fw-bold">${rupiah(s.estimasiTotal)}</td>
-          <td>
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary" title="Edit" onclick="openServisModal('${esc(s.id)}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-outline-dark" title="QR Tiket" onclick="openQRModal('${esc(s.id)}')"><i class="bi bi-qr-code"></i></button>
-              <button class="btn btn-outline-secondary" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i></button>
-              <button class="btn btn-success" title="Notifikasi WA" onclick="kirimWhatsApp('${esc(s.id)}')"><i class="bi bi-whatsapp"></i></button>
-              ${isAdmin ? `<button class="btn btn-outline-danger" title="Hapus" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
-            </div>
-          </td>
-        </tr>
-      `).join("")
+    ? filtered.map(s => {
+        const hasSigned = s.ttdPelanggan || s.ttdMekanik;
+        return `
+          <tr>
+            <td>
+              <strong>${esc(s.kodeServis)}</strong>
+              <div class="text-muted">${esc(s.tanggalMasuk)}</div>
+            </td>
+            <td>
+              <strong>${esc(s.nama)}</strong> <span class="text-muted">(${esc(s.telepon)})</span>
+              <div>${esc(s.motor)} • <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
+            </td>
+            <td>
+              ${statusBadge(s.status)}
+              ${hasSigned ? `<span class="badge bg-info-subtle text-info-emphasis ms-1" title="Sudah ditandatangani"><i class="bi bi-pen-fill"></i> TTD</span>` : ""}
+              <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
+            </td>
+            <td class="fw-bold">${rupiah(s.estimasiTotal)}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" title="Edit & TTD" onclick="openServisModal('${esc(s.id)}')"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-outline-dark" title="QR Tiket" onclick="openQRModal('${esc(s.id)}')"><i class="bi bi-qr-code"></i></button>
+                <button class="btn btn-outline-secondary" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i></button>
+                <button class="btn btn-success" title="Notifikasi WA" onclick="kirimWhatsApp('${esc(s.id)}')"><i class="bi bi-whatsapp"></i></button>
+                ${isAdmin ? `<button class="btn btn-outline-danger" title="Hapus" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("")
     : `<tr><td colspan="5" class="text-center text-muted py-3">Data servis tidak ditemukan.</td></tr>`;
 }
 
@@ -1173,6 +1579,8 @@ function openServisModal(id = "", prefill = null) {
     state.parts.map(p => `<option value="${esc(p.id)}">${esc(p.namaPart)} (Stok: ${p.stok} | ${rupiah(p.hargaJual)})</option>`).join("");
 
   $("srvPartsContainer").innerHTML = "";
+  clearSignature("mekanik");
+  clearSignature("pelanggan");
 
   if (id) {
     const s = state.servis.find(x => x.id === id);
@@ -1192,6 +1600,9 @@ function openServisModal(id = "", prefill = null) {
     $("srvMekanik").value = s.mekanik;
     $("srvCatatan").value = s.catatan;
     (s.sparepart || []).forEach(p => addPartRow(p));
+
+    loadSignatureImage("mekanik", s.ttdMekanik);
+    loadSignatureImage("pelanggan", s.ttdPelanggan);
   } else {
     $("titleModalServis").textContent = "Input Servis Motor Baru";
     $("srvId").value = "";
@@ -1218,7 +1629,13 @@ function addPartFromStock() {
   const p = state.parts.find(x => x.id === partId);
   if (!p) return;
   if (p.stok <= 0) toast("Perhatian: Stok " + p.namaPart + " saat ini 0.", "warning");
-  addPartRow({ partId: p.id, nama: p.namaPart, jumlah: 1, harga: p.hargaJual });
+  addPartRow({
+    partId: p.id,
+    nama: p.namaPart,
+    jumlah: 1,
+    harga: p.hargaJual,
+    hargaBeli: p.hargaBeli || 0
+  });
   $("selectPartStok").value = "";
 }
 
@@ -1226,6 +1643,7 @@ function addPartRow(item = {}) {
   const row = document.createElement("div");
   row.className = "row g-1 align-items-center mb-1 part-item-row";
   row.dataset.partId = item.partId || "";
+  row.dataset.hargaBeli = item.hargaBeli || 0;
   row.innerHTML = `
     <div class="col-5">
       <input class="form-control form-control-sm p-nama" placeholder="Nama sparepart" value="${esc(item.nama || "")}" ${item.partId ? "readonly" : ""}>
@@ -1249,7 +1667,8 @@ function collectParts() {
     partId: r.dataset.partId || "",
     nama: r.querySelector(".p-nama").value.trim(),
     jumlah: Math.max(1, Number(r.querySelector(".p-qty").value || 1)),
-    harga: Math.max(0, Number(r.querySelector(".p-harga").value || 0))
+    harga: Math.max(0, Number(r.querySelector(".p-harga").value || 0)),
+    hargaBeli: Math.max(0, Number(r.dataset.hargaBeli || 0))
   })).filter(x => x.nama);
 }
 
@@ -1275,7 +1694,9 @@ async function saveServis() {
     status: $("srvStatus").value,
     estimasiSelesai: $("srvEstimasi").value,
     mekanik: $("srvMekanik").value.trim(),
-    catatan: $("srvCatatan").value
+    catatan: $("srvCatatan").value,
+    ttdMekanik: getSignatureDataUrl("mekanik"),
+    ttdPelanggan: getSignatureDataUrl("pelanggan")
   };
 
   if (!data.nama || !data.telepon || !data.motor) {
@@ -1295,6 +1716,307 @@ async function saveServis() {
   } finally {
     btn.disabled = false;
   }
+}
+
+// ========================================
+// PENGELUARAN OPERASIONAL BENGKEL (ADMIN)
+// ========================================
+function openExpenseModal(id = "") {
+  const exp = id ? state.expenses.find(x => x.id === id) : null;
+  $("titleModalExpense").textContent = exp ? "Edit Pengeluaran Operasional" : "Catat Pengeluaran Operasional";
+  $("expId").value = exp ? exp.id : "";
+  $("expTanggal").value = exp ? exp.tanggal : todayWIB();
+  $("expKategori").value = exp ? exp.kategori : "Gaji / Komisi Mekanik";
+  $("expKeterangan").value = exp ? exp.keterangan : "";
+  $("expNominal").value = exp ? exp.nominal : 0;
+  $("expMetode").value = exp ? exp.metode : "Tunai";
+  showModal("modalExpense");
+}
+
+async function saveExpense() {
+  const btn = $("btnSaveExpense");
+  const data = {
+    id: $("expId").value,
+    tanggal: $("expTanggal").value || todayWIB(),
+    kategori: $("expKategori").value,
+    keterangan: $("expKeterangan").value.trim(),
+    nominal: Number($("expNominal").value || 0),
+    metode: $("expMetode").value
+  };
+
+  if (!data.keterangan || data.nominal <= 0) {
+    return toast("Keterangan dan nominal pengeluaran wajib diisi.", "danger");
+  }
+
+  btn.disabled = true;
+  try {
+    const r = await apiPost({ action: "saveExpense", auth: state.auth, data });
+    if (!r.success) return toast(r.message, "danger");
+    hideModal("modalExpense");
+    toast(r.message, "success");
+    await syncAllData();
+  } catch (e) {
+    toast(e.message, "danger");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ========================================
+// LAPORAN KEUANGAN & LABA BERSIH (ADMIN)
+// ========================================
+function toggleFinMonth() {
+  const all = $("finAllMonths").checked;
+  $("finMonth").disabled = all;
+  renderKeuangan();
+}
+
+function getFilteredFinancialRows() {
+  const allMonths = $("finAllMonths").checked;
+  const selectedMonth = $("finMonth").value;
+  const basis = $("finBasis").value;
+
+  return state.servis
+    .filter(s => {
+      if (s.status === "Dibatalkan") return false;
+      if (basis === "done" && !["Selesai", "Sudah diambil"].includes(s.status)) return false;
+      if (!allMonths && selectedMonth && !String(s.tanggalMasuk).startsWith(selectedMonth)) return false;
+      return true;
+    })
+    .map(s => {
+      const omzetJasa = Number(s.biayaJasa || 0);
+      let jualPart = 0;
+      let hppPart = 0;
+
+      (s.sparepart || []).forEach(p => {
+        const qty = Number(p.jumlah || 0);
+        const hargaJual = Number(p.harga || 0);
+        let hargaBeli = Number(p.hargaBeli || 0);
+
+        if (!hargaBeli && p.partId) {
+          const master = state.parts.find(mp => mp.id === p.partId);
+          if (master) hargaBeli = Number(master.hargaBeli || 0);
+        }
+
+        jualPart += qty * hargaJual;
+        hppPart += qty * hargaBeli;
+      });
+
+      const totalOmzet = omzetJasa + jualPart;
+      const marginServis = totalOmzet - hppPart;
+
+      return {
+        ...s,
+        omzetJasa,
+        jualPart,
+        hppPart,
+        totalOmzet,
+        marginServis
+      };
+    });
+}
+
+function getFilteredExpenseRows() {
+  const allMonths = $("finAllMonths").checked;
+  const selectedMonth = $("finMonth").value;
+  return state.expenses.filter(e =>
+    allMonths || !selectedMonth || String(e.tanggal).startsWith(selectedMonth)
+  );
+}
+
+function renderKeuangan() {
+  if (!state.user || state.user.role !== "admin") return;
+
+  const rows = getFilteredFinancialRows();
+  const expRows = getFilteredExpenseRows();
+
+  const sumJasa = rows.reduce((a, b) => a + b.omzetJasa, 0);
+  const sumPart = rows.reduce((a, b) => a + b.jualPart, 0);
+  const sumHpp = rows.reduce((a, b) => a + b.hppPart, 0);
+  const sumExp = expRows.reduce((a, b) => a + Number(b.nominal || 0), 0);
+
+  const sumOmzet = sumJasa + sumPart;
+  const sumLabaBersih = sumOmzet - sumHpp - sumExp;
+  const marginPct = sumOmzet > 0 ? ((sumLabaBersih / sumOmzet) * 100).toFixed(1) : "0.0";
+
+  $("finKpiContainer").innerHTML = `
+    <div class="col-6 col-md">
+      <div class="kpi-card">
+        <div class="kpi-label">Omzet Jasa Servis</div>
+        <div class="kpi-val text-primary">${rupiah(sumJasa)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="kpi-card">
+        <div class="kpi-label">Penjualan Sparepart</div>
+        <div class="kpi-val text-dark">${rupiah(sumPart)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="kpi-card">
+        <div class="kpi-label">HPP Modal Sparepart</div>
+        <div class="kpi-val text-danger">${rupiah(sumHpp)}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="kpi-card">
+        <div class="kpi-label">Biaya Operasional</div>
+        <div class="kpi-val text-warning-emphasis">${rupiah(sumExp)}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md">
+      <div class="kpi-card border ${sumLabaBersih >= 0 ? "border-success border-opacity-25 bg-success-subtle bg-opacity-10" : "border-danger border-opacity-25 bg-danger-subtle bg-opacity-10"}">
+        <div class="kpi-label">Laba Bersih (${marginPct}%)</div>
+        <div class="kpi-val ${sumLabaBersih >= 0 ? "text-success" : "text-danger"}">${rupiah(sumLabaBersih)}</div>
+      </div>
+    </div>
+  `;
+
+  const baseTotal = Math.max(sumOmzet, sumHpp + sumExp, 1);
+  const profitPct = sumLabaBersih > 0 ? Math.min(100, Math.round((sumLabaBersih / baseTotal) * 100)) : 0;
+  const hppPct = Math.min(100 - profitPct, Math.round((sumHpp / baseTotal) * 100));
+  const expPct = Math.min(100 - profitPct - hppPct, Math.round((sumExp / baseTotal) * 100));
+
+  $("finMarginBox").innerHTML = `
+    <div class="d-flex flex-wrap justify-content-between align-items-center small mb-1">
+      <span><strong>Total Pendapatan Kotor:</strong> ${rupiah(sumOmzet)}</span>
+      <span class="${sumLabaBersih >= 0 ? "text-success" : "text-danger"} fw-bold">Margin Bersih: ${marginPct}%</span>
+    </div>
+    <div class="progress" style="height:10px;border-radius:99px">
+      <div class="progress-bar bg-success" style="width:${profitPct}%" title="Laba Bersih"></div>
+      <div class="progress-bar bg-danger" style="width:${hppPct}%" title="HPP Modal Sparepart"></div>
+      <div class="progress-bar bg-warning" style="width:${expPct}%" title="Pengeluaran Operasional"></div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-between text-muted mt-1 gap-2" style="font-size:11px">
+      <span><i class="bi bi-square-fill text-success me-1"></i>Laba Bersih (${rupiah(sumLabaBersih)})</span>
+      <span><i class="bi bi-square-fill text-danger me-1"></i>HPP Modal (${rupiah(sumHpp)})</span>
+      <span><i class="bi bi-square-fill text-warning me-1"></i>Operasional (${rupiah(sumExp)})</span>
+    </div>
+  `;
+
+  // Render tabel pengeluaran operasional
+  $("expenseTableBody").innerHTML = expRows.length
+    ? expRows.map(e => `
+        <tr>
+          <td>${esc(e.tanggal)}</td>
+          <td><span class="badge bg-light text-dark border">${esc(e.kategori)}</span></td>
+          <td>${esc(e.keterangan)}</td>
+          <td>${esc(e.metode)}</td>
+          <td class="text-end fw-semibold text-danger">${rupiah(e.nominal)}</td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary py-0 px-1" onclick="openExpenseModal('${esc(e.id)}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-outline-danger py-0 px-1" onclick="confirmDelete('expense','${esc(e.id)}','${esc(e.keterangan)}')"><i class="bi bi-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="6" class="text-center text-muted py-2">Belum ada pengeluaran operasional tercatat pada periode ini.</td></tr>`;
+
+  $("expenseTableFoot").innerHTML = expRows.length
+    ? `<tr><td colspan="4">TOTAL PENGELUARAN OPERASIONAL</td><td class="text-end text-danger">${rupiah(sumExp)}</td><td></td></tr>`
+    : "";
+
+  // Render tabel rincian servis
+  $("finCountBadge").textContent = rows.length + " Transaksi";
+
+  $("finTableBody").innerHTML = rows.length
+    ? rows.map(r => `
+        <tr>
+          <td>
+            <strong>${esc(r.kodeServis)}</strong>
+            <div class="text-muted">${esc(r.tanggalMasuk)}</div>
+          </td>
+          <td>
+            <strong>${esc(r.nama)}</strong>
+            <div class="text-muted">${esc(r.motor)} (${esc(r.plat || "-")})</div>
+          </td>
+          <td class="text-end">${rupiah(r.omzetJasa)}</td>
+          <td class="text-end">${rupiah(r.jualPart)}</td>
+          <td class="text-end text-danger">${rupiah(r.hppPart)}</td>
+          <td class="text-end fw-bold text-success">${rupiah(r.marginServis)}</td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada transaksi servis pada periode ini.</td></tr>`;
+
+  $("finTableFoot").innerHTML = rows.length
+    ? `
+      <tr>
+        <td colspan="2">TOTAL PENDAPATAN & MARGIN SERVIS</td>
+        <td class="text-end">${rupiah(sumJasa)}</td>
+        <td class="text-end">${rupiah(sumPart)}</td>
+        <td class="text-end text-danger">${rupiah(sumHpp)}</td>
+        <td class="text-end text-success">${rupiah(sumOmzet - sumHpp)}</td>
+      </tr>
+    `
+    : "";
+}
+
+function exportKeuanganCSV() {
+  const rows = getFilteredFinancialRows();
+  const expRows = getFilteredExpenseRows();
+  if (!rows.length && !expRows.length) {
+    return toast("Tidak ada data keuangan untuk diekspor.", "warning");
+  }
+
+  const periodeLabel = $("finAllMonths").checked ? "Semua_Periode" : ($("finMonth").value || "Bulan_Ini");
+  const csvEsc = val => `"${String(val ?? "").replace(/"/g, '""')}"`;
+
+  let sumJasa = 0, sumPart = 0, sumHpp = 0, sumOmzet = 0, sumMarginServis = 0;
+  rows.forEach(r => {
+    sumJasa += r.omzetJasa;
+    sumPart += r.jualPart;
+    sumHpp += r.hppPart;
+    sumOmzet += r.totalOmzet;
+    sumMarginServis += r.marginServis;
+  });
+  const sumExp = expRows.reduce((a, b) => a + Number(b.nominal || 0), 0);
+  const labaBersih = sumMarginServis - sumExp;
+
+  const lines = [
+    [csvEsc("LAPORAN KEUANGAN & LABA BERSIH - " + BENGKEL_INFO.nama)],
+    [csvEsc("Periode: " + periodeLabel), csvEsc("Basis: " + ($("finBasis").value === "done" ? "Realisasi Selesai" : "Semua Tiket Aktif"))],
+    [],
+    [csvEsc("RINGKASAN LABA RUGI")],
+    [csvEsc("Omzet Jasa Servis"), sumJasa],
+    [csvEsc("Penjualan Sparepart"), sumPart],
+    [csvEsc("Total Pendapatan Kotor"), sumOmzet],
+    [csvEsc("HPP Modal Sparepart"), sumHpp],
+    [csvEsc("Laba Kotor Servis"), sumMarginServis],
+    [csvEsc("Total Pengeluaran Operasional"), sumExp],
+    [csvEsc("LABA BERSIH"), labaBersih],
+    [],
+    [csvEsc("RINCIAN TRANSAKSI SERVIS")],
+    ["Tanggal", "Kode Servis", "Pelanggan", "Motor", "Plat Nomor", "Status", "Omzet Jasa", "Penjualan Sparepart", "Total Omzet", "HPP Modal", "Margin Servis"].map(csvEsc)
+  ];
+
+  rows.forEach(r => {
+    lines.push([
+      r.tanggalMasuk, r.kodeServis, r.nama, r.motor, r.plat || "-", r.status,
+      r.omzetJasa, r.jualPart, r.totalOmzet, r.hppPart, r.marginServis
+    ].map(csvEsc));
+  });
+
+  lines.push(["TOTAL SERVIS", "", "", "", "", "", sumJasa, sumPart, sumOmzet, sumHpp, sumMarginServis].map(csvEsc));
+  lines.push([]);
+  lines.push([csvEsc("RINCIAN PENGELUARAN OPERASIONAL")]);
+  lines.push(["Tanggal", "Kategori", "Keterangan", "Metode", "Nominal", "Dicatat Oleh"].map(csvEsc));
+
+  expRows.forEach(e => {
+    lines.push([e.tanggal, e.kategori, e.keterangan, e.metode, e.nominal, e.dicatatOleh].map(csvEsc));
+  });
+
+  lines.push(["TOTAL PENGELUARAN OPERASIONAL", "", "", "", sumExp, ""].map(csvEsc));
+
+  const csvContent = "\uFEFF" + lines.map(row => row.join(",")).join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `Laporan_Keuangan_Bengkel_${periodeLabel}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  toast("File CSV laporan keuangan & operasional berhasil diunduh.", "success");
 }
 
 // ========================================
@@ -1491,7 +2213,12 @@ async function saveUser() {
 function confirmDelete(type, id, label) {
   $("confirmText").textContent = `Hapus permanen "${label}"?`;
   $("btnConfirmYes").onclick = async () => {
-    const actionMap = { servis: "deleteServis", part: "deletePart", user: "deleteUser" };
+    const actionMap = {
+      servis: "deleteServis",
+      part: "deletePart",
+      user: "deleteUser",
+      expense: "deleteExpense"
+    };
     const r = await apiPost({ action: actionMap[type], auth: state.auth, id });
     hideModal("modalConfirm");
     if (!r.success) return toast(r.message, "danger");
@@ -1502,7 +2229,7 @@ function confirmDelete(type, id, label) {
 }
 
 // ========================================
-// QR CODE, CETAK NOTA 58MM & WHATSAPP
+// QR CODE, CETAK NOTA 58MM (+ TANDA TANGAN) & WHATSAPP
 // ========================================
 function getTrackingUrl(kodeServis) {
   const base = window.location.origin + window.location.pathname;
@@ -1530,9 +2257,9 @@ function triggerThermalPrint(htmlBuilder, qrText) {
   area.innerHTML = htmlBuilder;
   const qrTarget = area.querySelector(".p-qr");
   if (qrTarget && qrText) {
-    new QRCode(qrTarget, { text: qrText, width: 110, height: 110 });
+    new QRCode(qrTarget, { text: qrText, width: 105, height: 105 });
   }
-  setTimeout(() => window.print(), 250);
+  setTimeout(() => window.print(), 300);
 }
 
 function printLabelQR58(id) {
@@ -1562,6 +2289,13 @@ function printNota58(id) {
     <div class="p-row"><span>${p.jumlah} x ${rupiah(p.harga)}</span><span>${rupiah(p.jumlah * p.harga)}</span></div>
   `).join("");
 
+  const sigMekHtml = s.ttdMekanik
+    ? `<img src="${s.ttdMekanik}" class="p-sig-img" alt="TTD Mekanik">`
+    : ``;
+  const sigPlgHtml = s.ttdPelanggan
+    ? `<img src="${s.ttdPelanggan}" class="p-sig-img" alt="TTD Pelanggan">`
+    : ``;
+
   const html = `
     <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
     <div class="p-center" style="font-size:10px">${esc(BENGKEL_INFO.alamat)}</div>
@@ -1581,6 +2315,20 @@ function printNota58(id) {
     <div class="p-line"></div>
     <div class="p-row p-bold" style="font-size:13px"><span>TOTAL</span><span>${rupiah(s.estimasiTotal)}</span></div>
     <div class="p-row"><span>Status:</span><span>${esc(s.status)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-center" style="font-size:10px">Serah Terima Kendaraan</div>
+    <div class="p-sig-grid">
+      <div>
+        <div style="font-size:9px">Mekanik</div>
+        <div class="p-sig-box">${sigMekHtml}</div>
+        <div class="p-sig-name">${esc(s.mekanik || "Mekanik")}</div>
+      </div>
+      <div>
+        <div style="font-size:9px">Pelanggan</div>
+        <div class="p-sig-box">${sigPlgHtml}</div>
+        <div class="p-sig-name">${esc(s.nama)}</div>
+      </div>
+    </div>
     <div class="p-line"></div>
     <div class="p-center" style="font-size:10px">Scan QR untuk cek status servis:</div>
     <div class="p-qr"></div>
@@ -1672,6 +2420,27 @@ async function cariServisPublik() {
       </tr>
     `).join("");
 
+    const sigSection = (d.ttdMekanik || d.ttdPelanggan)
+      ? `
+        <div class="row g-2 text-center mt-2 pt-2 border-top small">
+          <div class="col-6">
+            <div class="text-muted">Tanda Tangan Mekanik</div>
+            <div class="bg-white rounded p-1 my-1 border" style="height:64px;display:grid;place-items:center">
+              ${d.ttdMekanik ? `<img src="${d.ttdMekanik}" style="max-height:54px;max-width:100%" alt="TTD Mekanik">` : `<span class="text-muted">-</span>`}
+            </div>
+            <strong>${esc(d.mekanik || "-")}</strong>
+          </div>
+          <div class="col-6">
+            <div class="text-muted">Tanda Tangan Pelanggan</div>
+            <div class="bg-white rounded p-1 my-1 border" style="height:64px;display:grid;place-items:center">
+              ${d.ttdPelanggan ? `<img src="${d.ttdPelanggan}" style="max-height:54px;max-width:100%" alt="TTD Pelanggan">` : `<span class="text-muted">-</span>`}
+            </div>
+            <strong>${esc(d.nama)}</strong>
+          </div>
+        </div>
+      `
+      : "";
+
     box.innerHTML = `
       <div class="border rounded-4 p-3 bg-light">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
@@ -1697,6 +2466,7 @@ async function cariServisPublik() {
             <tr class="table-primary fw-bold"><td colspan="2">TOTAL ESTIMASI</td><td class="text-end">${rupiah(d.estimasiTotal)}</td></tr>
           </tbody>
         </table>
+        ${sigSection}
       </div>
     `;
   } catch (e) {
@@ -1705,45 +2475,90 @@ async function cariServisPublik() {
 }
 
 // ========================================
-// PWA INSTALL PROMPT & BOOTSTRAP
+// PWA INSTALL BANNER, PINTASAN & BOOTSTRAP
 // ========================================
-let deferredPrompt;
+let deferredPrompt = null;
+
+function isStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function dismissInstallBanner() {
+  $("installBannerBox").classList.add("d-none");
+  sessionStorage.setItem("bengkel_install_dismissed", "1");
+}
+
+async function triggerInstallApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (choice && choice.outcome === "accepted") {
+      $("btnInstall").classList.add("d-none");
+      $("installBannerBox").classList.add("d-none");
+    }
+  } else {
+    toast("Buka menu browser (⋮ atau Share) lalu pilih 'Tambahkan ke Layar Utama' untuk memasang logo aplikasi.", "info");
+  }
+}
+
 window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
   deferredPrompt = e;
-  $("btnInstall").classList.remove("d-none");
+  if (!isStandaloneMode()) {
+    $("btnInstall").classList.remove("d-none");
+    if (!sessionStorage.getItem("bengkel_install_dismissed")) {
+      $("installBannerBox").classList.remove("d-none");
+    }
+  }
 });
 
-$("btnInstall").onclick = async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
+window.addEventListener("appinstalled", () => {
   deferredPrompt = null;
   $("btnInstall").classList.add("d-none");
-};
+  $("installBannerBox").classList.add("d-none");
+  toast("Bengkel Pro berhasil dipasang ke layar utama!", "success");
+});
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Matikan kamera otomatis setiap kali modal scanner ditutup
+  initSignaturePads();
+
+  $("finMonth").value = todayWIB().slice(0, 7);
+
+  // Tampilkan panduan install khusus Safari iOS jika belum terpasang
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS && !isStandaloneMode() && !sessionStorage.getItem("bengkel_install_dismissed")) {
+    $("installBannerDesc").textContent = "Ketuk ikon Bagikan (Share) di Safari lalu pilih 'Tambah ke Layar Utama'.";
+    $("btnBannerInstall").textContent = "Panduan";
+    $("installBannerBox").classList.remove("d-none");
+  }
+
   $("modalScanner").addEventListener("hidden.bs.modal", () => {
     stopScanner();
   });
 
-  // Baca parameter ?kode= dari hasil scan QR Code eksternal
-  const urlKode = new URLSearchParams(window.location.search).get("kode");
+  const params = new URLSearchParams(window.location.search);
+  const urlKode = params.get("kode");
+  const urlMode = params.get("mode");
+
   if (urlKode) {
     $("kodeCari").value = urlKode.toUpperCase();
     $("hpCari").focus();
+  } else if (urlMode === "cek") {
+    $("kodeCari").focus();
+  } else if (urlMode === "staf" && !state.auth) {
+    openAuthModal();
   }
 
-  // Muat cache lokal agar tampil instan
   const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
   if (cached) {
     state.servis = cached.servis || [];
     state.parts = cached.parts || [];
+    state.expenses = cached.expenses || [];
     state.publicBoard = cached.publicBoard || [];
     renderPublicBoard();
   }
