@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <title>Bengkel Pro — Sistem Manajemen Servis Motor</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0f172a;
+      --blue: #2563eb;
+      --bg: #f1f5f9;
+    }
+    body {
+      background: var(--bg);
+      color: #1e293b;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding-bottom: 40px;
+    }
+    .hero-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
+      color: #fff;
+      border-radius: 0 0 24px 24px;
+      padding: 20px 0 26px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, .18);
+    }
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: #fff;
+      color: var(--navy);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .card-soft {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: 0 3px 14px rgba(15, 23, 42, .05);
+    }
+    .kpi-card {
+      border: 0;
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px 16px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+      height: 100%;
+    }
+    .kpi-label { font-size: 12px; color: #64748b; }
+    .kpi-val { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .nav-pills .nav-link {
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .nav-pills .nav-link.active {
+      background: var(--navy);
+      color: #fff;
+    }
+    .badge-status {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .qr-box {
+      display: inline-block;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+    }
+    #printArea { display: none; }
+
+    /* FORMAT CETAK THERMAL 58MM */
+    @media print {
+      @page { margin: 0; size: 58mm auto; }
+      body { background: #fff !important; margin: 0; padding: 0; }
+      #appRoot, .modal, .modal-backdrop, .toast-container { display: none !important; }
+      #printArea {
+        display: block !important;
+        width: 54mm;
+        margin: 0 auto;
+        padding: 4mm 2mm;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        color: #000;
+        line-height: 1.35;
+      }
+      .p-center { text-align: center; }
+      .p-bold { font-weight: bold; }
+      .p-line { border-top: 1px dashed #000; margin: 6px 0; }
+      .p-row { display: flex; justify-content: space-between; gap: 4px; }
+      .p-qr img, .p-qr canvas { margin: 6px auto !important; display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="appRoot">
+  <!-- HEADER -->
+  <header class="hero-header mb-3">
+    <div class="container" style="max-width:960px">
+      <div class="d-flex justify-content-between align-items-center gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <div class="brand-icon"><i class="bi bi-wrench-adjustable-circle-fill"></i></div>
+          <div>
+            <h1 class="h5 mb-0 fw-bold">BENGKEL PRO</h1>
+            <small class="opacity-75">Sistem Manajemen Servis, Stok & QR Motor</small>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold d-none">
+            <i class="bi bi-download"></i> Install
+          </button>
+          <button id="btnAuth" class="btn btn-light btn-sm fw-semibold" onclick="openAuthModal()">
+            <i class="bi bi-shield-lock"></i> Login Staf
+          </button>
+        </div>
+      </div>
+
+      <!-- BANNER USER AKTIF -->
+      <div id="userBar" class="mt-3 pt-2 border-top border-white border-opacity-25 d-none justify-content-between align-items-center">
+        <div class="small">
+          <span class="badge bg-warning text-dark text-uppercase me-1" id="badgeRole">ADMIN</span>
+          <strong id="labelUser">Administrator</strong>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData()">
+            <i class="bi bi-arrow-repeat"></i> Sync
+          </button>
+          <button class="btn btn-danger btn-sm py-0 px-2" onclick="logoutUser()">Keluar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:960px">
+
+    <!-- =====================================
+         WORKSPACE ADMIN & MEKANIK (TERPROTEKSI)
+         ===================================== -->
+    <section id="workspaceSection" class="d-none mb-4">
+      <ul class="nav nav-pills flex-nowrap overflow-auto gap-2 pb-2 mb-3" id="proTabs">
+        <li class="nav-item">
+          <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabDashboard">
+            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabServis">
+            <i class="bi bi-tools me-1"></i>Data Servis
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabPelanggan">
+            <i class="bi bi-people me-1"></i>Pelanggan & Riwayat
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabStok">
+            <i class="bi bi-box-seam me-1"></i>Stok Sparepart
+          </button>
+        </li>
+        <li class="nav-item admin-only">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabUsers">
+            <i class="bi bi-person-badge me-1"></i>Akun & Akses
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- TAB 1: DASHBOARD -->
+        <div class="tab-pane fade show active" id="tabDashboard">
+          <div class="row g-2 mb-3" id="kpiContainer"></div>
+
+          <div class="row g-3">
+            <div class="col-md-7">
+              <div class="card card-soft p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-1"></i>Antrean Aktif Bengkel</h6>
+                  <button class="btn btn-primary btn-sm" onclick="openServisModal()">+ Servis Baru</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle mb-0 small">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Kode / Motor</th>
+                        <th>Mekanik</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashActiveList"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="card card-soft p-3 h-100">
+                <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle text-danger me-1"></i>Peringatan Stok Menipis</h6>
+                <div id="lowStockList" class="small"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: DATA SERVIS -->
+        <div class="tab-pane fade" id="tabServis">
+          <div class="card card-soft p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <h6 class="fw-bold mb-0">Manajemen Tiket Servis</h6>
+              <button class="btn btn-primary btn-sm" onclick="openServisModal()">
+                <i class="bi bi-plus-lg"></i> Tambah Servis Masuk
+              </button>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-sm-7">
+                <input id="filterServisQuery" class="form-control form-control-sm" placeholder="Cari kode, nama pelanggan, plat nomor, motor..." oninput="renderServisTable()">
+              </div>
+              <div class="col-sm-5">
+                <select id="filterServisStatus" class="form-select form-select-sm" onchange="renderServisTable()">
+                  <option value="">Semua Status</option>
+                  <option>Menunggu pemeriksaan</option>
+                  <option>Dalam pengerjaan</option>
+                  <option>Menunggu sparepart</option>
+                  <option>Selesai</option>
+                  <option>Sudah diambil</option>
+                  <option>Dibatalkan</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Kode & Tgl</th>
+                    <th>Pelanggan & Motor</th>
+                    <th>Status & Mekanik</th>
+                    <th>Total</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="servisTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: PELANGGAN & RIWAYAT -->
+        <div class="tab-pane fade" id="tabPelanggan">
+          <div class="card card-soft p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <h6 class="fw-bold mb-0">Database Pelanggan & Riwayat Kunjungan</h6>
+                <small class="text-muted">Otomatis terindeks dari riwayat servis berdasarkan nomor HP.</small>
+              </div>
+              <input id="filterPelanggan" class="form-control form-control-sm" style="max-width:260px" placeholder="Cari nama / HP / plat..." oninput="renderPelangganTable()">
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Pelanggan</th>
+                    <th>Kendaraan</th>
+                    <th>Kunjungan</th>
+                    <th>Total Transaksi</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pelangganTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: STOK SPAREPART -->
+        <div class="tab-pane fade" id="tabStok">
+          <div class="card card-soft p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <h6 class="fw-bold mb-0">Database Stok Sparepart</h6>
+                <small class="text-muted">Stok otomatis berkurang saat sparepart dipakai pada tiket servis.</small>
+              </div>
+              <button class="btn btn-primary btn-sm admin-only" onclick="openPartModal()">
+                <i class="bi bi-plus-lg"></i> Tambah Sparepart
+              </button>
+            </div>
+            <input id="filterPart" class="form-control form-control-sm mb-3" placeholder="Cari kode atau nama sparepart..." oninput="renderPartTable()">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Kode & Nama Part</th>
+                    <th>Kategori</th>
+                    <th class="admin-only">Harga Beli</th>
+                    <th>Harga Jual</th>
+                    <th>Stok</th>
+                    <th class="admin-only">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="partTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: AKUN & HAK AKSES (ADMIN ONLY) -->
+        <div class="tab-pane fade admin-only" id="tabUsers">
+          <div class="card card-soft p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h6 class="fw-bold mb-0">Manajemen Login Admin & Mekanik</h6>
+                <small class="text-muted">Atur PIN dan peran akses staf bengkel.</small>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ Tambah Akun</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Username</th>
+                    <th>Nama Lengkap</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================
+         PORTAL PELANGGAN PUBLIK (SELALU AKTIF)
+         ===================================== -->
+    <section class="card card-soft p-3 p-md-4 mb-3">
+      <h5 class="fw-bold mb-1"><i class="bi bi-qr-code-scan text-primary me-2"></i>Cek Status Servis Motor</h5>
+      <p class="text-muted small mb-3">Scan QR pada nota/tiket atau masukkan Kode Servis & 4 digit terakhir nomor HP Anda.</p>
+
+      <div class="row g-2">
+        <div class="col-md-5">
+          <input id="kodeCari" class="form-control" placeholder="Kode Servis (cth: SRV-261116-XXXX)">
+        </div>
+        <div class="col-md-4">
+          <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Terakhir HP">
+        </div>
+        <div class="col-md-3 d-grid">
+          <button class="btn btn-primary fw-semibold" onclick="cariServisPublik()">
+            <i class="bi bi-search me-1"></i> Cek Status
+          </button>
+        </div>
+      </div>
+
+      <div id="hasilPublik" class="mt-3 d-none"></div>
+    </section>
+
+    <!-- PAPAN ANTREAN PUBLIK -->
+    <section class="card card-soft p-3 p-md-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h6 class="fw-bold mb-0"><i class="bi bi-list-check text-primary me-1"></i>Papan Status Pengerjaan Bengkel</h6>
+          <small class="text-muted">Pembaruan antrean servis terkini.</small>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" onclick="loadPublicBoard()">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle small mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Kode</th>
+              <th>Motor / Plat</th>
+              <th>Mekanik</th>
+              <th>Status</th>
+              <th>Estimasi</th>
+            </tr>
+          </thead>
+          <tbody id="publicBoardBody">
+            <tr><td colspan="5" class="text-muted">Memuat papan status...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="text-center text-muted small mt-4">
+      Bengkel Pro v2.0 • Powered By Ari GPM
+    </footer>
+  </main>
+</div>
+
+<!-- AREA CETAK THERMAL 58MM -->
+<div id="printArea"></div>
+
+<!-- =====================================
+     MODALS (LOGIN, SERVIS, QR, PART, USER, RIWAYAT, KONFIRMASI)
+     ===================================== -->
+
+<!-- MODAL LOGIN -->
+<div class="modal fade" id="modalAuth" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header border-0 pb-0">
+        <h6 class="modal-title fw-bold">Login Admin / Mekanik</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label small">Username</label>
+        <input id="loginUser" class="form-control mb-2" placeholder="admin / mekanik">
+        <label class="form-label small">PIN Akses</label>
+        <input id="loginPin" type="password" inputmode="numeric" class="form-control mb-3" placeholder="••••••">
+        <button class="btn btn-primary w-100 fw-semibold" onclick="submitLogin()">MASUK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORM SERVIS -->
+<div class="modal fade" id="modalServis" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <h6 class="modal-title fw-bold" id="titleModalServis">Input Servis Baru</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="srvId">
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Nama Pelanggan *</label>
+            <input id="srvNama" class="form-control form-control-sm" placeholder="Nama pelanggan">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Nomor WhatsApp *</label>
+            <input id="srvTelepon" inputmode="tel" class="form-control form-control-sm" placeholder="08xxxxxxxxxx">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Jenis Motor *</label>
+            <input id="srvMotor" class="form-control form-control-sm" placeholder="Honda Vario 150 / NMAX">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Nomor Polisi</label>
+            <input id="srvPlat" class="form-control form-control-sm text-uppercase" placeholder="H 1234 AB">
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label small fw-semibold">Keluhan Pelanggan</label>
+          <textarea id="srvKeluhan" rows="2" class="form-control form-control-sm"></textarea>
+        </div>
+
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Diagnosa Kerusakan</label>
+            <textarea id="srvKerusakan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Tindakan Perbaikan</label>
+            <textarea id="srvTindakan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+
+        <!-- PILIH SPAREPART DARI STOK ATAU MANUAL -->
+        <div class="bg-light p-2 rounded-3 mb-2">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <span class="small fw-bold"><i class="bi bi-box-seam me-1"></i>Sparepart Digunakan</span>
+            <div class="d-flex gap-1">
+              <select id="selectPartStok" class="form-select form-select-sm" style="max-width:210px">
+                <option value="">-- Pilih dari Stok --</option>
+              </select>
+              <button type="button" class="btn btn-dark btn-sm" onclick="addPartFromStock()">+ Stok</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addPartRow()">+ Manual</button>
+            </div>
+          </div>
+          <div id="srvPartsContainer"></div>
+        </div>
+
+        <div class="row g-2 mb-2">
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Biaya Jasa (Rp)</label>
+            <input id="srvJasa" type="number" min="0" value="0" class="form-control form-control-sm" oninput="calcServisTotal()">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Status Pengerjaan</label>
+            <select id="srvStatus" class="form-select form-select-sm">
+              <option>Menunggu pemeriksaan</option>
+              <option>Dalam pengerjaan</option>
+              <option>Menunggu sparepart</option>
+              <option>Selesai</option>
+              <option>Sudah diambil</option>
+              <option>Dibatalkan</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Estimasi Selesai</label>
+            <input id="srvEstimasi" type="date" class="form-control form-control-sm">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Mekanik Penanggung Jawab</label>
+            <input id="srvMekanik" class="form-control form-control-sm" placeholder="Nama mekanik">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Catatan Tambahan</label>
+            <input id="srvCatatan" class="form-control form-control-sm">
+          </div>
+        </div>
+
+        <div class="alert alert-primary py-2 px-3 mb-0 d-flex justify-content-between align-items-center">
+          <span class="small fw-semibold">Total Estimasi Biaya:</span>
+          <strong class="fs-5 text-primary" id="srvTotalLabel">Rp0</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+        <button type="button" id="btnSaveServis" class="btn btn-primary btn-sm fw-semibold" onclick="saveServis()">
+          <i class="bi bi-save me-1"></i> Simpan Data Servis
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR TIKET MOTOR -->
+<div class="modal fade" id="modalQR" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0 text-center">
+      <div class="modal-header border-0 pb-0">
+        <h6 class="modal-title fw-bold">QR Tiket Motor</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-box mb-2" id="qrCanvasBox"></div>
+        <div class="fw-bold" id="qrKodeText"></div>
+        <div class="small text-muted mb-3" id="qrMotorText"></div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-dark btn-sm" id="btnPrintLabelQR">
+            <i class="bi bi-printer me-1"></i> Cetak Label QR (58mm)
+          </button>
+          <button class="btn btn-outline-primary btn-sm" id="btnPrintNotaFromQR">
+            <i class="bi bi-receipt me-1"></i> Cetak Nota Servis (58mm)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RIWAYAT PELANGGAN -->
+<div class="modal fade" id="modalRiwayat" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <h6 class="modal-title fw-bold" id="titleRiwayat">Riwayat Servis Pelanggan</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="bodyRiwayat"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL STOK SPAREPART -->
+<div class="modal fade" id="modalPart" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <h6 class="modal-title fw-bold" id="titleModalPart">Tambah Sparepart</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="prtId">
+        <div class="row g-2">
+          <div class="col-5">
+            <label class="form-label small">Kode Part</label>
+            <input id="prtKode" class="form-control form-control-sm text-uppercase" placeholder="OLI-01">
+          </div>
+          <div class="col-7">
+            <label class="form-label small">Kategori</label>
+            <input id="prtKategori" class="form-control form-control-sm" placeholder="Oli / Rem / CVT">
+          </div>
+          <div class="col-12">
+            <label class="form-label small">Nama Sparepart *</label>
+            <input id="prtNama" class="form-control form-control-sm" placeholder="Nama barang">
+          </div>
+          <div class="col-6">
+            <label class="form-label small">Harga Beli (Modal)</label>
+            <input id="prtBeli" type="number" min="0" value="0" class="form-control form-control-sm">
+          </div>
+          <div class="col-6">
+            <label class="form-label small">Harga Jual</label>
+            <input id="prtJual" type="number" min="0" value="0" class="form-control form-control-sm">
+          </div>
+          <div class="col-6">
+            <label class="form-label small">Stok Saat Ini</label>
+            <input id="prtStok" type="number" min="0" value="0" class="form-control form-control-sm">
+          </div>
+          <div class="col-6">
+            <label class="form-label small">Batas Stok Minimum</label>
+            <input id="prtMin" type="number" min="0" value="3" class="form-control form-control-sm">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-primary btn-sm" onclick="savePart()">Simpan Stok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USER / AKUN -->
+<div class="modal fade" id="modalUser" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header">
+        <h6 class="modal-title fw-bold">Akun Staf Bengkel</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="usrId">
+        <label class="form-label small">Username *</label>
+        <input id="usrUsername" class="form-control form-control-sm mb-2">
+        <label class="form-label small">Nama Lengkap *</label>
+        <input id="usrNama" class="form-control form-control-sm mb-2">
+        <label class="form-label small">Hak Akses (Role)</label>
+        <select id="usrRole" class="form-select form-select-sm mb-2">
+          <option value="mekanik">Mekanik</option>
+          <option value="admin">Admin</option>
+        </select>
+        <label class="form-label small">PIN Login *</label>
+        <input id="usrPin" inputmode="numeric" class="form-control form-control-sm mb-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="usrAktif" checked>
+          <label class="form-check-label small" for="usrAktif">Akun Aktif</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-sm w-100" onclick="saveUser()">Simpan Akun</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KONFIRMASI HAPUS -->
+<div class="modal fade" id="modalConfirm" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-body text-center p-4">
+        <i class="bi bi-exclamation-circle text-danger fs-1"></i>
+        <h6 class="fw-bold mt-2">Konfirmasi Hapus</h6>
+        <p class="small text-muted mb-3" id="confirmText"></p>
+        <div class="d-flex gap-2 justify-content-center">
+          <button class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+          <button class="btn btn-danger btn-sm px-3" id="btnConfirmYes">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFIKASI -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast align-items-center text-bg-dark border-0 rounded-3" role="alert">
+    <div class="d-flex">
+      <div class="toast-body small" id="toastMsg"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ========================================
+// KONFIGURASI BACKEND & STATE
+// ========================================
+const GAS_URL = ""; // <-- TEMPEL URL WEB APP GOOGLE APPS SCRIPT DI SINI
+const BENGKEL_INFO = {
+  nama: "BENGKEL MOTOR PRO",
+  alamat: "Jl. Raya Bengkel No. 10 • Telp/WA: 0812-0000-0000"
+};
+
+const CACHE_KEY = "bengkel_pro_cache_v2";
+const AUTH_KEY = "bengkel_pro_auth_v2";
+
+let state = {
+  auth: JSON.parse(localStorage.getItem(AUTH_KEY) || "null"),
+  user: null,
+  servis: [],
+  parts: [],
+  users: [],
+  publicBoard: []
+};
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+})[c]);
+
+const rupiah = n => new Intl.NumberFormat("id-ID", {
+  style: "currency", currency: "IDR", maximumFractionDigits: 0
+}).format(Number(n || 0));
+
+function toast(msg, type = "dark") {
+  const el = $("liveToast");
+  el.className = `toast align-items-center text-bg-${type} border-0 rounded-3`;
+  $("toastMsg").textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(el, { delay: 3200 }).show();
+}
+
+function showModal(id) {
+  bootstrap.Modal.getOrCreateInstance($(id)).show();
+}
+function hideModal(id) {
+  const inst = bootstrap.Modal.getInstance($(id));
+  if (inst) inst.hide();
+}
+
+// ========================================
+// API HELPER
+// ========================================
+async function apiGet(params) {
+  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi di index.html.");
+  const url = new URL(GAS_URL);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString());
+  return await res.json();
+}
+
+async function apiPost(payload) {
+  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi di index.html.");
+  const res = await fetch(GAS_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
+// ========================================
+// AUTENTIKASI & HAK AKSES
+// ========================================
+function openAuthModal() {
+  $("loginUser").value = "";
+  $("loginPin").value = "";
+  showModal("modalAuth");
+}
+
+async function submitLogin() {
+  const username = $("loginUser").value.trim();
+  const pin = $("loginPin").value.trim();
+  if (!username || !pin) return toast("Isi username dan PIN.", "danger");
+
+  try {
+    const r = await apiPost({ action: "login", auth: { username, pin } });
+    if (!r.success) return toast(r.message, "danger");
+
+    state.auth = { username, pin };
+    state.user = r.user;
+    localStorage.setItem(AUTH_KEY, JSON.stringify(state.auth));
+    hideModal("modalAuth");
+    applyRoleUI();
+    await syncAllData();
+    toast("Selamat datang, " + r.user.nama, "success");
+  } catch (e) {
+    toast(e.message, "danger");
+  }
+}
+
+function logoutUser() {
+  state.auth = null;
+  state.user = null;
+  localStorage.removeItem(AUTH_KEY);
+  applyRoleUI();
+  toast("Anda telah keluar dari panel staf.");
+}
+
+function applyRoleUI() {
+  const loggedIn = Boolean(state.user);
+  $("workspaceSection").classList.toggle("d-none", !loggedIn);
+  $("userBar").classList.toggle("d-none", !loggedIn);
+  $("userBar").classList.toggle("d-flex", loggedIn);
+  $("btnAuth").classList.toggle("d-none", loggedIn);
+
+  if (loggedIn) {
+    const isAdmin = state.user.role === "admin";
+    $("badgeRole").textContent = state.user.role.toUpperCase();
+    $("labelUser").textContent = state.user.nama;
+    document.querySelectorAll(".admin-only").forEach(el => {
+      el.classList.toggle("d-none", !isAdmin);
+    });
+    // Mekanik tidak dapat ubah biaya jasa jika edit tiket lama
+    $("srvJasa").readOnly = !isAdmin;
+  }
+}
+
+async function syncAllData() {
+  if (!state.auth) return;
+  try {
+    const r = await apiPost({ action: "sync", auth: state.auth });
+    if (!r.success) {
+      logoutUser();
+      return toast(r.message, "danger");
+    }
+    state.user = r.user;
+    state.servis = r.servis || [];
+    state.parts = r.parts || [];
+    state.users = r.users || [];
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      servis: state.servis, parts: state.parts, publicBoard: state.publicBoard
+    }));
+    applyRoleUI();
+    renderAllWorkspace();
+    loadPublicBoard();
+  } catch (e) {
+    toast("Mode offline: menampilkan data cache lokal.", "warning");
+  }
+}
+
+// ========================================
+// DASHBOARD & RENDER TABEL
+// ========================================
+function statusBadge(status) {
+  const s = String(status || "").toLowerCase();
+  let cls = "bg-primary-subtle text-primary";
+  if (s === "selesai" || s === "sudah diambil") cls = "bg-success-subtle text-success";
+  else if (s.includes("menunggu")) cls = "bg-warning-subtle text-warning-emphasis";
+  else if (s === "dibatalkan") cls = "bg-danger-subtle text-danger";
+  return `<span class="badge-status ${cls}">${esc(status)}</span>`;
+}
+
+function renderAllWorkspace() {
+  renderDashboard();
+  renderServisTable();
+  renderPelangganTable();
+  renderPartTable();
+  if (state.user && state.user.role === "admin") renderUserTable();
+}
+
+function renderDashboard() {
+  const isAdmin = state.user && state.user.role === "admin";
+  const aktif = state.servis.filter(x => !["Selesai", "Sudah diambil", "Dibatalkan"].includes(x.status));
+  const selesai = state.servis.filter(x => ["Selesai", "Sudah diambil"].includes(x.status));
+  const lowParts = state.parts.filter(p => Number(p.stok) <= Number(p.minStok));
+
+  const bulanIni = new Date().toISOString().slice(0, 7);
+  const omzetBulan = selesai
+    .filter(x => String(x.tanggalMasuk).startsWith(bulanIni))
+    .reduce((sum, x) => sum + Number(x.estimasiTotal || 0), 0);
+
+  const kpis = isAdmin
+    ? [
+        { label: "Omzet Bulan Ini", val: rupiah(omzetBulan), color: "text-success" },
+        { label: "Motor Dikerjakan", val: aktif.length + " Unit", color: "text-primary" },
+        { label: "Servis Selesai", val: selesai.length + " Unit", color: "text-dark" },
+        { label: "Stok Menipis", val: lowParts.length + " Item", color: "text-danger" }
+      ]
+    : [
+        { label: "Antrean Bengkel", val: aktif.length + " Unit", color: "text-primary" },
+        { label: "Dalam Pengerjaan", val: aktif.filter(x => x.status === "Dalam pengerjaan").length + " Unit", color: "text-warning" },
+        { label: "Selesai Dikerjakan", val: selesai.length + " Unit", color: "text-success" },
+        { label: "Stok Menipis", val: lowParts.length + " Item", color: "text-danger" }
+      ];
+
+  $("kpiContainer").innerHTML = kpis.map(k => `
+    <div class="col-6 col-md-3">
+      <div class="kpi-card">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-val ${k.color}">${k.val}</div>
+      </div>
+    </div>
+  `).join("");
+
+  $("dashActiveList").innerHTML = aktif.length
+    ? aktif.slice(0, 8).map(s => `
+        <tr>
+          <td><strong>${esc(s.kodeServis)}</strong><br><span class="text-muted">${esc(s.motor)} (${esc(s.plat || "-")})</span></td>
+          <td>${esc(s.mekanik || "-")}</td>
+          <td>${statusBadge(s.status)}</td>
+          <td>
+            <button class="btn btn-outline-primary btn-sm py-0 px-2" onclick="openServisModal('${esc(s.id)}')">Update</button>
+          </td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="4" class="text-muted">Tidak ada antrean aktif.</td></tr>`;
+
+  $("lowStockList").innerHTML = lowParts.length
+    ? lowParts.map(p => `
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <div>
+            <strong>${esc(p.namaPart)}</strong>
+            <div class="text-muted">${esc(p.kodePart)}</div>
+          </div>
+          <span class="badge bg-danger">Sisa ${p.stok}</span>
+        </div>
+      `).join("")
+    : `<p class="text-muted mb-0">Semua stok sparepart dalam batas aman.</p>`;
+}
+
+function renderServisTable() {
+  const q = $("filterServisQuery").value.trim().toLowerCase();
+  const st = $("filterServisStatus").value;
+  const isAdmin = state.user && state.user.role === "admin";
+
+  const filtered = state.servis.filter(s => {
+    const matchQ = !q || [s.kodeServis, s.nama, s.telepon, s.motor, s.plat].some(v => String(v).toLowerCase().includes(q));
+    const matchSt = !st || s.status === st;
+    return matchQ && matchSt;
+  });
+
+  $("servisTableBody").innerHTML = filtered.length
+    ? filtered.map(s => `
+        <tr>
+          <td>
+            <strong>${esc(s.kodeServis)}</strong>
+            <div class="text-muted">${esc(s.tanggalMasuk)}</div>
+          </td>
+          <td>
+            <strong>${esc(s.nama)}</strong> <span class="text-muted">(${esc(s.telepon)})</span>
+            <div>${esc(s.motor)} • <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
+          </td>
+          <td>
+            ${statusBadge(s.status)}
+            <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
+          </td>
+          <td class="fw-bold">${rupiah(s.estimasiTotal)}</td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" title="Edit" onclick="openServisModal('${esc(s.id)}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-outline-dark" title="QR Tiket" onclick="openQRModal('${esc(s.id)}')"><i class="bi bi-qr-code"></i></button>
+              <button class="btn btn-outline-secondary" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i></button>
+              <button class="btn btn-success" title="Notifikasi WA" onclick="kirimWhatsApp('${esc(s.id)}')"><i class="bi bi-whatsapp"></i></button>
+              ${isAdmin ? `<button class="btn btn-outline-danger" title="Hapus" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
+            </div>
+          </td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="5" class="text-center text-muted py-3">Data servis tidak ditemukan.</td></tr>`;
+}
+
+// ========================================
+// FORM SERVIS & SPAREPART DINAMIS
+// ========================================
+function openServisModal(id = "", prefill = null) {
+  // Isi dropdown sparepart dari database stok
+  $("selectPartStok").innerHTML = `<option value="">-- Pilih dari Stok --</option>` +
+    state.parts.map(p => `<option value="${esc(p.id)}">${esc(p.namaPart)} (Stok: ${p.stok} | ${rupiah(p.hargaJual)})</option>`).join("");
+
+  $("srvPartsContainer").innerHTML = "";
+
+  if (id) {
+    const s = state.servis.find(x => x.id === id);
+    if (!s) return;
+    $("titleModalServis").textContent = "Edit Tiket: " + s.kodeServis;
+    $("srvId").value = s.id;
+    $("srvNama").value = s.nama;
+    $("srvTelepon").value = s.telepon;
+    $("srvMotor").value = s.motor;
+    $("srvPlat").value = s.plat;
+    $("srvKeluhan").value = s.keluhan;
+    $("srvKerusakan").value = s.kerusakan;
+    $("srvTindakan").value = s.tindakan;
+    $("srvJasa").value = s.biayaJasa;
+    $("srvStatus").value = s.status;
+    $("srvEstimasi").value = s.estimasiSelesai;
+    $("srvMekanik").value = s.mekanik;
+    $("srvCatatan").value = s.catatan;
+    (s.sparepart || []).forEach(p => addPartRow(p));
+  } else {
+    $("titleModalServis").textContent = "Input Servis Motor Baru";
+    $("srvId").value = "";
+    $("srvNama").value = prefill ? prefill.nama : "";
+    $("srvTelepon").value = prefill ? prefill.telepon : "";
+    $("srvMotor").value = prefill ? prefill.motor : "";
+    $("srvPlat").value = prefill ? prefill.plat : "";
+    $("srvKeluhan").value = "";
+    $("srvKerusakan").value = "";
+    $("srvTindakan").value = "";
+    $("srvJasa").value = 0;
+    $("srvStatus").value = "Menunggu pemeriksaan";
+    $("srvEstimasi").value = "";
+    $("srvMekanik").value = state.user && state.user.role === "mekanik" ? state.user.nama : "";
+    $("srvCatatan").value = "";
+  }
+  calcServisTotal();
+  showModal("modalServis");
+}
+
+function addPartFromStock() {
+  const partId = $("selectPartStok").value;
+  if (!partId) return;
+  const p = state.parts.find(x => x.id === partId);
+  if (!p) return;
+  if (p.stok <= 0) toast("Perhatian: Stok " + p.namaPart + " saat ini 0.", "warning");
+  addPartRow({ partId: p.id, nama: p.namaPart, jumlah: 1, harga: p.hargaJual });
+  $("selectPartStok").value = "";
+}
+
+function addPartRow(item = {}) {
+  const row = document.createElement("div");
+  row.className = "row g-1 align-items-center mb-1 part-item-row";
+  row.dataset.partId = item.partId || "";
+  row.innerHTML = `
+    <div class="col-5">
+      <input class="form-control form-control-sm p-nama" placeholder="Nama sparepart" value="${esc(item.nama || "")}" ${item.partId ? "readonly" : ""}>
+    </div>
+    <div class="col-2">
+      <input type="number" min="1" class="form-control form-control-sm p-qty" value="${item.jumlah || 1}" oninput="calcServisTotal()">
+    </div>
+    <div class="col-4">
+      <input type="number" min="0" class="form-control form-control-sm p-harga" value="${item.harga || 0}" oninput="calcServisTotal()">
+    </div>
+    <div class="col-1 text-end">
+      <button type="button" class="btn btn-outline-danger btn-sm px-1 py-0" onclick="this.closest('.part-item-row').remove();calcServisTotal()">×</button>
+    </div>
+  `;
+  $("srvPartsContainer").appendChild(row);
+  calcServisTotal();
+}
+
+function collectParts() {
+  return [...document.querySelectorAll(".part-item-row")].map(r => ({
+    partId: r.dataset.partId || "",
+    nama: r.querySelector(".p-nama").value.trim(),
+    jumlah: Math.max(1, Number(r.querySelector(".p-qty").value || 1)),
+    harga: Math.max(0, Number(r.querySelector(".p-harga").value || 0))
+  })).filter(x => x.nama);
+}
+
+function calcServisTotal() {
+  const sub = collectParts().reduce((s, p) => s + (p.jumlah * p.harga), 0);
+  const jasa = Number($("srvJasa").value || 0);
+  $("srvTotalLabel").textContent = rupiah(sub + jasa);
+}
+
+async function saveServis() {
+  const btn = $("btnSaveServis");
+  const data = {
+    id: $("srvId").value,
+    nama: $("srvNama").value.trim(),
+    telepon: $("srvTelepon").value.trim(),
+    motor: $("srvMotor").value.trim(),
+    plat: $("srvPlat").value.trim(),
+    keluhan: $("srvKeluhan").value,
+    kerusakan: $("srvKerusakan").value,
+    tindakan: $("srvTindakan").value,
+    sparepart: collectParts(),
+    biayaJasa: Number($("srvJasa").value || 0),
+    status: $("srvStatus").value,
+    estimasiSelesai: $("srvEstimasi").value,
+    mekanik: $("srvMekanik").value.trim(),
+    catatan: $("srvCatatan").value
+  };
+
+  if (!data.nama || !data.telepon || !data.motor) {
+    return toast("Nama, nomor HP, dan jenis motor wajib diisi.", "danger");
+  }
+
+  btn.disabled = true;
+  try {
+    const r = await apiPost({ action: "saveServis", auth: state.auth, data });
+    if (!r.success) return toast(r.message, "danger");
+
+    hideModal("modalServis");
+    toast("Tersimpan! Kode Servis: " + r.kodeServis, "success");
+    await syncAllData();
+  } catch (e) {
+    toast(e.message, "danger");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ========================================
+// PELANGGAN & RIWAYAT SERVIS
+// ========================================
+function buildCustomerIndex() {
+  const map = new Map();
+  state.servis.forEach(s => {
+    const key = String(s.telepon || "").replace(/\D/g, "") || s.nama.toLowerCase();
+    if (!map.has(key)) {
+      map.set(key, {
+        nama: s.nama,
+        telepon: s.telepon,
+        motors: new Set(),
+        plats: new Set(),
+        history: [],
+        totalSpend: 0
+      });
+    }
+    const c = map.get(key);
+    c.nama = s.nama;
+    if (s.motor) c.motors.add(s.motor);
+    if (s.plat) c.plats.add(s.plat);
+    c.history.push(s);
+    if (s.status !== "Dibatalkan") c.totalSpend += Number(s.estimasiTotal || 0);
+  });
+  return [...map.values()];
+}
+
+function renderPelangganTable() {
+  const q = $("filterPelanggan").value.trim().toLowerCase();
+  const list = buildCustomerIndex().filter(c =>
+    !q ||
+    c.nama.toLowerCase().includes(q) ||
+    c.telepon.includes(q) ||
+    [...c.plats].join(" ").toLowerCase().includes(q)
+  );
+
+  $("pelangganTableBody").innerHTML = list.length
+    ? list.map((c, idx) => `
+        <tr>
+          <td><strong>${esc(c.nama)}</strong><div class="text-muted">${esc(c.telepon)}</div></td>
+          <td>${esc([...c.motors].join(", "))}<div class="text-muted">${esc([...c.plats].join(", "))}</div></td>
+          <td><span class="badge bg-primary-subtle text-primary">${c.history.length}x Servis</span></td>
+          <td class="fw-semibold">${rupiah(c.totalSpend)}</td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" onclick="openRiwayatModal('${esc(c.telepon)}')">Riwayat</button>
+              <button class="btn btn-primary" onclick="servisLagi('${esc(c.telepon)}')">+ Servis</button>
+            </div>
+          </td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data pelanggan.</td></tr>`;
+}
+
+function openRiwayatModal(telepon) {
+  const c = buildCustomerIndex().find(x => x.telepon === telepon);
+  if (!c) return;
+  $("titleRiwayat").textContent = `Riwayat Servis: ${c.nama} (${c.telepon})`;
+  $("bodyRiwayat").innerHTML = c.history.map(h => `
+    <div class="border rounded-3 p-3 mb-2">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <strong>${esc(h.kodeServis)} • ${esc(h.tanggalMasuk)}</strong>
+        ${statusBadge(h.status)}
+      </div>
+      <div class="small text-muted mb-1">${esc(h.motor)} (${esc(h.plat || "-")}) • Mekanik: ${esc(h.mekanik || "-")}</div>
+      <div class="small"><strong>Keluhan:</strong> ${esc(h.keluhan || "-")}</div>
+      <div class="small"><strong>Tindakan:</strong> ${esc(h.tindakan || "-")}</div>
+      <div class="small mt-1 fw-bold text-primary">Total Biaya: ${rupiah(h.estimasiTotal)}</div>
+    </div>
+  `).join("");
+  showModal("modalRiwayat");
+}
+
+function servisLagi(telepon) {
+  const c = buildCustomerIndex().find(x => x.telepon === telepon);
+  if (!c) return;
+  const last = c.history[0];
+  openServisModal("", { nama: c.nama, telepon: c.telepon, motor: last.motor, plat: last.plat });
+}
+
+// ========================================
+// DATABASE STOK SPAREPART & USER
+// ========================================
+function renderPartTable() {
+  const q = $("filterPart").value.trim().toLowerCase();
+  const isAdmin = state.user && state.user.role === "admin";
+  const list = state.parts.filter(p =>
+    !q || p.namaPart.toLowerCase().includes(q) || p.kodePart.toLowerCase().includes(q)
+  );
+
+  $("partTableBody").innerHTML = list.length
+    ? list.map(p => `
+        <tr>
+          <td><strong>${esc(p.namaPart)}</strong><div class="text-muted">${esc(p.kodePart)}</div></td>
+          <td>${esc(p.kategori)}</td>
+          ${isAdmin ? `<td>${rupiah(p.hargaBeli)}</td>` : ""}
+          <td class="fw-semibold">${rupiah(p.hargaJual)}</td>
+          <td>
+            <span class="badge ${p.stok <= p.minStok ? "bg-danger" : "bg-success"}">${p.stok} pcs</span>
+          </td>
+          ${isAdmin ? `
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" onclick="openPartModal('${esc(p.id)}')"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-outline-danger" onclick="confirmDelete('part','${esc(p.id)}','${esc(p.namaPart)}')"><i class="bi bi-trash"></i></button>
+              </div>
+            </td>
+          ` : ""}
+        </tr>
+      `).join("")
+    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada data sparepart.</td></tr>`;
+}
+
+function openPartModal(id = "") {
+  const p = id ? state.parts.find(x => x.id === id) : null;
+  $("titleModalPart").textContent = p ? "Edit Sparepart" : "Tambah Sparepart";
+  $("prtId").value = p ? p.id : "";
+  $("prtKode").value = p ? p.kodePart : "";
+  $("prtKategori").value = p ? p.kategori : "Umum";
+  $("prtNama").value = p ? p.namaPart : "";
+  $("prtBeli").value = p ? p.hargaBeli : 0;
+  $("prtJual").value = p ? p.hargaJual : 0;
+  $("prtStok").value = p ? p.stok : 0;
+  $("prtMin").value = p ? p.minStok : 3;
+  showModal("modalPart");
+}
+
+async function savePart() {
+  const data = {
+    id: $("prtId").value,
+    kodePart: $("prtKode").value.trim(),
+    kategori: $("prtKategori").value.trim(),
+    namaPart: $("prtNama").value.trim(),
+    hargaBeli: Number($("prtBeli").value || 0),
+    hargaJual: Number($("prtJual").value || 0),
+    stok: Number($("prtStok").value || 0),
+    minStok: Number($("prtMin").value || 2)
+  };
+  if (!data.namaPart) return toast("Nama sparepart wajib diisi.", "danger");
+
+  const r = await apiPost({ action: "savePart", auth: state.auth, data });
+  if (!r.success) return toast(r.message, "danger");
+  hideModal("modalPart");
+  toast("Stok sparepart diperbarui.", "success");
+  await syncAllData();
+}
+
+function renderUserTable() {
+  $("userTableBody").innerHTML = state.users.map(u => `
+    <tr>
+      <td><strong>${esc(u.username)}</strong></td>
+      <td>${esc(u.nama)}</td>
+      <td><span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span></td>
+      <td>${u.aktif ? '<span class="text-success">Aktif</span>' : '<span class="text-muted">Nonaktif</span>'}</td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-primary" onclick="openUserModal('${esc(u.id)}')">Edit</button>
+          <button class="btn btn-outline-danger" onclick="confirmDelete('user','${esc(u.id)}','${esc(u.username)}')">Hapus</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function openUserModal(id = "") {
+  const u = id ? state.users.find(x => x.id === id) : null;
+  $("usrId").value = u ? u.id : "";
+  $("usrUsername").value = u ? u.username : "";
+  $("usrNama").value = u ? u.nama : "";
+  $("usrRole").value = u ? u.role : "mekanik";
+  $("usrPin").value = u ? u.pin : "";
+  $("usrAktif").checked = u ? u.aktif : true;
+  showModal("modalUser");
+}
+
+async function saveUser() {
+  const data = {
+    id: $("usrId").value,
+    username: $("usrUsername").value.trim(),
+    nama: $("usrNama").value.trim(),
+    role: $("usrRole").value,
+    pin: $("usrPin").value.trim(),
+    aktif: $("usrAktif").checked
+  };
+  const r = await apiPost({ action: "saveUser", auth: state.auth, data });
+  if (!r.success) return toast(r.message, "danger");
+  hideModal("modalUser");
+  toast("Akun disimpan.", "success");
+  await syncAllData();
+}
+
+function confirmDelete(type, id, label) {
+  $("confirmText").textContent = `Hapus permanen "${label}"?`;
+  $("btnConfirmYes").onclick = async () => {
+    const actionMap = { servis: "deleteServis", part: "deletePart", user: "deleteUser" };
+    const r = await apiPost({ action: actionMap[type], auth: state.auth, id });
+    hideModal("modalConfirm");
+    if (!r.success) return toast(r.message, "danger");
+    toast(r.message, "success");
+    await syncAllData();
+  };
+  showModal("modalConfirm");
+}
+
+// ========================================
+// QR CODE, CETAK NOTA 58MM & WHATSAPP
+// ========================================
+function getTrackingUrl(kodeServis) {
+  const base = window.location.origin + window.location.pathname;
+  return `${base}?kode=${encodeURIComponent(kodeServis)}`;
+}
+
+function openQRModal(id) {
+  const s = state.servis.find(x => x.id === id);
+  if (!s) return;
+  $("qrCanvasBox").innerHTML = "";
+  new QRCode($("qrCanvasBox"), {
+    text: getTrackingUrl(s.kodeServis),
+    width: 150,
+    height: 150
+  });
+  $("qrKodeText").textContent = s.kodeServis;
+  $("qrMotorText").textContent = `${s.motor} (${s.plat || "-"}) • ${s.nama}`;
+  $("btnPrintLabelQR").onclick = () => printLabelQR58(s.id);
+  $("btnPrintNotaFromQR").onclick = () => printNota58(s.id);
+  showModal("modalQR");
+}
+
+function triggerThermalPrint(htmlBuilder, qrText) {
+  const area = $("printArea");
+  area.innerHTML = htmlBuilder;
+  const qrTarget = area.querySelector(".p-qr");
+  if (qrTarget && qrText) {
+    new QRCode(qrTarget, { text: qrText, width: 110, height: 110 });
+  }
+  setTimeout(() => window.print(), 250);
+}
+
+function printLabelQR58(id) {
+  const s = state.servis.find(x => x.id === id);
+  if (!s) return;
+  const html = `
+    <div class="p-center p-bold">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center">TIKET KENDARAAN</div>
+    <div class="p-line"></div>
+    <div class="p-qr"></div>
+    <div class="p-center p-bold" style="font-size:13px">${esc(s.kodeServis)}</div>
+    <div class="p-line"></div>
+    <div>Motor: <b>${esc(s.motor)}</b></div>
+    <div>Plat : <b>${esc(s.plat || "-")}</b></div>
+    <div>Pemilik: ${esc(s.nama)}</div>
+    <div>Masuk: ${esc(s.tanggalMasuk)}</div>
+    <div>Keluhan: ${esc(s.keluhan || "-")}</div>
+  `;
+  triggerThermalPrint(html, getTrackingUrl(s.kodeServis));
+}
+
+function printNota58(id) {
+  const s = state.servis.find(x => x.id === id);
+  if (!s) return;
+  const partsHtml = (s.sparepart || []).map(p => `
+    <div>${esc(p.nama)}</div>
+    <div class="p-row"><span>${p.jumlah} x ${rupiah(p.harga)}</span><span>${rupiah(p.jumlah * p.harga)}</span></div>
+  `).join("");
+
+  const html = `
+    <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center" style="font-size:10px">${esc(BENGKEL_INFO.alamat)}</div>
+    <div class="p-line"></div>
+    <div class="p-row"><span>No:</span><span class="p-bold">${esc(s.kodeServis)}</span></div>
+    <div class="p-row"><span>Tgl:</span><span>${esc(s.tanggalMasuk)}</span></div>
+    <div class="p-row"><span>Plg:</span><span>${esc(s.nama)}</span></div>
+    <div class="p-row"><span>Unit:</span><span>${esc(s.motor)} (${esc(s.plat || "-")})</span></div>
+    <div class="p-row"><span>Mek:</span><span>${esc(s.mekanik || "-")}</span></div>
+    <div class="p-line"></div>
+    <div class="p-bold">Diagnosa & Tindakan:</div>
+    <div>${esc(s.kerusakan || "-")} / ${esc(s.tindakan || "-")}</div>
+    <div class="p-line"></div>
+    <div class="p-bold">Rincian Biaya:</div>
+    ${partsHtml || "<div>- Tanpa penggantian part</div>"}
+    <div class="p-row"><span>Biaya Jasa</span><span>${rupiah(s.biayaJasa)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-row p-bold" style="font-size:13px"><span>TOTAL</span><span>${rupiah(s.estimasiTotal)}</span></div>
+    <div class="p-row"><span>Status:</span><span>${esc(s.status)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-center" style="font-size:10px">Scan QR untuk cek status servis:</div>
+    <div class="p-qr"></div>
+    <div class="p-center" style="font-size:10px">Terima kasih atas kepercayaan Anda</div>
+  `;
+  triggerThermalPrint(html, getTrackingUrl(s.kodeServis));
+}
+
+function kirimWhatsApp(id) {
+  const s = state.servis.find(x => x.id === id);
+  if (!s) return;
+  let hp = String(s.telepon || "").replace(/\D/g, "");
+  if (hp.startsWith("0")) hp = "62" + hp.slice(1);
+
+  const isDone = ["Selesai", "Sudah diambil"].includes(s.status);
+  const header = isDone
+    ? `Halo Kak *${s.nama}*, motor *${s.motor}* (${s.plat || "-"}) Anda telah *SELESAI* diservis dan siap diambil.`
+    : `Halo Kak *${s.nama}*, berikut update status servis motor *${s.motor}* (${s.plat || "-"}):`;
+
+  const msg = [
+    header,
+    ``,
+    `Kode Servis: *${s.kodeServis}*`,
+    `Status: *${s.status}*`,
+    s.tindakan ? `Tindakan: ${s.tindakan}` : "",
+    `Total Biaya: *${rupiah(s.estimasiTotal)}*`,
+    ``,
+    `Cek detail nota & riwayat:`,
+    getTrackingUrl(s.kodeServis),
+    ``,
+    `Terima kasih - *${BENGKEL_INFO.nama}*`
+  ].filter(v => v !== null && v !== undefined).join("\n");
+
+  window.open(`https://wa.me/${hp}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+// ========================================
+// PORTAL PELANGGAN PUBLIK
+// ========================================
+async function loadPublicBoard() {
+  try {
+    const r = await apiGet({ action: "board" });
+    if (!r.success) throw new Error(r.message);
+    state.publicBoard = r.data || [];
+    renderPublicBoard();
+  } catch (e) {
+    if (state.publicBoard.length) renderPublicBoard();
+    else $("publicBoardBody").innerHTML = `<tr><td colspan="5" class="text-muted">${esc(e.message)}</td></tr>`;
+  }
+}
+
+function renderPublicBoard() {
+  $("publicBoardBody").innerHTML = state.publicBoard.length
+    ? state.publicBoard.map(x => `
+        <tr>
+          <td class="fw-bold">${esc(x.kodeServis)}</td>
+          <td>${esc(x.motor)} <span class="text-muted">(${esc(x.platMasked || "-")})</span></td>
+          <td>${esc(x.mekanik || "-")}</td>
+          <td>${statusBadge(x.status)}</td>
+          <td>${esc(x.estimasiSelesai || "-")}</td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="5" class="text-muted">Belum ada antrean servis.</td></tr>`;
+}
+
+async function cariServisPublik() {
+  const kode = $("kodeCari").value.trim().toUpperCase();
+  const phone = $("hpCari").value.trim();
+  if (!kode || !/^\d{4}$/.test(phone)) {
+    return toast("Masukkan Kode Servis dan 4 digit terakhir nomor HP.", "warning");
+  }
+
+  const box = $("hasilPublik");
+  box.classList.remove("d-none");
+  box.innerHTML = `<div class="text-muted small">Mencari laporan servis...</div>`;
+
+  try {
+    const r = await apiGet({ action: "lookup", kode, phone });
+    if (!r.success) {
+      box.innerHTML = `<div class="alert alert-warning small mb-0">${esc(r.message)}</div>`;
+      return;
+    }
+    const d = r.data;
+    const parts = (d.sparepart || []).map(p => `
+      <tr>
+        <td>${esc(p.nama)}</td>
+        <td>${p.jumlah}</td>
+        <td class="text-end">${rupiah(p.jumlah * p.harga)}</td>
+      </tr>
+    `).join("");
+
+    box.innerHTML = `
+      <div class="border rounded-4 p-3 bg-light">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <div>
+            <span class="text-muted small">Kode Servis</span>
+            <h5 class="fw-bold mb-0">${esc(d.kodeServis)}</h5>
+          </div>
+          ${statusBadge(d.status)}
+        </div>
+        <div class="row g-2 small mb-2">
+          <div class="col-6"><strong>Pelanggan:</strong> ${esc(d.nama)}</div>
+          <div class="col-6"><strong>Motor:</strong> ${esc(d.motor)} (${esc(d.plat || "-")})</div>
+          <div class="col-6"><strong>Masuk:</strong> ${esc(d.tanggalMasuk)}</div>
+          <div class="col-6"><strong>Mekanik:</strong> ${esc(d.mekanik || "-")}</div>
+          <div class="col-12"><strong>Keluhan:</strong> ${esc(d.keluhan || "-")}</div>
+          <div class="col-12"><strong>Diagnosa & Tindakan:</strong> ${esc(d.kerusakan || "-")} / ${esc(d.tindakan || "-")}</div>
+        </div>
+        <table class="table table-sm bg-white rounded small mb-2">
+          <thead><tr><th>Sparepart</th><th>Qty</th><th class="text-end">Subtotal</th></tr></thead>
+          <tbody>
+            ${parts || `<tr><td colspan="3" class="text-muted">Tidak ada penggantian sparepart</td></tr>`}
+            <tr><td colspan="2">Biaya Jasa</td><td class="text-end">${rupiah(d.biayaJasa)}</td></tr>
+            <tr class="table-primary fw-bold"><td colspan="2">TOTAL ESTIMASI</td><td class="text-end">${rupiah(d.estimasiTotal)}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (e) {
+    box.innerHTML = `<div class="alert alert-danger small mb-0">${esc(e.message)}</div>`;
+  }
+}
+
+// ========================================
+// PWA INSTALL PROMPT & BOOTSTRAP
+// ========================================
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  $("btnInstall").classList.remove("d-none");
+});
+
+$("btnInstall").onclick = async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  $("btnInstall").classList.add("d-none");
+};
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // Baca parameter ?kode= dari hasil scan QR Code
+  const urlKode = new URLSearchParams(window.location.search).get("kode");
+  if (urlKode) {
+    $("kodeCari").value = urlKode.toUpperCase();
+    $("hpCari").focus();
+  }
+
+  // Muat cache lokal agar tampil instan
+  const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+  if (cached) {
+    state.servis = cached.servis || [];
+    state.parts = cached.parts || [];
+    state.publicBoard = cached.publicBoard || [];
+    renderPublicBoard();
+  }
+
+  loadPublicBoard();
+
+  if (state.auth) {
+    await syncAllData();
+  }
+});
+</script>
+</body>
+</html>
