@@ -55,8 +55,6 @@
       font-size: 24px;
       font-weight: 800;
     }
-
-    /* INSTALL BANNER PROMINENT */
     .install-banner {
       background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
       border: 1.5px solid #bfdbfe;
@@ -74,7 +72,6 @@
       border: 1px solid #dbeafe;
       flex-shrink: 0;
     }
-
     .card-soft {
       border: 0;
       border-radius: 16px;
@@ -125,8 +122,6 @@
       border-radius: 14px;
       object-fit: cover;
     }
-
-    /* CANVAS TANDA TANGAN DIGITAL */
     .sig-pad-wrap {
       background: #ffffff;
       border: 1.5px dashed #94a3b8;
@@ -153,7 +148,6 @@
 
     #printArea { display: none; }
 
-    /* FORMAT CETAK THERMAL 58MM */
     @media print {
       @page { margin: 0; size: 58mm auto; }
       body { background: #fff !important; margin: 0; padding: 0; }
@@ -252,7 +246,7 @@
 
   <main class="container" style="max-width:960px">
 
-    <!-- INSTALL BANNER PWA (DENGAN LOGO APLIKASI & PINTASAN) -->
+    <!-- INSTALL BANNER PWA -->
     <section id="installBannerBox" class="install-banner mb-3 d-none">
       <div class="d-flex align-items-center justify-content-between gap-2">
         <div class="d-flex align-items-center gap-2">
@@ -512,7 +506,7 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
               <div>
                 <h6 class="fw-bold mb-0 small"><i class="bi bi-calculator text-primary me-1"></i>Kalkulator & Rekap Komisi Mekanik Otomatis</h6>
-                <small class="text-muted">Dihitung otomatis dari persentase <strong>Biaya Jasa</strong> tiap unit yang dikerjakan.</small>
+                <small class="text-muted">Cetak slip komisi 58mm, kirim rincian ke WhatsApp mekanik, atau catat ke pengeluaran.</small>
               </div>
               <div class="d-flex align-items-center gap-2">
                 <label for="komisiDefaultRate" class="small text-muted mb-0 text-nowrap">Tarif Default (%):</label>
@@ -529,7 +523,7 @@
                     <th>Mekanik</th>
                     <th class="text-center">Unit</th>
                     <th class="text-end">Total Omzet Jasa</th>
-                    <th class="text-center" style="width:95px">Komisi (%)</th>
+                    <th class="text-center" style="width:90px">Komisi (%)</th>
                     <th class="text-end">Nominal Komisi</th>
                     <th class="text-end">Aksi</th>
                   </tr>
@@ -539,7 +533,7 @@
               </table>
             </div>
             <div class="text-muted mt-2" style="font-size:11px">
-              <i class="bi bi-info-circle me-1"></i>Tip: Ubah angka <strong>Komisi (%)</strong> di tabel untuk simulasi, atau klik <strong>Catat Biaya</strong> untuk memasukkan komisi mekanik ke Pengeluaran Operasional.
+              <i class="bi bi-info-circle me-1"></i>Simpan nomor HP mekanik di tab <strong>Akun & Akses</strong> agar tombol WhatsApp langsung menuju kontak mekanik.
             </div>
           </div>
 
@@ -603,7 +597,7 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h6 class="fw-bold mb-0">Manajemen Login Admin & Mekanik</h6>
-                <small class="text-muted">Atur PIN, peran akses, dan persentase komisi jasa mekanik.</small>
+                <small class="text-muted">Atur PIN, peran akses, nomor WhatsApp, dan persentase komisi jasa mekanik.</small>
               </div>
               <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ Tambah Akun</button>
             </div>
@@ -612,7 +606,7 @@
                 <thead class="table-light">
                   <tr>
                     <th>Username</th>
-                    <th>Nama Lengkap</th>
+                    <th>Nama & WhatsApp</th>
                     <th>Role</th>
                     <th>Komisi Jasa</th>
                     <th>Status</th>
@@ -649,7 +643,8 @@
           </div>
         </div>
         <div class="col-md-4">
-          <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Terakhir HP">
+          <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Terakhir HP"
+                 onkeydown="if(event.key==='Enter')cariServisPublik()">
         </div>
         <div class="col-md-3 d-grid">
           <button class="btn btn-primary fw-semibold" onclick="cariServisPublik()">
@@ -691,7 +686,7 @@
     </section>
 
     <footer class="text-center text-muted small mt-4">
-      Bengkel Pro v2.5 • Powered By Ari GPM
+      Bengkel Pro v2.6 • Powered By Ari GPM
     </footer>
   </main>
 </div>
@@ -715,8 +710,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" id="bodyDetailKomisi"></div>
-      <div class="modal-footer">
+      <div class="modal-footer flex-wrap gap-2">
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-dark btn-sm fw-semibold" id="btnPrintSlipFromDetail">
+          <i class="bi bi-printer me-1"></i> Cetak Slip 58mm
+        </button>
+        <button type="button" class="btn btn-success btn-sm fw-semibold" id="btnWaFromDetail">
+          <i class="bi bi-whatsapp me-1"></i> Kirim Rekap WA
+        </button>
         <button type="button" class="btn btn-danger btn-sm fw-semibold" id="btnPayFromDetail">
           <i class="bi bi-receipt me-1"></i> Catat ke Pengeluaran
         </button>
@@ -820,7 +821,8 @@
         <label class="form-label small">Username</label>
         <input id="loginUser" class="form-control mb-2" placeholder="admin / mekanik">
         <label class="form-label small">PIN Akses</label>
-        <input id="loginPin" type="password" inputmode="numeric" class="form-control mb-3" placeholder="••••••">
+        <input id="loginPin" type="password" inputmode="numeric" class="form-control mb-3" placeholder="••••••"
+               onkeydown="if(event.key==='Enter')submitLogin()">
         <button class="btn btn-primary w-100 fw-semibold" onclick="submitLogin()">MASUK</button>
       </div>
     </div>
@@ -1068,6 +1070,8 @@
         <input id="usrUsername" class="form-control form-control-sm mb-2">
         <label class="form-label small">Nama Lengkap *</label>
         <input id="usrNama" class="form-control form-control-sm mb-2">
+        <label class="form-label small">Nomor WhatsApp Staf</label>
+        <input id="usrWa" inputmode="tel" class="form-control form-control-sm mb-2" placeholder="08xxxxxxxxxx">
         <div class="row g-2 mb-2">
           <div class="col-6">
             <label class="form-label small">Hak Akses</label>
@@ -1129,7 +1133,7 @@
 // ========================================
 // KONFIGURASI BACKEND & STATE
 // ========================================
-const GAS_URL = ""; // <-- TEMPEL URL WEB APP GOOGLE APPS SCRIPT DI SINI
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxBAUMUtaUeaQzLM1XNUpJaZM5A5ZYSDbFfnN66bVGBT5nbfNSmn1LxFbhZ6Kl2386K/exec";
 const BENGKEL_INFO = {
   nama: "BENGKEL MOTOR PRO",
   alamat: "Jl. Raya Bengkel No. 10 • Telp/WA: 0812-0000-0000"
@@ -1160,6 +1164,13 @@ const rupiah = n => new Intl.NumberFormat("id-ID", {
 }).format(Number(n || 0));
 
 const todayWIB = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+
+function formatWaNumber(raw) {
+  let hp = String(raw || "").replace(/\D/g, "");
+  if (!hp) return "";
+  if (hp.startsWith("0")) hp = "62" + hp.slice(1);
+  return hp;
+}
 
 function toast(msg, type = "dark") {
   const el = $("liveToast");
@@ -1879,6 +1890,7 @@ function getMechanicCommissionSummary(rows) {
         key,
         nama: matchedUser ? matchedUser.nama : displayName,
         role: matchedUser ? matchedUser.role : "",
+        nomorWa: matchedUser ? String(matchedUser.nomorWa || "") : "",
         rate,
         rateSource,
         unitCount: 0,
@@ -1925,7 +1937,7 @@ function renderKomisiMekanik(cachedRows = null) {
             <td>
               <strong>${esc(m.nama)}</strong>
               ${m.role ? `<span class="badge bg-info-subtle text-info-emphasis ms-1">${esc(m.role)}</span>` : ""}
-              <div class="text-muted" style="font-size:11px">Tarif: ${esc(m.rateSource)}</div>
+              <div class="text-muted" style="font-size:11px">Tarif: ${esc(m.rateSource)} ${m.nomorWa ? `• WA: ${esc(m.nomorWa)}` : ""}</div>
             </td>
             <td class="text-center"><span class="badge bg-primary-subtle text-primary">${m.unitCount} unit</span></td>
             <td class="text-end">${rupiah(m.totalJasa)}</td>
@@ -1937,12 +1949,21 @@ function renderKomisiMekanik(cachedRows = null) {
             <td class="text-end fw-bold text-primary">${rupiah(m.komisiNominal)}</td>
             <td class="text-end text-nowrap">
               <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-outline-primary py-0 px-2" onclick="openDetailKomisiModal('${esc(m.key)}')">
+                <button type="button" class="btn btn-outline-primary py-0 px-2" title="Rincian Unit"
+                        onclick="openDetailKomisiModal('${esc(m.key)}')">
                   Detail
+                </button>
+                <button type="button" class="btn btn-outline-dark py-0 px-2" title="Cetak Slip Komisi 58mm"
+                        onclick="printSlipKomisi58('${esc(m.key)}')">
+                  <i class="bi bi-printer"></i>
+                </button>
+                <button type="button" class="btn btn-success py-0 px-2" title="Kirim Rekap via WhatsApp"
+                        onclick="kirimWhatsAppKomisi('${esc(m.key)}')">
+                  <i class="bi bi-whatsapp"></i>
                 </button>
                 <button type="button" class="btn btn-outline-danger py-0 px-2" title="Catat ke Pengeluaran"
                         onclick="catatKomisiKePengeluaran('${esc(m.key)}')">
-                  <i class="bi bi-cash"></i> Catat
+                  <i class="bi bi-cash"></i>
                 </button>
               </div>
             </td>
@@ -1965,13 +1986,17 @@ function renderKomisiMekanik(cachedRows = null) {
     : "";
 }
 
+function getFinPeriodLabel() {
+  return $("finAllMonths").checked ? "Semua Periode" : ($("finMonth").value || todayWIB().slice(0, 7));
+}
+
 function openDetailKomisiModal(key) {
   const rows = getFilteredFinancialRows();
   const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
   if (!m) return;
 
   $("titleDetailKomisi").textContent = `Rincian Jasa & Komisi: ${m.nama}`;
-  $("subDetailKomisi").textContent = `${m.unitCount} Unit • Tarif Komisi ${m.rate}% • Total Komisi: ${rupiah(m.komisiNominal)}`;
+  $("subDetailKomisi").textContent = `Periode ${getFinPeriodLabel()} • ${m.unitCount} Unit • Tarif ${m.rate}% • Komisi: ${rupiah(m.komisiNominal)}`;
 
   $("bodyDetailKomisi").innerHTML = `
     <div class="table-responsive">
@@ -2010,12 +2035,107 @@ function openDetailKomisiModal(key) {
     </div>
   `;
 
+  $("btnPrintSlipFromDetail").onclick = () => printSlipKomisi58(key);
+  $("btnWaFromDetail").onclick = () => kirimWhatsAppKomisi(key);
   $("btnPayFromDetail").onclick = () => {
     hideModal("modalDetailKomisi");
     catatKomisiKePengeluaran(key);
   };
 
   showModal("modalDetailKomisi");
+}
+
+function printSlipKomisi58(key) {
+  const rows = getFilteredFinancialRows();
+  const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
+  if (!m) return;
+
+  const periode = getFinPeriodLabel();
+  const basisText = $("finBasis").value === "done" ? "Realisasi Selesai" : "Semua Tiket Aktif";
+
+  const itemsHtml = m.tickets.map(t => {
+    const kom = Math.round(Number(t.omzetJasa || 0) * (m.rate / 100));
+    return `
+      <div>${esc(t.tanggalMasuk)} • ${esc(t.kodeServis)}</div>
+      <div class="p-row">
+        <span>${esc(t.motor)} (${esc(t.plat || "-")})</span>
+        <span>${rupiah(kom)}</span>
+      </div>
+    `;
+  }).join("");
+
+  const html = `
+    <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center p-bold">SLIP KOMISI MEKANIK</div>
+    <div class="p-line"></div>
+    <div class="p-row"><span>Mekanik:</span><span class="p-bold">${esc(m.nama)}</span></div>
+    <div class="p-row"><span>Periode:</span><span>${esc(periode)}</span></div>
+    <div class="p-row"><span>Basis:</span><span>${esc(basisText)}</span></div>
+    <div class="p-row"><span>Cetak:</span><span>${esc(todayWIB())}</span></div>
+    <div class="p-line"></div>
+    <div class="p-bold">Rincian Unit & Komisi (${m.rate}%):</div>
+    ${itemsHtml || "<div>- Tidak ada transaksi</div>"}
+    <div class="p-line"></div>
+    <div class="p-row"><span>Jumlah Unit:</span><span>${m.unitCount} unit</span></div>
+    <div class="p-row"><span>Total Jasa:</span><span>${rupiah(m.totalJasa)}</span></div>
+    <div class="p-row"><span>Tarif Komisi:</span><span>${m.rate}%</span></div>
+    <div class="p-line"></div>
+    <div class="p-row p-bold" style="font-size:13px"><span>KOMISI BERSIH</span><span>${rupiah(m.komisiNominal)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-sig-grid" style="margin-top:8px">
+      <div>
+        <div style="font-size:9px">Admin Bengkel</div>
+        <div class="p-sig-box"></div>
+        <div class="p-sig-name">${esc(state.user?.nama || "Admin")}</div>
+      </div>
+      <div>
+        <div style="font-size:9px">Penerima</div>
+        <div class="p-sig-box"></div>
+        <div class="p-sig-name">${esc(m.nama)}</div>
+      </div>
+    </div>
+  `;
+
+  triggerThermalPrint(html, "");
+}
+
+function kirimWhatsAppKomisi(key) {
+  const rows = getFilteredFinancialRows();
+  const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
+  if (!m) return;
+
+  const periode = getFinPeriodLabel();
+  const listUnit = m.tickets.slice(0, 25).map((t, idx) => {
+    const kom = Math.round(Number(t.omzetJasa || 0) * (m.rate / 100));
+    return `${idx + 1}. ${t.tanggalMasuk} | ${t.motor} (${t.plat || "-"}) | Jasa ${rupiah(t.omzetJasa)} -> Komisi *${rupiah(kom)}*`;
+  }).join("\n");
+
+  const extraNote = m.tickets.length > 25 ? `\n...dan ${m.tickets.length - 25} unit lainnya.` : "";
+
+  const msg = [
+    `*SLIP REKAP KOMISI MEKANIK*`,
+    `*${BENGKEL_INFO.nama}*`,
+    ``,
+    `Nama Mekanik: *${m.nama}*`,
+    `Periode: *${periode}*`,
+    `Total Unit Dikerjakan: *${m.unitCount} unit*`,
+    `Total Omzet Jasa: *${rupiah(m.totalJasa)}*`,
+    `Persentase Komisi: *${m.rate}%*`,
+    `Total Komisi Diterima: *${rupiah(m.komisiNominal)}*`,
+    ``,
+    `*Rincian Pekerjaan:*`,
+    listUnit + extraNote,
+    ``,
+    `Terima kasih atas kerja kerasnya!`
+  ].join("\n");
+
+  const waTarget = formatWaNumber(m.nomorWa);
+  if (!waTarget) {
+    toast("Nomor WA mekanik belum diisi di Akun & Akses. Membuka pilihan kontak WA...", "info");
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+  } else {
+    window.open(`https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
 }
 
 function catatKomisiKePengeluaran(key) {
@@ -2027,7 +2147,7 @@ function catatKomisiKePengeluaran(key) {
     return toast("Nominal komisi Rp0, tidak perlu dicatat ke pengeluaran.", "warning");
   }
 
-  const periodeText = $("finAllMonths").checked ? "Semua Periode" : ($("finMonth").value || todayWIB().slice(0, 7));
+  const periodeText = getFinPeriodLabel();
   openExpenseModal("", {
     tanggal: todayWIB(),
     kategori: "Gaji / Komisi Mekanik",
@@ -2168,10 +2288,8 @@ function renderKeuangan() {
     </div>
   `;
 
-  // Render Kalkulator & Rekap Komisi Mekanik
   renderKomisiMekanik(rows);
 
-  // Render tabel pengeluaran operasional
   $("expenseTableBody").innerHTML = expRows.length
     ? expRows.map(e => `
         <tr>
@@ -2194,7 +2312,6 @@ function renderKeuangan() {
     ? `<tr><td colspan="4">TOTAL PENGELUARAN OPERASIONAL</td><td class="text-end text-danger">${rupiah(sumExp)}</td><td></td></tr>`
     : "";
 
-  // Render tabel rincian servis
   $("finCountBadge").textContent = rows.length + " Transaksi";
 
   $("finTableBody").innerHTML = rows.length
@@ -2451,18 +2568,25 @@ async function savePart() {
   };
   if (!data.namaPart) return toast("Nama sparepart wajib diisi.", "danger");
 
-  const r = await apiPost({ action: "savePart", auth: state.auth, data });
-  if (!r.success) return toast(r.message, "danger");
-  hideModal("modalPart");
-  toast("Stok sparepart diperbarui.", "success");
-  await syncAllData();
+  try {
+    const r = await apiPost({ action: "savePart", auth: state.auth, data });
+    if (!r.success) return toast(r.message, "danger");
+    hideModal("modalPart");
+    toast("Stok sparepart diperbarui.", "success");
+    await syncAllData();
+  } catch (e) {
+    toast(e.message, "danger");
+  }
 }
 
 function renderUserTable() {
   $("userTableBody").innerHTML = state.users.map(u => `
     <tr>
       <td><strong>${esc(u.username)}</strong></td>
-      <td>${esc(u.nama)}</td>
+      <td>
+        ${esc(u.nama)}
+        ${u.nomorWa ? `<div class="text-muted" style="font-size:11px"><i class="bi bi-whatsapp text-success"></i> ${esc(u.nomorWa)}</div>` : ""}
+      </td>
       <td><span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span></td>
       <td><strong>${Number(u.komisiPersen ?? 0)}%</strong></td>
       <td>${u.aktif ? '<span class="text-success">Aktif</span>' : '<span class="text-muted">Nonaktif</span>'}</td>
@@ -2488,6 +2612,7 @@ function openUserModal(id = "") {
   $("usrId").value = u ? u.id : "";
   $("usrUsername").value = u ? u.username : "";
   $("usrNama").value = u ? u.nama : "";
+  $("usrWa").value = u ? (u.nomorWa || "") : "";
   $("usrRole").value = u ? u.role : "mekanik";
   $("usrKomisi").value = u ? Number(u.komisiPersen ?? 0) : 40;
   $("usrPin").value = u ? u.pin : "";
@@ -2500,17 +2625,22 @@ async function saveUser() {
     id: $("usrId").value,
     username: $("usrUsername").value.trim(),
     nama: $("usrNama").value.trim(),
+    nomorWa: $("usrWa").value.trim(),
     role: $("usrRole").value,
     komisiPersen: Number($("usrKomisi").value || 0),
     pin: $("usrPin").value.trim(),
     aktif: $("usrAktif").checked
   };
-  const r = await apiPost({ action: "saveUser", auth: state.auth, data });
-  if (!r.success) return toast(r.message, "danger");
-  hideModal("modalUser");
-  state.komisiOverrides = {};
-  toast("Akun & tarif komisi disimpan.", "success");
-  await syncAllData();
+  try {
+    const r = await apiPost({ action: "saveUser", auth: state.auth, data });
+    if (!r.success) return toast(r.message, "danger");
+    hideModal("modalUser");
+    state.komisiOverrides = {};
+    toast("Akun, tarif komisi & WA disimpan.", "success");
+    await syncAllData();
+  } catch (e) {
+    toast(e.message, "danger");
+  }
 }
 
 function confirmDelete(type, id, label) {
@@ -2522,11 +2652,16 @@ function confirmDelete(type, id, label) {
       user: "deleteUser",
       expense: "deleteExpense"
     };
-    const r = await apiPost({ action: actionMap[type], auth: state.auth, id });
-    hideModal("modalConfirm");
-    if (!r.success) return toast(r.message, "danger");
-    toast(r.message, "success");
-    await syncAllData();
+    try {
+      const r = await apiPost({ action: actionMap[type], auth: state.auth, id });
+      hideModal("modalConfirm");
+      if (!r.success) return toast(r.message, "danger");
+      toast(r.message, "success");
+      await syncAllData();
+    } catch (e) {
+      hideModal("modalConfirm");
+      toast(e.message, "danger");
+    }
   };
   showModal("modalConfirm");
 }
@@ -2643,8 +2778,7 @@ function printNota58(id) {
 function kirimWhatsApp(id) {
   const s = state.servis.find(x => x.id === id);
   if (!s) return;
-  let hp = String(s.telepon || "").replace(/\D/g, "");
-  if (hp.startsWith("0")) hp = "62" + hp.slice(1);
+  const hp = formatWaNumber(s.telepon);
 
   const isDone = ["Selesai", "Sudah diambil"].includes(s.status);
   const header = isDone
