@@ -100,9 +100,21 @@
     }
     .badge-status {
       font-size: 11px;
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 99px;
       font-weight: 600;
+      display: inline-block;
+    }
+    .action-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .action-stack .btn {
+      font-size: 11.5px;
+      padding: 3px 7px;
+      border-radius: 7px;
+      white-space: nowrap;
     }
     .qr-box {
       display: inline-block;
@@ -225,15 +237,44 @@
         </div>
       </div>
 
-      <!-- BANNER USER AKTIF -->
-      <div id="userBar" class="mt-3 pt-2 border-top border-white border-opacity-25 d-none justify-content-between align-items-center">
+      <!-- BANNER USER AKTIF + MENU CETAK CEPAT -->
+      <div id="userBar" class="mt-3 pt-2 border-top border-white border-opacity-25 d-none flex-wrap justify-content-between align-items-center gap-2">
         <div class="small">
           <span class="badge bg-warning text-dark text-uppercase me-1" id="badgeRole">ADMIN</span>
           <strong id="labelUser">Administrator</strong>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-1">
+          <div class="dropdown">
+            <button class="btn btn-light btn-sm py-0 px-2 fw-semibold dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-printer-fill text-primary"></i> Cetak
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm small">
+              <li><h6 class="dropdown-header">Cetak Struk Thermal 58mm</h6></li>
+              <li>
+                <button class="dropdown-item" type="button" onclick="printLatestServis('nota')">
+                  <i class="bi bi-receipt me-2 text-primary"></i>Nota Servis Terakhir
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" type="button" onclick="printLatestServis('qr')">
+                  <i class="bi bi-qr-code me-2 text-dark"></i>Label QR Tiket Terakhir
+                </button>
+              </li>
+              <li class="admin-only"><hr class="dropdown-divider"></li>
+              <li class="admin-only">
+                <button class="dropdown-item" type="button" onclick="printLaporanKeuangan58()">
+                  <i class="bi bi-cash-stack me-2 text-success"></i>Laporan Keuangan & Komisi
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" type="button" onclick="printStok58()">
+                  <i class="bi bi-box-seam me-2 text-warning-emphasis"></i>Daftar Stok Sparepart
+                </button>
+              </li>
+            </ul>
+          </div>
           <button class="btn btn-warning btn-sm py-0 px-2 fw-semibold" onclick="openScannerModal('staff')">
-            <i class="bi bi-qr-code-scan"></i> Scan Tiket
+            <i class="bi bi-qr-code-scan"></i> Scan
           </button>
           <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData()">
             <i class="bi bi-arrow-repeat"></i> Sync
@@ -329,9 +370,8 @@
                     <thead class="table-light">
                       <tr>
                         <th>Kode / Motor</th>
-                        <th>Mekanik</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th>Status & Mekanik</th>
+                        <th>Aksi & Cetak</th>
                       </tr>
                     </thead>
                     <tbody id="dashActiveList"></tbody>
@@ -386,9 +426,8 @@
                   <tr>
                     <th>Kode & Tgl</th>
                     <th>Pelanggan & Motor</th>
-                    <th>Status & Mekanik</th>
-                    <th>Total</th>
-                    <th>Aksi</th>
+                    <th>Status & Total</th>
+                    <th style="min-width:175px">Aksi & Cetak</th>
                   </tr>
                 </thead>
                 <tbody id="servisTableBody"></tbody>
@@ -432,9 +471,14 @@
                 <h6 class="fw-bold mb-0">Database Stok Sparepart</h6>
                 <small class="text-muted">Stok otomatis berkurang saat sparepart dipakai pada tiket servis.</small>
               </div>
-              <button class="btn btn-primary btn-sm admin-only" onclick="openPartModal()">
-                <i class="bi bi-plus-lg"></i> Tambah Sparepart
-              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-dark btn-sm fw-semibold" onclick="printStok58()">
+                  <i class="bi bi-printer me-1"></i>Cetak Stok (58mm)
+                </button>
+                <button class="btn btn-primary btn-sm admin-only" onclick="openPartModal()">
+                  <i class="bi bi-plus-lg"></i> Tambah Sparepart
+                </button>
+              </div>
             </div>
             <input id="filterPart" class="form-control form-control-sm mb-3" placeholder="Cari kode atau nama sparepart..." oninput="renderPartTable()">
             <div class="table-responsive">
@@ -463,12 +507,15 @@
                 <h6 class="fw-bold mb-0"><i class="bi bi-cash-coin text-success me-1"></i>Laporan Keuangan & Laba Bersih</h6>
                 <small class="text-muted">Omzet jasa & sparepart dikurangi HPP modal dan pengeluaran operasional bengkel.</small>
               </div>
-              <div class="d-flex gap-2">
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-dark btn-sm fw-semibold" onclick="printLaporanKeuangan58()">
+                  <i class="bi bi-printer me-1"></i>Cetak Laporan (58mm)
+                </button>
                 <button type="button" class="btn btn-outline-danger btn-sm fw-semibold" onclick="openExpenseModal()">
                   <i class="bi bi-dash-circle me-1"></i>Catat Pengeluaran
                 </button>
                 <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="exportKeuanganCSV()">
-                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV / Excel
+                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
                 </button>
               </div>
             </div>
@@ -829,7 +876,7 @@
   </div>
 </div>
 
-<!-- MODAL FORM SERVIS + TANDA TANGAN DIGITAL -->
+<!-- MODAL FORM SERVIS + TANDA TANGAN DIGITAL + TOMBOL CETAK -->
 <div class="modal fade" id="modalServis" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content rounded-4 border-0">
@@ -959,11 +1006,24 @@
           <strong class="fs-5 text-primary" id="srvTotalLabel">Rp0</strong>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-        <button type="button" id="btnSaveServis" class="btn btn-primary btn-sm fw-semibold" onclick="saveServis()">
-          <i class="bi bi-save me-1"></i> Simpan Data Servis
-        </button>
+      <div class="modal-footer flex-wrap gap-1 justify-content-between">
+        <div class="d-flex gap-1">
+          <button type="button" id="btnModalPrintNota" class="btn btn-dark btn-sm d-none">
+            <i class="bi bi-printer me-1"></i>Nota 58mm
+          </button>
+          <button type="button" id="btnModalPrintQR" class="btn btn-outline-dark btn-sm d-none">
+            <i class="bi bi-qr-code me-1"></i>Tiket QR
+          </button>
+        </div>
+        <div class="d-flex gap-1 ms-auto">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" id="btnSaveServisPrint" class="btn btn-outline-primary btn-sm fw-semibold" onclick="saveServis(true)">
+            <i class="bi bi-printer me-1"></i>Simpan & Cetak
+          </button>
+          <button type="button" id="btnSaveServis" class="btn btn-primary btn-sm fw-semibold" onclick="saveServis(false)">
+            <i class="bi bi-save me-1"></i>Simpan
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1269,7 +1329,15 @@ function loadSignatureImage(key, dataUrl) {
 function getSignatureDataUrl(key) {
   const pad = sigPads[key];
   if (!pad || !pad.hasStrokes) return "";
-  return $(pad.canvasId).toDataURL("image/png");
+  const srcCanvas = $(pad.canvasId);
+  const tmp = document.createElement("canvas");
+  tmp.width = srcCanvas.width;
+  tmp.height = srcCanvas.height;
+  const tctx = tmp.getContext("2d");
+  tctx.fillStyle = "#ffffff";
+  tctx.fillRect(0, 0, tmp.width, tmp.height);
+  tctx.drawImage(srcCanvas, 0, 0);
+  return tmp.toDataURL("image/jpeg", 0.65);
 }
 
 // ========================================
@@ -1585,15 +1653,24 @@ function renderDashboard() {
   $("dashActiveList").innerHTML = aktif.length
     ? aktif.slice(0, 8).map(s => `
         <tr>
-          <td><strong>${esc(s.kodeServis)}</strong><br><span class="text-muted">${esc(s.motor)} (${esc(s.plat || "-")})</span></td>
-          <td>${esc(s.mekanik || "-")}</td>
-          <td>${statusBadge(s.status)}</td>
           <td>
-            <button class="btn btn-outline-primary btn-sm py-0 px-2" onclick="openServisModal('${esc(s.id)}')">Update</button>
+            <strong>${esc(s.kodeServis)}</strong>
+            <div class="text-muted">${esc(s.motor)} (${esc(s.plat || "-")})</div>
+          </td>
+          <td>
+            ${statusBadge(s.status)}
+            <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
+          </td>
+          <td>
+            <div class="action-stack">
+              <button class="btn btn-outline-primary" onclick="openServisModal('${esc(s.id)}')">Edit</button>
+              <button class="btn btn-dark" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i> Nota</button>
+              <button class="btn btn-outline-dark" onclick="printLabelQR58('${esc(s.id)}')"><i class="bi bi-qr-code"></i> QR</button>
+            </div>
           </td>
         </tr>
       `).join("")
-    : `<tr><td colspan="4" class="text-muted">Tidak ada antrean aktif.</td></tr>`;
+    : `<tr><td colspan="3" class="text-muted">Tidak ada antrean aktif.</td></tr>`;
 
   $("lowStockList").innerHTML = lowParts.length
     ? lowParts.map(p => `
@@ -1631,26 +1708,34 @@ function renderServisTable() {
             <td>
               <strong>${esc(s.nama)}</strong> <span class="text-muted">(${esc(s.telepon)})</span>
               <div>${esc(s.motor)} • <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
+              <div class="text-muted"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
             </td>
             <td>
               ${statusBadge(s.status)}
               ${hasSigned ? `<span class="badge bg-info-subtle text-info-emphasis ms-1" title="Sudah ditandatangani"><i class="bi bi-pen-fill"></i> TTD</span>` : ""}
-              <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
+              <div class="fw-bold text-primary mt-1">${rupiah(s.estimasiTotal)}</div>
             </td>
-            <td class="fw-bold">${rupiah(s.estimasiTotal)}</td>
             <td>
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-primary" title="Edit & TTD" onclick="openServisModal('${esc(s.id)}')"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-outline-dark" title="QR Tiket" onclick="openQRModal('${esc(s.id)}')"><i class="bi bi-qr-code"></i></button>
-                <button class="btn btn-outline-secondary" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i></button>
-                <button class="btn btn-success" title="Notifikasi WA" onclick="kirimWhatsApp('${esc(s.id)}')"><i class="bi bi-whatsapp"></i></button>
+              <div class="action-stack">
+                <button class="btn btn-dark fw-semibold" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')">
+                  <i class="bi bi-printer"></i> Nota
+                </button>
+                <button class="btn btn-outline-dark" title="Cetak / Lihat QR Tiket" onclick="openQRModal('${esc(s.id)}')">
+                  <i class="bi bi-qr-code"></i> QR
+                </button>
+                <button class="btn btn-outline-primary" title="Edit & Tanda Tangan" onclick="openServisModal('${esc(s.id)}')">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button class="btn btn-success" title="Kirim Nota WA" onclick="kirimWhatsApp('${esc(s.id)}')">
+                  <i class="bi bi-whatsapp"></i> WA
+                </button>
                 ${isAdmin ? `<button class="btn btn-outline-danger" title="Hapus" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
               </div>
             </td>
           </tr>
         `;
       }).join("")
-    : `<tr><td colspan="5" class="text-center text-muted py-3">Data servis tidak ditemukan.</td></tr>`;
+    : `<tr><td colspan="4" class="text-center text-muted py-3">Data servis tidak ditemukan.</td></tr>`;
 }
 
 // ========================================
@@ -1671,6 +1756,9 @@ function openServisModal(id = "", prefill = null) {
   $("srvPartsContainer").innerHTML = "";
   clearSignature("mekanik");
   clearSignature("pelanggan");
+
+  const btnNota = $("btnModalPrintNota");
+  const btnQr = $("btnModalPrintQR");
 
   if (id) {
     const s = state.servis.find(x => x.id === id);
@@ -1693,6 +1781,11 @@ function openServisModal(id = "", prefill = null) {
 
     loadSignatureImage("mekanik", s.ttdMekanik);
     loadSignatureImage("pelanggan", s.ttdPelanggan);
+
+    btnNota.classList.remove("d-none");
+    btnQr.classList.remove("d-none");
+    btnNota.onclick = () => printNota58(s.id);
+    btnQr.onclick = () => printLabelQR58(s.id);
   } else {
     $("titleModalServis").textContent = "Input Servis Motor Baru";
     $("srvId").value = "";
@@ -1708,6 +1801,9 @@ function openServisModal(id = "", prefill = null) {
     $("srvEstimasi").value = "";
     $("srvMekanik").value = state.user && state.user.role === "mekanik" ? state.user.nama : "";
     $("srvCatatan").value = "";
+
+    btnNota.classList.add("d-none");
+    btnQr.classList.add("d-none");
   }
   calcServisTotal();
   showModal("modalServis");
@@ -1768,8 +1864,9 @@ function calcServisTotal() {
   $("srvTotalLabel").textContent = rupiah(sub + jasa);
 }
 
-async function saveServis() {
+async function saveServis(autoPrint = false) {
   const btn = $("btnSaveServis");
+  const btnPrint = $("btnSaveServisPrint");
   const data = {
     id: $("srvId").value,
     nama: $("srvNama").value.trim(),
@@ -1794,6 +1891,7 @@ async function saveServis() {
   }
 
   btn.disabled = true;
+  btnPrint.disabled = true;
   try {
     const r = await apiPost({ action: "saveServis", auth: state.auth, data });
     if (!r.success) return toast(r.message, "danger");
@@ -1801,10 +1899,15 @@ async function saveServis() {
     hideModal("modalServis");
     toast("Tersimpan! Kode Servis: " + r.kodeServis, "success");
     await syncAllData();
+
+    if (autoPrint && r.id) {
+      printNota58(r.id);
+    }
   } catch (e) {
     toast(e.message, "danger");
   } finally {
     btn.disabled = false;
+    btnPrint.disabled = false;
   }
 }
 
@@ -1953,9 +2056,9 @@ function renderKomisiMekanik(cachedRows = null) {
                         onclick="openDetailKomisiModal('${esc(m.key)}')">
                   Detail
                 </button>
-                <button type="button" class="btn btn-outline-dark py-0 px-2" title="Cetak Slip Komisi 58mm"
+                <button type="button" class="btn btn-dark py-0 px-2" title="Cetak Slip Komisi 58mm"
                         onclick="printSlipKomisi58('${esc(m.key)}')">
-                  <i class="bi bi-printer"></i>
+                  <i class="bi bi-printer"></i> Slip
                 </button>
                 <button type="button" class="btn btn-success py-0 px-2" title="Kirim Rekap via WhatsApp"
                         onclick="kirimWhatsAppKomisi('${esc(m.key)}')">
@@ -2488,9 +2591,14 @@ function openRiwayatModal(telepon) {
   $("titleRiwayat").textContent = `Riwayat Servis: ${c.nama} (${c.telepon})`;
   $("bodyRiwayat").innerHTML = c.history.map(h => `
     <div class="border rounded-3 p-3 mb-2">
-      <div class="d-flex justify-content-between align-items-center mb-1">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
         <strong>${esc(h.kodeServis)} • ${esc(h.tanggalMasuk)}</strong>
-        ${statusBadge(h.status)}
+        <div class="d-flex align-items-center gap-1">
+          ${statusBadge(h.status)}
+          <button type="button" class="btn btn-dark btn-sm py-0 px-2" onclick="printNota58('${esc(h.id)}')">
+            <i class="bi bi-printer"></i> Nota 58mm
+          </button>
+        </div>
       </div>
       <div class="small text-muted mb-1">${esc(h.motor)} (${esc(h.plat || "-")}) • Mekanik: ${esc(h.mekanik || "-")}</div>
       <div class="small"><strong>Keluhan:</strong> ${esc(h.keluhan || "-")}</div>
@@ -2667,7 +2775,7 @@ function confirmDelete(type, id, label) {
 }
 
 // ========================================
-// QR CODE, CETAK NOTA 58MM (+ TANDA TANGAN) & WHATSAPP
+// QR CODE, CETAK NOTA 58MM, LAPORAN & WHATSAPP
 // ========================================
 function getTrackingUrl(kodeServis) {
   const base = window.location.origin + window.location.pathname;
@@ -2698,6 +2806,15 @@ function triggerThermalPrint(htmlBuilder, qrText) {
     new QRCode(qrTarget, { text: qrText, width: 105, height: 105 });
   }
   setTimeout(() => window.print(), 300);
+}
+
+function printLatestServis(type = "nota") {
+  if (!state.servis.length) {
+    return toast("Belum ada data tiket servis untuk dicetak.", "warning");
+  }
+  const latest = state.servis[0];
+  if (type === "qr") printLabelQR58(latest.id);
+  else printNota58(latest.id);
 }
 
 function printLabelQR58(id) {
@@ -2773,6 +2890,75 @@ function printNota58(id) {
     <div class="p-center" style="font-size:10px">Terima kasih atas kepercayaan Anda</div>
   `;
   triggerThermalPrint(html, getTrackingUrl(s.kodeServis));
+}
+
+function printLaporanKeuangan58() {
+  if (!state.user || state.user.role !== "admin") return;
+  const rows = getFilteredFinancialRows();
+  const expRows = getFilteredExpenseRows();
+  const komisiRows = getMechanicCommissionSummary(rows);
+
+  const sumJasa = rows.reduce((a, b) => a + b.omzetJasa, 0);
+  const sumPart = rows.reduce((a, b) => a + b.jualPart, 0);
+  const sumHpp = rows.reduce((a, b) => a + b.hppPart, 0);
+  const sumExp = expRows.reduce((a, b) => a + Number(b.nominal || 0), 0);
+  const sumOmzet = sumJasa + sumPart;
+  const labaBersih = sumOmzet - sumHpp - sumExp;
+
+  const komHtml = komisiRows.length
+    ? komisiRows.map(m => `
+        <div class="p-row">
+          <span>${esc(m.nama)} (${m.unitCount}u/${m.rate}%)</span>
+          <span>${rupiah(m.komisiNominal)}</span>
+        </div>
+      `).join("")
+    : "<div>- Tidak ada komisi</div>";
+
+  const html = `
+    <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center p-bold">LAPORAN KEUANGAN</div>
+    <div class="p-center" style="font-size:10px">Periode: ${esc(getFinPeriodLabel())}</div>
+    <div class="p-line"></div>
+    <div class="p-row"><span>Unit Servis:</span><span>${rows.length} unit</span></div>
+    <div class="p-row"><span>Omzet Jasa:</span><span>${rupiah(sumJasa)}</span></div>
+    <div class="p-row"><span>Jual Part:</span><span>${rupiah(sumPart)}</span></div>
+    <div class="p-row p-bold"><span>OMZET KOTOR:</span><span>${rupiah(sumOmzet)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-row"><span>HPP Modal:</span><span>-${rupiah(sumHpp)}</span></div>
+    <div class="p-row"><span>Operasional:</span><span>-${rupiah(sumExp)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-row p-bold" style="font-size:12px"><span>LABA BERSIH</span><span>${rupiah(labaBersih)}</span></div>
+    <div class="p-line"></div>
+    <div class="p-bold">Rekap Komisi Mekanik:</div>
+    ${komHtml}
+    <div class="p-line"></div>
+    <div class="p-center" style="font-size:10px">Dicetak: ${esc(todayWIB())}</div>
+  `;
+  triggerThermalPrint(html, "");
+}
+
+function printStok58() {
+  if (!state.parts.length) {
+    return toast("Belum ada data stok sparepart.", "warning");
+  }
+  const itemsHtml = state.parts.map(p => `
+    <div>${esc(p.namaPart)} (${esc(p.kodePart)})</div>
+    <div class="p-row">
+      <span>${rupiah(p.hargaJual)}</span>
+      <span class="p-bold">${p.stok} pcs${Number(p.stok) <= Number(p.minStok) ? " [MIN]" : ""}</span>
+    </div>
+  `).join("");
+
+  const html = `
+    <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center p-bold">LAPORAN STOK SPAREPART</div>
+    <div class="p-center" style="font-size:10px">Tanggal: ${esc(todayWIB())}</div>
+    <div class="p-line"></div>
+    ${itemsHtml}
+    <div class="p-line"></div>
+    <div class="p-row p-bold"><span>Total Item:</span><span>${state.parts.length} jenis</span></div>
+  `;
+  triggerThermalPrint(html, "");
 }
 
 function kirimWhatsApp(id) {
