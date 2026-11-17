@@ -1,13 +1,13 @@
 {
-  "name": "Bengkel Pro — Manajemen Servis Motor",
+  "name": "Bengkel Pro - Cek Status Servis Motor",
   "short_name": "Bengkel Pro",
-  "description": "Aplikasi manajemen servis motor, stok sparepart, komisi mekanik, nota 58mm & QR tracking.",
+  "description": "Aplikasi cek status servis motor pelanggan & manajemen bengkel.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "logobengkelpro.png",
@@ -26,12 +26,7 @@
     {
       "name": "Cek Status Servis",
       "short_name": "Cek Servis",
-      "url": "./index.html?mode=cek"
-    },
-    {
-      "name": "Login Staf Bengkel",
-      "short_name": "Panel Staf",
-      "url": "./index.html?mode=staf"
+      "url": "./index.html"
     }
   ]
 }
