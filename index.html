@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Bengkel Pro">
-  <title>Bengkel Pro — Sistem Manajemen Servis Motor</title>
+  <title>Bengkel Pro — Cek Status Servis Motor</title>
   <link rel="icon" type="image/png" href="logobengkelpro.png">
   <link rel="apple-touch-icon" href="logobengkelpro.png">
   <link rel="manifest" href="manifest.json">
@@ -23,24 +23,24 @@
       background: var(--bg);
       color: #1e293b;
       font-family: system-ui, -apple-system, sans-serif;
-      padding-bottom: 40px;
+      padding-bottom: 76px;
     }
     .hero-header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 65%, #2563eb 100%);
       color: #fff;
-      border-radius: 0 0 24px 24px;
-      padding: 18px 0 24px;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, .18);
+      border-radius: 0 0 20px 20px;
+      padding: 12px 0 14px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, .16);
     }
     .brand-logo-wrap {
-      width: 52px;
-      height: 52px;
+      width: 42px;
+      height: 42px;
       background: #ffffff;
-      border-radius: 15px;
-      padding: 4px;
+      border-radius: 12px;
+      padding: 3px;
       display: grid;
       place-items: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .18);
       overflow: hidden;
       flex-shrink: 0;
     }
@@ -48,59 +48,125 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      border-radius: 11px;
+      border-radius: 9px;
     }
     .brand-fallback {
       color: var(--navy);
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 800;
     }
     .install-banner {
       background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-      border: 1.5px solid #bfdbfe;
-      border-radius: 18px;
-      padding: 12px 14px;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, .12);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, .10);
     }
     .install-banner-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       object-fit: contain;
       background: #fff;
-      padding: 3px;
+      padding: 2px;
       border: 1px solid #dbeafe;
       flex-shrink: 0;
     }
     .card-soft {
       border: 0;
       border-radius: 16px;
-      box-shadow: 0 3px 14px rgba(15, 23, 42, .05);
+      box-shadow: 0 2px 12px rgba(15, 23, 42, .05);
     }
     .kpi-card {
       border: 0;
-      border-radius: 14px;
+      border-radius: 13px;
       background: #fff;
-      padding: 13px 14px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+      padding: 10px 12px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
       height: 100%;
     }
-    .kpi-label { font-size: 11.5px; color: #64748b; }
-    .kpi-val { font-size: 17.5px; font-weight: 700; margin-top: 3px; }
-    .nav-pills .nav-link {
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 13px;
-      color: #475569;
-      white-space: nowrap;
+    .kpi-label { font-size: 11px; color: #64748b; }
+    .kpi-val { font-size: 16px; font-weight: 700; margin-top: 2px; }
+
+    /* Segmented Switcher Pelanggan */
+    .seg-pills {
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
     }
-    .nav-pills .nav-link.active {
-      background: var(--navy);
-      color: #fff;
+    .seg-btn {
+      border: 0;
+      background: transparent;
+      color: #475569;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 7px 10px;
+      border-radius: 9px;
+      transition: all .15s ease;
+    }
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--navy);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, .08);
+    }
+
+    /* Bottom Navigation Bar Staf */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, .06);
+      z-index: 1030;
+      padding: 5px 4px calc(5px + env(safe-area-inset-bottom));
+    }
+    .bottom-nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      gap: 2px;
+    }
+    .bnav-item {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #64748b;
+      border-radius: 10px;
+      padding: 5px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .bnav-item i {
+      font-size: 17px;
+      margin-bottom: 2px;
+    }
+    .bnav-item.active {
+      color: var(--blue);
+      background: #eff6ff;
+    }
+
+    /* Compact Ticket Cards untuk HP */
+    .ticket-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 13px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
     }
     .badge-status {
-      font-size: 11px;
-      padding: 5px 9px;
+      font-size: 10.5px;
+      padding: 4px 8px;
       border-radius: 99px;
       font-weight: 600;
       display: inline-block;
@@ -112,10 +178,24 @@
     }
     .action-stack .btn {
       font-size: 11.5px;
-      padding: 3px 7px;
+      padding: 3px 8px;
       border-radius: 7px;
       white-space: nowrap;
     }
+
+    /* Kunci Login Tersembunyi di Footer */
+    .secret-footer-key {
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+    .secret-footer-key:active {
+      opacity: 0.65;
+    }
+
     .qr-box {
       display: inline-block;
       padding: 10px;
@@ -125,7 +205,7 @@
     }
     #qrReaderBox {
       width: 100%;
-      min-height: 250px;
+      min-height: 240px;
       border-radius: 14px;
       overflow: hidden;
       background: #0f172a;
@@ -144,7 +224,7 @@
     .sig-canvas {
       display: block;
       width: 100%;
-      height: 105px;
+      height: 100px;
       touch-action: none;
       cursor: crosshair;
       background: transparent;
@@ -153,7 +233,7 @@
       position: absolute;
       left: 12px;
       right: 12px;
-      bottom: 22px;
+      bottom: 20px;
       border-bottom: 1px dotted #cbd5e1;
       pointer-events: none;
     }
@@ -163,7 +243,7 @@
     @media print {
       @page { margin: 0; size: 58mm auto; }
       body { background: #fff !important; margin: 0; padding: 0; }
-      #appRoot, .modal, .modal-backdrop, .toast-container { display: none !important; }
+      #appRoot, .bottom-nav, .modal, .modal-backdrop, .toast-container { display: none !important; }
       #printArea {
         display: block !important;
         width: 54mm;
@@ -212,33 +292,30 @@
 <body>
 
 <div id="appRoot">
-  <!-- HEADER -->
+  <!-- HEADER RINGKAS -->
   <header class="hero-header mb-3">
     <div class="container" style="max-width:960px">
       <div class="d-flex justify-content-between align-items-center gap-2">
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
           <div class="brand-logo-wrap">
             <img src="logobengkelpro.png" alt="Logo Bengkel Pro" class="brand-logo-img"
                  onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none')">
             <i class="bi bi-wrench-adjustable-circle-fill brand-fallback d-none"></i>
           </div>
           <div>
-            <h1 class="h5 mb-0 fw-bold">BENGKEL PRO</h1>
-            <small class="opacity-75">Sistem Manajemen Servis, Stok & QR Motor</small>
+            <h1 class="h6 mb-0 fw-bold">BENGKEL PRO</h1>
+            <small class="opacity-75" style="font-size:11.5px" id="headerSubtitle">Portal Cek Status Servis Motor</small>
           </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold d-none" onclick="triggerInstallApp()">
+        <div class="d-flex align-items-center gap-1">
+          <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold py-1 px-2 d-none" onclick="triggerInstallApp()">
             <i class="bi bi-download"></i> Install
-          </button>
-          <button id="btnAuth" class="btn btn-light btn-sm fw-semibold" onclick="openAuthModal()">
-            <i class="bi bi-shield-lock"></i> Login Staf
           </button>
         </div>
       </div>
 
-      <!-- BANNER USER AKTIF + MENU CETAK CEPAT -->
-      <div id="userBar" class="mt-3 pt-2 border-top border-white border-opacity-25 d-none flex-wrap justify-content-between align-items-center gap-2">
+      <!-- BILAH STAF AKTIF (HANYA MUNCUL SAAT LOGIN) -->
+      <div id="userBar" class="mt-2 pt-2 border-top border-white border-opacity-25 d-none flex-wrap justify-content-between align-items-center gap-2">
         <div class="small">
           <span class="badge bg-warning text-dark text-uppercase me-1" id="badgeRole">ADMIN</span>
           <strong id="labelUser">Administrator</strong>
@@ -249,7 +326,7 @@
               <i class="bi bi-printer-fill text-primary"></i> Cetak
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm small">
-              <li><h6 class="dropdown-header">Cetak Struk Thermal 58mm</h6></li>
+              <li><h6 class="dropdown-header">Cetak Thermal 58mm</h6></li>
               <li>
                 <button class="dropdown-item" type="button" onclick="printLatestServis('nota')">
                   <i class="bi bi-receipt me-2 text-primary"></i>Nota Servis Terakhir
@@ -257,7 +334,7 @@
               </li>
               <li>
                 <button class="dropdown-item" type="button" onclick="printLatestServis('qr')">
-                  <i class="bi bi-qr-code me-2 text-dark"></i>Label QR Tiket Terakhir
+                  <i class="bi bi-qr-code me-2 text-dark"></i>Label QR Terakhir
                 </button>
               </li>
               <li class="admin-only"><hr class="dropdown-divider"></li>
@@ -266,7 +343,7 @@
                   <i class="bi bi-cash-stack me-2 text-success"></i>Laporan Keuangan & Komisi
                 </button>
               </li>
-              <li>
+              <li class="admin-only">
                 <button class="dropdown-item" type="button" onclick="printStok58()">
                   <i class="bi bi-box-seam me-2 text-warning-emphasis"></i>Daftar Stok Sparepart
                 </button>
@@ -277,7 +354,7 @@
             <i class="bi bi-qr-code-scan"></i> Scan
           </button>
           <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData()">
-            <i class="bi bi-arrow-repeat"></i> Sync
+            <i class="bi bi-arrow-repeat"></i>
           </button>
           <button class="btn btn-danger btn-sm py-0 px-2" onclick="logoutUser()">Keluar</button>
         </div>
@@ -287,21 +364,21 @@
 
   <main class="container" style="max-width:960px">
 
-    <!-- INSTALL BANNER PWA -->
+    <!-- INSTALL BANNER PWA (UNTUK PELANGGAN & STAF) -->
     <section id="installBannerBox" class="install-banner mb-3 d-none">
       <div class="d-flex align-items-center justify-content-between gap-2">
         <div class="d-flex align-items-center gap-2">
           <img src="logobengkelpro.png" alt="Bengkel Pro" class="install-banner-icon"
                onerror="this.style.display='none'">
           <div>
-            <div class="fw-bold small text-dark">Install Aplikasi Bengkel Pro</div>
-            <div class="text-muted" style="font-size:11.5px" id="installBannerDesc">
-              Pasang pintasan logo ke layar utama HP untuk akses cepat & mode offline.
+            <div class="fw-bold small text-dark" id="installBannerTitle">Install Aplikasi Cek Servis</div>
+            <div class="text-muted" style="font-size:11px" id="installBannerDesc">
+              Pasang di layar utama HP untuk memantau progres servis motor Anda kapan saja.
             </div>
           </div>
         </div>
         <div class="d-flex align-items-center gap-1 flex-shrink-0">
-          <button type="button" id="btnBannerInstall" class="btn btn-primary btn-sm fw-semibold px-3" onclick="triggerInstallApp()">
+          <button type="button" id="btnBannerInstall" class="btn btn-primary btn-sm fw-semibold px-2 py-1" onclick="triggerInstallApp()">
             Install
           </button>
           <button type="button" class="btn btn-link btn-sm text-muted p-1" title="Tutup" onclick="dismissInstallBanner()">
@@ -312,431 +389,332 @@
     </section>
 
     <!-- =====================================
-         WORKSPACE ADMIN & MEKANIK (TERPROTEKSI)
+         1. PORTAL PELANGGAN (1 LAYAR RINGKAS)
          ===================================== -->
-    <section id="workspaceSection" class="d-none mb-4">
-      <ul class="nav nav-pills flex-nowrap overflow-auto gap-2 pb-2 mb-3" id="proTabs">
-        <li class="nav-item">
-          <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabDashboard">
-            <i class="bi bi-speedometer2 me-1"></i>Dashboard
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabServis">
-            <i class="bi bi-tools me-1"></i>Data Servis
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabPelanggan">
-            <i class="bi bi-people me-1"></i>Pelanggan & Riwayat
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabStok">
-            <i class="bi bi-box-seam me-1"></i>Stok Sparepart
-          </button>
-        </li>
-        <li class="nav-item admin-only">
-          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabKeuangan" onclick="renderKeuangan()">
-            <i class="bi bi-graph-up-arrow me-1"></i>Laporan Keuangan
-          </button>
-        </li>
-        <li class="nav-item admin-only">
-          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabUsers">
-            <i class="bi bi-person-badge me-1"></i>Akun & Akses
-          </button>
-        </li>
-      </ul>
+    <section id="publicCustomerSection">
+      <!-- Switcher 2 Tab Pelanggan (Tanpa Scroll) -->
+      <div class="seg-pills mb-3">
+        <button type="button" class="seg-btn active" id="btnPubTabCek" onclick="switchPublicTab('cek')">
+          <i class="bi bi-qr-code-scan me-1"></i>Cek Status Nota
+        </button>
+        <button type="button" class="seg-btn" id="btnPubTabBoard" onclick="switchPublicTab('board')">
+          <i class="bi bi-list-check me-1"></i>Antrean Bengkel
+        </button>
+      </div>
 
-      <div class="tab-content">
-        <!-- TAB 1: DASHBOARD -->
-        <div class="tab-pane fade show active" id="tabDashboard">
-          <div class="row g-2 mb-3" id="kpiContainer"></div>
+      <!-- VIEW PELANGGAN A: CEK STATUS NOTA -->
+      <div id="pubViewCek" class="card card-soft p-3">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+          <h6 class="fw-bold mb-0"><i class="bi bi-search text-primary me-1"></i>Lacak Servis Motor Anda</h6>
+          <button type="button" class="btn btn-primary btn-sm fw-semibold py-1 px-2" onclick="openScannerModal('public')">
+            <i class="bi bi-camera me-1"></i>Scan QR
+          </button>
+        </div>
+        <p class="text-muted mb-2" style="font-size:12px">Scan QR Code pada nota/tiket atau masukkan Kode Servis & 4 digit terakhir nomor HP Anda.</p>
 
-          <div class="row g-3">
-            <div class="col-md-7">
-              <div class="card card-soft p-3 h-100">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                  <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-1"></i>Antrean Aktif Bengkel</h6>
-                  <div class="d-flex gap-1">
-                    <button class="btn btn-outline-dark btn-sm" onclick="openScannerModal('staff')">
-                      <i class="bi bi-qr-code-scan"></i> Scan QR
-                    </button>
-                    <button class="btn btn-primary btn-sm" onclick="openServisModal()">+ Servis Baru</button>
-                  </div>
-                </div>
-                <div class="table-responsive">
-                  <table class="table table-sm align-middle mb-0 small">
-                    <thead class="table-light">
-                      <tr>
-                        <th>Kode / Motor</th>
-                        <th>Status & Mekanik</th>
-                        <th>Aksi & Cetak</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dashActiveList"></tbody>
-                  </table>
-                </div>
-              </div>
+        <div class="row g-2">
+          <div class="col-12 col-sm-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-white"><i class="bi bi-upc-scan text-muted"></i></span>
+              <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode (cth: SRV-261117-XXXX)">
             </div>
-            <div class="col-md-5">
-              <div class="card card-soft p-3 h-100">
-                <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle text-danger me-1"></i>Peringatan Stok Menipis</h6>
-                <div id="lowStockList" class="small"></div>
-              </div>
+          </div>
+          <div class="col-7 col-sm-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-white"><i class="bi bi-phone text-muted"></i></span>
+              <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Akhir HP"
+                     onkeydown="if(event.key==='Enter')cariServisPublik()">
             </div>
+          </div>
+          <div class="col-5 col-sm-3 d-grid">
+            <button class="btn btn-primary btn-sm fw-semibold" onclick="cariServisPublik()">
+              Cek Status
+            </button>
           </div>
         </div>
 
-        <!-- TAB 2: DATA SERVIS -->
-        <div class="tab-pane fade" id="tabServis">
-          <div class="card card-soft p-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <h6 class="fw-bold mb-0">Manajemen Tiket Servis</h6>
-              <div class="d-flex gap-2">
-                <button class="btn btn-outline-dark btn-sm" onclick="openScannerModal('staff')">
-                  <i class="bi bi-qr-code-scan me-1"></i>Scan Tiket QR
-                </button>
-                <button class="btn btn-primary btn-sm" onclick="openServisModal()">
-                  <i class="bi bi-plus-lg"></i> Tambah Servis Masuk
-                </button>
-              </div>
-            </div>
+        <div id="hasilPublik" class="mt-3 d-none"></div>
+      </div>
 
-            <div class="row g-2 mb-3">
-              <div class="col-sm-7">
-                <input id="filterServisQuery" class="form-control form-control-sm" placeholder="Cari kode, nama pelanggan, plat nomor, motor..." oninput="renderServisTable()">
-              </div>
-              <div class="col-sm-5">
-                <select id="filterServisStatus" class="form-select form-select-sm" onchange="renderServisTable()">
-                  <option value="">Semua Status</option>
-                  <option>Menunggu pemeriksaan</option>
-                  <option>Dalam pengerjaan</option>
-                  <option>Menunggu sparepart</option>
-                  <option>Selesai</option>
-                  <option>Sudah diambil</option>
-                  <option>Dibatalkan</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table table-hover align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Kode & Tgl</th>
-                    <th>Pelanggan & Motor</th>
-                    <th>Status & Total</th>
-                    <th style="min-width:175px">Aksi & Cetak</th>
-                  </tr>
-                </thead>
-                <tbody id="servisTableBody"></tbody>
-              </table>
-            </div>
+      <!-- VIEW PELANGGAN B: PAPAN ANTREAN RINGKAS -->
+      <div id="pubViewBoard" class="card card-soft p-3 d-none">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-1"></i>Papan Antrean Pengerjaan</h6>
+            <small class="text-muted" style="font-size:11.5px">Daftar unit yang sedang ditangani bengkel.</small>
           </div>
+          <button class="btn btn-outline-secondary btn-sm py-1 px-2" onclick="loadPublicBoard()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
         </div>
-
-        <!-- TAB 3: PELANGGAN & RIWAYAT -->
-        <div class="tab-pane fade" id="tabPelanggan">
-          <div class="card card-soft p-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <div>
-                <h6 class="fw-bold mb-0">Database Pelanggan & Riwayat Kunjungan</h6>
-                <small class="text-muted">Otomatis terindeks dari riwayat servis berdasarkan nomor HP.</small>
-              </div>
-              <input id="filterPelanggan" class="form-control form-control-sm" style="max-width:260px" placeholder="Cari nama / HP / plat..." oninput="renderPelangganTable()">
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Pelanggan</th>
-                    <th>Kendaraan</th>
-                    <th>Kunjungan</th>
-                    <th>Total Transaksi</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="pelangganTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 4: STOK SPAREPART -->
-        <div class="tab-pane fade" id="tabStok">
-          <div class="card card-soft p-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <div>
-                <h6 class="fw-bold mb-0">Database Stok Sparepart</h6>
-                <small class="text-muted">Stok otomatis berkurang saat sparepart dipakai pada tiket servis.</small>
-              </div>
-              <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-dark btn-sm fw-semibold" onclick="printStok58()">
-                  <i class="bi bi-printer me-1"></i>Cetak Stok (58mm)
-                </button>
-                <button class="btn btn-primary btn-sm admin-only" onclick="openPartModal()">
-                  <i class="bi bi-plus-lg"></i> Tambah Sparepart
-                </button>
-              </div>
-            </div>
-            <input id="filterPart" class="form-control form-control-sm mb-3" placeholder="Cari kode atau nama sparepart..." oninput="renderPartTable()">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Kode & Nama Part</th>
-                    <th>Kategori</th>
-                    <th class="admin-only">Harga Beli</th>
-                    <th>Harga Jual</th>
-                    <th>Stok</th>
-                    <th class="admin-only">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="partTableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 5: LAPORAN KEUANGAN, KOMISI MEKANIK & LABA BERSIH (ADMIN ONLY) -->
-        <div class="tab-pane fade admin-only" id="tabKeuangan">
-          <div class="card card-soft p-3 mb-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <div>
-                <h6 class="fw-bold mb-0"><i class="bi bi-cash-coin text-success me-1"></i>Laporan Keuangan & Laba Bersih</h6>
-                <small class="text-muted">Omzet jasa & sparepart dikurangi HPP modal dan pengeluaran operasional bengkel.</small>
-              </div>
-              <div class="d-flex flex-wrap gap-2">
-                <button type="button" class="btn btn-dark btn-sm fw-semibold" onclick="printLaporanKeuangan58()">
-                  <i class="bi bi-printer me-1"></i>Cetak Laporan (58mm)
-                </button>
-                <button type="button" class="btn btn-outline-danger btn-sm fw-semibold" onclick="openExpenseModal()">
-                  <i class="bi bi-dash-circle me-1"></i>Catat Pengeluaran
-                </button>
-                <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="exportKeuanganCSV()">
-                  <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
-                </button>
-              </div>
-            </div>
-
-            <!-- FILTER PERIODE & BASIS -->
-            <div class="row g-2 align-items-end">
-              <div class="col-6 col-md-4">
-                <label class="form-label small fw-semibold mb-1">Filter Bulan</label>
-                <input type="month" id="finMonth" class="form-control form-control-sm" onchange="renderKeuangan()">
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="form-check mb-1">
-                  <input class="form-check-input" type="checkbox" id="finAllMonths" onchange="toggleFinMonth()">
-                  <label class="form-check-label small" for="finAllMonths">Semua Bulan</label>
-                </div>
-              </div>
-              <div class="col-12 col-md-5">
-                <label class="form-label small fw-semibold mb-1">Basis Pendapatan Servis</label>
-                <select id="finBasis" class="form-select form-select-sm" onchange="renderKeuangan()">
-                  <option value="done">Realisasi (Selesai & Sudah Diambil)</option>
-                  <option value="all">Semua Tiket Aktif (Non-Batal)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- 5 KPI KEUANGAN -->
-          <div class="row g-2 mb-3" id="finKpiContainer"></div>
-
-          <!-- PROPORSI PENDAPATAN VS HPP VS OPERASIONAL -->
-          <div class="card card-soft p-3 mb-3" id="finMarginBox"></div>
-
-          <!-- KALKULATOR & REKAP KOMISI MEKANIK OTOMATIS -->
-          <div class="card card-soft p-3 mb-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-              <div>
-                <h6 class="fw-bold mb-0 small"><i class="bi bi-calculator text-primary me-1"></i>Kalkulator & Rekap Komisi Mekanik Otomatis</h6>
-                <small class="text-muted">Cetak slip komisi 58mm, kirim rincian ke WhatsApp mekanik, atau catat ke pengeluaran.</small>
-              </div>
-              <div class="d-flex align-items-center gap-2">
-                <label for="komisiDefaultRate" class="small text-muted mb-0 text-nowrap">Tarif Default (%):</label>
-                <input type="number" id="komisiDefaultRate" min="0" max="100" value="40"
-                       class="form-control form-control-sm text-center fw-bold" style="width:72px"
-                       oninput="resetAndRenderKomisi()">
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table table-hover table-sm align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Mekanik</th>
-                    <th class="text-center">Unit</th>
-                    <th class="text-end">Total Omzet Jasa</th>
-                    <th class="text-center" style="width:90px">Komisi (%)</th>
-                    <th class="text-end">Nominal Komisi</th>
-                    <th class="text-end">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="komisiTableBody"></tbody>
-                <tfoot class="table-light fw-bold" id="komisiTableFoot"></tfoot>
-              </table>
-            </div>
-            <div class="text-muted mt-2" style="font-size:11px">
-              <i class="bi bi-info-circle me-1"></i>Simpan nomor HP mekanik di tab <strong>Akun & Akses</strong> agar tombol WhatsApp langsung menuju kontak mekanik.
-            </div>
-          </div>
-
-          <!-- MODUL PENGELUARAN OPERASIONAL BENGKEL -->
-          <div class="card card-soft p-3 mb-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-              <div>
-                <h6 class="fw-bold mb-0 small"><i class="bi bi-receipt-cutoff text-danger me-1"></i>Pengeluaran Operasional Bengkel</h6>
-                <small class="text-muted">Gaji/komisi mekanik dibayarkan, listrik, alat bengkel, sewa & operasional harian.</small>
-              </div>
-              <button type="button" class="btn btn-danger btn-sm" onclick="openExpenseModal()">
-                <i class="bi bi-plus-lg"></i> Tambah Pengeluaran
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover table-sm align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Tanggal</th>
-                    <th>Kategori</th>
-                    <th>Keterangan</th>
-                    <th>Metode</th>
-                    <th class="text-end">Nominal</th>
-                    <th class="text-end">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="expenseTableBody"></tbody>
-                <tfoot class="table-light fw-bold" id="expenseTableFoot"></tfoot>
-              </table>
-            </div>
-          </div>
-
-          <!-- TABEL RINCIAN LABA KOTOR PER TRANSAKSI SERVIS -->
-          <div class="card card-soft p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-bold mb-0 small">Rincian Pendapatan & Margin per Transaksi Servis</h6>
-              <span class="badge bg-light text-dark border" id="finCountBadge">0 Transaksi</span>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover table-sm align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Tgl & Kode</th>
-                    <th>Pelanggan / Unit</th>
-                    <th class="text-end">Omzet Jasa</th>
-                    <th class="text-end">Jual Part</th>
-                    <th class="text-end">HPP Modal</th>
-                    <th class="text-end">Margin Servis</th>
-                  </tr>
-                </thead>
-                <tbody id="finTableBody"></tbody>
-                <tfoot class="table-light fw-bold" id="finTableFoot"></tfoot>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 6: AKUN & HAK AKSES (ADMIN ONLY) -->
-        <div class="tab-pane fade admin-only" id="tabUsers">
-          <div class="card card-soft p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h6 class="fw-bold mb-0">Manajemen Login Admin & Mekanik</h6>
-                <small class="text-muted">Atur PIN, peran akses, nomor WhatsApp, dan persentase komisi jasa mekanik.</small>
-              </div>
-              <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ Tambah Akun</button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-sm align-middle small mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Username</th>
-                    <th>Nama & WhatsApp</th>
-                    <th>Role</th>
-                    <th>Komisi Jasa</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="userTableBody"></tbody>
-              </table>
-            </div>
-          </div>
+        <div id="publicBoardCards">
+          <div class="text-muted small">Memuat papan status...</div>
         </div>
       </div>
     </section>
 
     <!-- =====================================
-         PORTAL PELANGGAN PUBLIK (SELALU AKTIF)
+         2. WORKSPACE STAF (ADMIN & MEKANIK)
          ===================================== -->
-    <section class="card card-soft p-3 p-md-4 mb-3">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
-        <h5 class="fw-bold mb-0"><i class="bi bi-qr-code-scan text-primary me-2"></i>Cek Status Servis Motor</h5>
-        <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" onclick="openScannerModal('public')">
-          <i class="bi bi-camera me-1"></i> Scan QR Nota
-        </button>
-      </div>
-      <p class="text-muted small mb-3">Scan QR pada nota/tiket lewat kamera HP atau masukkan Kode Servis & 4 digit terakhir nomor HP Anda.</p>
+    <section id="workspaceSection" class="d-none">
+      <!-- VIEW STAF 1: RINGKASAN & ANTREAN AKTIF -->
+      <div class="staff-view" id="viewDash">
+        <div class="row g-2 mb-3" id="kpiContainer"></div>
 
-      <div class="row g-2">
-        <div class="col-md-5">
-          <div class="input-group">
-            <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode Servis (cth: SRV-261117-XXXX)">
-            <button class="btn btn-outline-secondary" type="button" title="Scan QR dengan Kamera" onclick="openScannerModal('public')">
-              <i class="bi bi-qr-code-scan"></i>
+        <div class="card card-soft p-3">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0 small"><i class="bi bi-tools text-primary me-1"></i>Antrean Sedang Dikerjakan</h6>
+            <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold" onclick="openServisModal()">+ Servis</button>
+          </div>
+          <div id="dashActiveCards"></div>
+        </div>
+
+        <div class="card card-soft p-3 mt-2 admin-only" id="dashLowStockCard">
+          <h6 class="fw-bold mb-2 small"><i class="bi bi-exclamation-triangle text-danger me-1"></i>Stok Menipis</h6>
+          <div id="lowStockList" class="small"></div>
+        </div>
+      </div>
+
+      <!-- VIEW STAF 2: DATA SERVIS (ADMIN & MEKANIK) -->
+      <div class="staff-view d-none" id="viewServis">
+        <div class="card card-soft p-3">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0">Data Tiket Servis</h6>
+            <div class="d-flex gap-1">
+              <button class="btn btn-outline-dark btn-sm py-1 px-2" onclick="openScannerModal('staff')">
+                <i class="bi bi-qr-code-scan"></i>
+              </button>
+              <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold" onclick="openServisModal()">
+                + Servis Baru
+              </button>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-7">
+              <input id="filterServisQuery" class="form-control form-control-sm" placeholder="Cari kode, nama, plat..." oninput="renderServisTable()">
+            </div>
+            <div class="col-5">
+              <select id="filterServisStatus" class="form-select form-select-sm" onchange="renderServisTable()">
+                <option value="">Semua Status</option>
+                <option>Menunggu pemeriksaan</option>
+                <option>Dalam pengerjaan</option>
+                <option>Menunggu sparepart</option>
+                <option>Selesai</option>
+                <option>Sudah diambil</option>
+                <option>Dibatalkan</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="servisCardList"></div>
+        </div>
+      </div>
+
+      <!-- VIEW STAF 3: STOK SPAREPART (ADMIN ONLY) -->
+      <div class="staff-view d-none admin-only" id="viewStok">
+        <div class="card card-soft p-3">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0">Stok Sparepart</h6>
+            <div class="d-flex gap-1">
+              <button type="button" class="btn btn-outline-dark btn-sm py-1 px-2" onclick="printStok58()">
+                <i class="bi bi-printer"></i>
+              </button>
+              <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold" onclick="openPartModal()">
+                + Part
+              </button>
+            </div>
+          </div>
+          <input id="filterPart" class="form-control form-control-sm mb-2" placeholder="Cari kode atau nama sparepart..." oninput="renderPartTable()">
+          <div id="partCardList"></div>
+        </div>
+      </div>
+
+      <!-- VIEW STAF 4: LAPORAN KEUANGAN & KOMISI (ADMIN ONLY) -->
+      <div class="staff-view d-none admin-only" id="viewKeuangan">
+        <div class="card card-soft p-3 mb-2">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0"><i class="bi bi-cash-coin text-success me-1"></i>Keuangan & Laba Bersih</h6>
+            <div class="d-flex gap-1">
+              <button type="button" class="btn btn-dark btn-sm py-1 px-2" onclick="printLaporanKeuangan58()" title="Cetak 58mm">
+                <i class="bi bi-printer"></i>
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-sm py-1 px-2" onclick="openExpenseModal()">
+                + Biaya
+              </button>
+              <button type="button" class="btn btn-success btn-sm py-1 px-2" onclick="exportKeuanganCSV()">
+                CSV
+              </button>
+            </div>
+          </div>
+
+          <div class="row g-2 align-items-end">
+            <div class="col-6">
+              <input type="month" id="finMonth" class="form-control form-control-sm" onchange="renderKeuangan()">
+            </div>
+            <div class="col-6">
+              <select id="finBasis" class="form-select form-select-sm" onchange="renderKeuangan()">
+                <option value="done">Selesai & Diambil</option>
+                <option value="all">Semua Tiket Aktif</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" id="finAllMonths" onchange="toggleFinMonth()">
+                <label class="form-check-label small" for="finAllMonths">Tampilkan Semua Bulan</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-2" id="finKpiContainer"></div>
+        <div class="card card-soft p-3 mb-2" id="finMarginBox"></div>
+
+        <!-- KOMISI MEKANIK -->
+        <div class="card card-soft p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0 small"><i class="bi bi-calculator text-primary me-1"></i>Komisi Mekanik</h6>
+            <div class="d-flex align-items-center gap-1">
+              <span class="small text-muted">Default:</span>
+              <input type="number" id="komisiDefaultRate" min="0" max="100" value="40"
+                     class="form-control form-control-sm text-center fw-bold px-1" style="width:54px"
+                     oninput="resetAndRenderKomisi()">
+              <span class="small">%</span>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Mekanik</th>
+                  <th class="text-end">Jasa</th>
+                  <th class="text-center" style="width:65px">%</th>
+                  <th class="text-end">Komisi</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="komisiTableBody"></tbody>
+              <tfoot class="table-light fw-bold" id="komisiTableFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- PENGELUARAN OPERASIONAL -->
+        <div class="card card-soft p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0 small"><i class="bi bi-receipt-cutoff text-danger me-1"></i>Pengeluaran Bengkel</h6>
+            <button type="button" class="btn btn-danger btn-sm py-0 px-2" onclick="openExpenseModal()">+ Catat</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Tgl / Ket</th>
+                  <th class="text-end">Nominal</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="expenseTableBody"></tbody>
+              <tfoot class="table-light fw-bold" id="expenseTableFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- RINCIAN TRANSAKSI -->
+        <div class="card card-soft p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0 small">Margin per Transaksi</h6>
+            <span class="badge bg-light text-dark border" id="finCountBadge">0</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Kode / Unit</th>
+                  <th class="text-end">Omzet</th>
+                  <th class="text-end">Modal</th>
+                  <th class="text-end">Margin</th>
+                </tr>
+              </thead>
+              <tbody id="finTableBody"></tbody>
+              <tfoot class="table-light fw-bold" id="finTableFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW STAF 5: PELANGGAN, AKUN & QR APLIKASI PELANGGAN (ADMIN ONLY) -->
+      <div class="staff-view d-none admin-only" id="viewPengaturan">
+        <!-- QR & LINK INSTALASI APLIKASI PELANGGAN -->
+        <div class="card card-soft p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center gap-2">
+            <div>
+              <h6 class="fw-bold mb-0 small"><i class="bi bi-phone-vibrate text-primary me-1"></i>Aplikasi Cek Status Pelanggan</h6>
+              <small class="text-muted" style="font-size:11.5px">Bagikan link atau QR ke pelanggan agar bisa menginstal aplikasi cek servis di HP.</small>
+            </div>
+            <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold flex-shrink-0" onclick="openShareCustomerAppModal()">
+              <i class="bi bi-qr-code me-1"></i>QR App
             </button>
           </div>
         </div>
-        <div class="col-md-4">
-          <input id="hpCari" class="form-control" inputmode="numeric" maxlength="4" placeholder="4 Digit Terakhir HP"
-                 onkeydown="if(event.key==='Enter')cariServisPublik()">
-        </div>
-        <div class="col-md-3 d-grid">
-          <button class="btn btn-primary fw-semibold" onclick="cariServisPublik()">
-            <i class="bi bi-search me-1"></i> Cek Status
-          </button>
-        </div>
-      </div>
 
-      <div id="hasilPublik" class="mt-3 d-none"></div>
-    </section>
-
-    <!-- PAPAN ANTREAN PUBLIK -->
-    <section class="card card-soft p-3 p-md-4">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-          <h6 class="fw-bold mb-0"><i class="bi bi-list-check text-primary me-1"></i>Papan Status Pengerjaan Bengkel</h6>
-          <small class="text-muted">Pembaruan antrean servis terkini.</small>
+        <!-- MANAJEMEN AKUN ADMIN & MEKANIK -->
+        <div class="card card-soft p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h6 class="fw-bold mb-0 small"><i class="bi bi-person-badge text-dark me-1"></i>Akun & Hak Akses Staf</h6>
+              <small class="text-muted" style="font-size:11px">Mekanik hanya mengakses Data Servis.</small>
+            </div>
+            <button class="btn btn-dark btn-sm py-1 px-2" onclick="openUserModal()">+ Akun</button>
+          </div>
+          <div id="userCardList"></div>
         </div>
-        <button class="btn btn-outline-secondary btn-sm" onclick="loadPublicBoard()">
-          <i class="bi bi-arrow-clockwise"></i>
-        </button>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-sm align-middle small mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Kode</th>
-              <th>Motor / Plat</th>
-              <th>Mekanik</th>
-              <th>Status</th>
-              <th>Estimasi</th>
-            </tr>
-          </thead>
-          <tbody id="publicBoardBody">
-            <tr><td colspan="5" class="text-muted">Memuat papan status...</td></tr>
-          </tbody>
-        </table>
+
+        <!-- DATABASE PELANGGAN -->
+        <div class="card card-soft p-3">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="fw-bold mb-0 small"><i class="bi bi-people text-primary me-1"></i>Riwayat Pelanggan</h6>
+            <input id="filterPelanggan" class="form-control form-control-sm" style="max-width:170px" placeholder="Cari nama / HP..." oninput="renderPelangganTable()">
+          </div>
+          <div id="pelangganCardList"></div>
+        </div>
       </div>
     </section>
 
-    <footer class="text-center text-muted small mt-4">
-      Bengkel Pro v2.6 • Powered By Ari GPM
+    <!-- FOOTER SEBAGAI KUNCI LOGIN ADMIN & KARYAWAN -->
+    <footer class="text-center text-muted small mt-4 mb-2">
+      <span id="secretFooterTrigger" class="secret-footer-key" onclick="handleSecretFooterTap()">
+        Bengkel Pro v2.7 • Powered by Ari GPM
+      </span>
     </footer>
   </main>
 </div>
+
+<!-- BOTTOM NAVIGATION STAF (DINAMIS SESUAI ROLE) -->
+<nav id="mobileBottomNav" class="bottom-nav d-none">
+  <div class="bottom-nav-inner">
+    <button type="button" class="bnav-item active" data-target="viewDash" onclick="switchStaffView('viewDash', this)">
+      <i class="bi bi-grid-1x2-fill"></i>
+      <span>Beranda</span>
+    </button>
+    <button type="button" class="bnav-item" data-target="viewServis" onclick="switchStaffView('viewServis', this)">
+      <i class="bi bi-tools"></i>
+      <span>Data Servis</span>
+    </button>
+    <button type="button" class="bnav-item admin-only" data-target="viewStok" onclick="switchStaffView('viewStok', this)">
+      <i class="bi bi-box-seam-fill"></i>
+      <span>Stok Part</span>
+    </button>
+    <button type="button" class="bnav-item admin-only" data-target="viewKeuangan" onclick="switchStaffView('viewKeuangan', this); renderKeuangan();">
+      <i class="bi bi-graph-up-arrow"></i>
+      <span>Keuangan</span>
+    </button>
+    <button type="button" class="bnav-item admin-only" data-target="viewPengaturan" onclick="switchStaffView('viewPengaturan', this)">
+      <i class="bi bi-sliders"></i>
+      <span>Kelola</span>
+    </button>
+  </div>
+</nav>
 
 <!-- AREA CETAK THERMAL 58MM -->
 <div id="printArea"></div>
@@ -744,6 +722,33 @@
 <!-- =====================================
      MODALS
      ===================================== -->
+
+<!-- MODAL QR & SHARE APLIKASI PELANGGAN -->
+<div class="modal fade" id="modalShareCustomerApp" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0 text-center">
+      <div class="modal-header border-0 pb-0">
+        <h6 class="modal-title fw-bold">Aplikasi Cek Servis Pelanggan</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-box mb-2" id="qrCustomerAppBox"></div>
+        <div class="fw-bold small mb-1" id="shareAppBengkelName">BENGKEL MOTOR PRO</div>
+        <p class="text-muted mb-3" style="font-size:11.5px">
+          Pelanggan cukup scan QR ini lewat kamera HP lalu pilih <strong>Install / Tambahkan ke Layar Utama</strong> untuk memantau status servis.
+        </p>
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-primary btn-sm fw-semibold" onclick="copyCustomerAppLink()">
+            <i class="bi bi-clipboard me-1"></i>Salin Link Aplikasi
+          </button>
+          <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="shareCustomerAppWa()">
+            <i class="bi bi-whatsapp me-1"></i>Bagikan via WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL DETAIL KOMISI MEKANIK -->
 <div class="modal fade" id="modalDetailKomisi" tabindex="-1">
@@ -760,13 +765,13 @@
       <div class="modal-footer flex-wrap gap-2">
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
         <button type="button" class="btn btn-dark btn-sm fw-semibold" id="btnPrintSlipFromDetail">
-          <i class="bi bi-printer me-1"></i> Cetak Slip 58mm
+          <i class="bi bi-printer me-1"></i> Slip 58mm
         </button>
         <button type="button" class="btn btn-success btn-sm fw-semibold" id="btnWaFromDetail">
-          <i class="bi bi-whatsapp me-1"></i> Kirim Rekap WA
+          <i class="bi bi-whatsapp me-1"></i> Kirim WA
         </button>
         <button type="button" class="btn btn-danger btn-sm fw-semibold" id="btnPayFromDetail">
-          <i class="bi bi-receipt me-1"></i> Catat ke Pengeluaran
+          <i class="bi bi-receipt me-1"></i> Catat Biaya
         </button>
       </div>
     </div>
@@ -801,7 +806,7 @@
           </div>
           <div class="col-12">
             <label class="form-label small fw-semibold">Keterangan Pengeluaran *</label>
-            <input id="expKeterangan" class="form-control form-control-sm" placeholder="cth: Token listrik bengkel / Komisi servis harian">
+            <input id="expKeterangan" class="form-control form-control-sm" placeholder="cth: Token listrik bengkel">
           </div>
           <div class="col-7">
             <label class="form-label small fw-semibold">Nominal (Rp) *</label>
@@ -820,7 +825,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
         <button type="button" id="btnSaveExpense" class="btn btn-danger btn-sm fw-semibold" onclick="saveExpense()">
-          <i class="bi bi-save me-1"></i> Simpan Pengeluaran
+          <i class="bi bi-save me-1"></i> Simpan
         </button>
       </div>
     </div>
@@ -856,21 +861,24 @@
   </div>
 </div>
 
-<!-- MODAL LOGIN -->
+<!-- MODAL LOGIN STAF (DIBUKA LEWAT KUNCI FOOTER) -->
 <div class="modal fade" id="modalAuth" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content rounded-4 border-0">
       <div class="modal-header border-0 pb-0">
-        <h6 class="modal-title fw-bold">Login Admin / Mekanik</h6>
+        <div>
+          <h6 class="modal-title fw-bold"><i class="bi bi-shield-lock-fill text-primary me-1"></i>Akses Staf Bengkel</h6>
+          <small class="text-muted" style="font-size:11px">Masuk sesuai akun Admin atau Mekanik</small>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <label class="form-label small">Username</label>
-        <input id="loginUser" class="form-control mb-2" placeholder="admin / mekanik">
-        <label class="form-label small">PIN Akses</label>
-        <input id="loginPin" type="password" inputmode="numeric" class="form-control mb-3" placeholder="••••••"
+        <label class="form-label small fw-semibold">Username</label>
+        <input id="loginUser" class="form-control form-control-sm mb-2" placeholder="admin / mekanik">
+        <label class="form-label small fw-semibold">PIN Akses</label>
+        <input id="loginPin" type="password" inputmode="numeric" class="form-control form-control-sm mb-3" placeholder="••••••"
                onkeydown="if(event.key==='Enter')submitLogin()">
-        <button class="btn btn-primary w-100 fw-semibold" onclick="submitLogin()">MASUK</button>
+        <button class="btn btn-primary btn-sm w-100 fw-semibold py-2" onclick="submitLogin()">MASUK PANEL</button>
       </div>
     </div>
   </div>
@@ -887,19 +895,19 @@
       <div class="modal-body">
         <input type="hidden" id="srvId">
         <div class="row g-2 mb-2">
-          <div class="col-md-6">
+          <div class="col-6">
             <label class="form-label small fw-semibold">Nama Pelanggan *</label>
             <input id="srvNama" class="form-control form-control-sm" placeholder="Nama pelanggan">
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label class="form-label small fw-semibold">Nomor WhatsApp *</label>
             <input id="srvTelepon" inputmode="tel" class="form-control form-control-sm" placeholder="08xxxxxxxxxx">
           </div>
-          <div class="col-md-6">
+          <div class="col-7">
             <label class="form-label small fw-semibold">Jenis Motor *</label>
-            <input id="srvMotor" class="form-control form-control-sm" placeholder="Honda Vario 150 / NMAX">
+            <input id="srvMotor" class="form-control form-control-sm" placeholder="Vario 150 / NMAX">
           </div>
-          <div class="col-md-6">
+          <div class="col-5">
             <label class="form-label small fw-semibold">Nomor Polisi</label>
             <input id="srvPlat" class="form-control form-control-sm text-uppercase" placeholder="H 1234 AB">
           </div>
@@ -911,11 +919,11 @@
         </div>
 
         <div class="row g-2 mb-2">
-          <div class="col-md-6">
+          <div class="col-6">
             <label class="form-label small fw-semibold">Diagnosa Kerusakan</label>
             <textarea id="srvKerusakan" rows="2" class="form-control form-control-sm"></textarea>
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label class="form-label small fw-semibold">Tindakan Perbaikan</label>
             <textarea id="srvTindakan" rows="2" class="form-control form-control-sm"></textarea>
           </div>
@@ -923,25 +931,25 @@
 
         <!-- PILIH SPAREPART DARI STOK ATAU MANUAL -->
         <div class="bg-light p-2 rounded-3 mb-2">
-          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-            <span class="small fw-bold"><i class="bi bi-box-seam me-1"></i>Sparepart Digunakan</span>
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-2">
+            <span class="small fw-bold"><i class="bi bi-box-seam me-1"></i>Sparepart</span>
             <div class="d-flex gap-1">
-              <select id="selectPartStok" class="form-select form-select-sm" style="max-width:210px">
-                <option value="">-- Pilih dari Stok --</option>
+              <select id="selectPartStok" class="form-select form-select-sm" style="max-width:175px">
+                <option value="">-- Dari Stok --</option>
               </select>
-              <button type="button" class="btn btn-dark btn-sm" onclick="addPartFromStock()">+ Stok</button>
-              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addPartRow()">+ Manual</button>
+              <button type="button" class="btn btn-dark btn-sm px-2" onclick="addPartFromStock()">+ Stok</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm px-2" onclick="addPartRow()">+ Manual</button>
             </div>
           </div>
           <div id="srvPartsContainer"></div>
         </div>
 
         <div class="row g-2 mb-2">
-          <div class="col-md-4">
+          <div class="col-6 col-md-4">
             <label class="form-label small fw-semibold">Biaya Jasa (Rp)</label>
             <input id="srvJasa" type="number" min="0" value="0" class="form-control form-control-sm" oninput="calcServisTotal()">
           </div>
-          <div class="col-md-4">
+          <div class="col-6 col-md-4">
             <label class="form-label small fw-semibold">Status Pengerjaan</label>
             <select id="srvStatus" class="form-select form-select-sm">
               <option>Menunggu pemeriksaan</option>
@@ -952,49 +960,49 @@
               <option>Dibatalkan</option>
             </select>
           </div>
-          <div class="col-md-4">
+          <div class="col-6 col-md-4">
             <label class="form-label small fw-semibold">Estimasi Selesai</label>
             <input id="srvEstimasi" type="date" class="form-control form-control-sm">
           </div>
-          <div class="col-md-6">
-            <label class="form-label small fw-semibold">Mekanik Penanggung Jawab</label>
-            <input id="srvMekanik" list="listMekanik" class="form-control form-control-sm" placeholder="Pilih atau ketik nama mekanik">
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Mekanik</label>
+            <input id="srvMekanik" list="listMekanik" class="form-control form-control-sm" placeholder="Nama mekanik">
             <datalist id="listMekanik"></datalist>
           </div>
-          <div class="col-md-6">
+          <div class="col-12 col-md-6">
             <label class="form-label small fw-semibold">Catatan Tambahan</label>
             <input id="srvCatatan" class="form-control form-control-sm">
           </div>
         </div>
 
         <!-- CANVAS TANDA TANGAN DIGITAL SERAH TERIMA -->
-        <div class="bg-light p-2 p-md-3 rounded-3 mb-2 border">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="small fw-bold"><i class="bi bi-pen me-1 text-primary"></i>Tanda Tangan Serah Terima Motor</span>
-            <small class="text-muted">Gunakan jari pada kotak di bawah</small>
+        <div class="bg-light p-2 rounded-3 mb-2 border">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-bold"><i class="bi bi-pen me-1 text-primary"></i>Tanda Tangan Serah Terima</span>
+            <small class="text-muted" style="font-size:11px">Gores dengan jari</small>
           </div>
           <div class="row g-2">
-            <div class="col-md-6">
+            <div class="col-6">
               <div class="d-flex justify-content-between align-items-center mb-1">
-                <label class="small fw-semibold mb-0">Tanda Tangan Mekanik</label>
-                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" onclick="clearSignature('mekanik')">
-                  <i class="bi bi-eraser"></i> Ulangi
+                <label class="small fw-semibold mb-0" style="font-size:11.5px">TTD Mekanik</label>
+                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" style="font-size:11px" onclick="clearSignature('mekanik')">
+                  Ulangi
                 </button>
               </div>
               <div class="sig-pad-wrap">
-                <canvas id="canvasTtdMekanik" class="sig-canvas" width="280" height="105"></canvas>
+                <canvas id="canvasTtdMekanik" class="sig-canvas" width="280" height="100"></canvas>
                 <div class="sig-guide"></div>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-6">
               <div class="d-flex justify-content-between align-items-center mb-1">
-                <label class="small fw-semibold mb-0">Tanda Tangan Pelanggan</label>
-                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" onclick="clearSignature('pelanggan')">
-                  <i class="bi bi-eraser"></i> Ulangi
+                <label class="small fw-semibold mb-0" style="font-size:11.5px">TTD Pelanggan</label>
+                <button type="button" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" style="font-size:11px" onclick="clearSignature('pelanggan')">
+                  Ulangi
                 </button>
               </div>
               <div class="sig-pad-wrap">
-                <canvas id="canvasTtdPelanggan" class="sig-canvas" width="280" height="105"></canvas>
+                <canvas id="canvasTtdPelanggan" class="sig-canvas" width="280" height="100"></canvas>
                 <div class="sig-guide"></div>
               </div>
             </div>
@@ -1002,26 +1010,26 @@
         </div>
 
         <div class="alert alert-primary py-2 px-3 mb-0 d-flex justify-content-between align-items-center">
-          <span class="small fw-semibold">Total Estimasi Biaya:</span>
-          <strong class="fs-5 text-primary" id="srvTotalLabel">Rp0</strong>
+          <span class="small fw-semibold">Total Estimasi:</span>
+          <strong class="fs-6 text-primary" id="srvTotalLabel">Rp0</strong>
         </div>
       </div>
       <div class="modal-footer flex-wrap gap-1 justify-content-between">
         <div class="d-flex gap-1">
           <button type="button" id="btnModalPrintNota" class="btn btn-dark btn-sm d-none">
-            <i class="bi bi-printer me-1"></i>Nota 58mm
+            <i class="bi bi-printer"></i> Nota
           </button>
           <button type="button" id="btnModalPrintQR" class="btn btn-outline-dark btn-sm d-none">
-            <i class="bi bi-qr-code me-1"></i>Tiket QR
+            <i class="bi bi-qr-code"></i> QR
           </button>
         </div>
         <div class="d-flex gap-1 ms-auto">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
           <button type="button" id="btnSaveServisPrint" class="btn btn-outline-primary btn-sm fw-semibold" onclick="saveServis(true)">
-            <i class="bi bi-printer me-1"></i>Simpan & Cetak
+            Simpan & Cetak
           </button>
           <button type="button" id="btnSaveServis" class="btn btn-primary btn-sm fw-semibold" onclick="saveServis(false)">
-            <i class="bi bi-save me-1"></i>Simpan
+            Simpan
           </button>
         </div>
       </div>
@@ -1177,7 +1185,7 @@
 </div>
 
 <!-- TOAST NOTIFIKASI -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:1060">
   <div id="liveToast" class="toast align-items-center text-bg-dark border-0 rounded-3" role="alert">
     <div class="d-flex">
       <div class="toast-body small" id="toastMsg"></div>
@@ -1236,7 +1244,7 @@ function toast(msg, type = "dark") {
   const el = $("liveToast");
   el.className = `toast align-items-center text-bg-${type} border-0 rounded-3`;
   $("toastMsg").textContent = msg;
-  bootstrap.Toast.getOrCreateInstance(el, { delay: 3200 }).show();
+  bootstrap.Toast.getOrCreateInstance(el, { delay: 3000 }).show();
 }
 
 function showModal(id) {
@@ -1245,6 +1253,42 @@ function showModal(id) {
 function hideModal(id) {
   const inst = bootstrap.Modal.getInstance($(id));
   if (inst) inst.hide();
+}
+
+// ========================================
+// NAVIGASI DINAMIS (PELANGGAN & STAF)
+// ========================================
+function switchPublicTab(tab) {
+  const isCek = tab === "cek";
+  $("btnPubTabCek").classList.toggle("active", isCek);
+  $("btnPubTabBoard").classList.toggle("active", !isCek);
+  $("pubViewCek").classList.toggle("d-none", !isCek);
+  $("pubViewBoard").classList.toggle("d-none", isCek);
+  if (!isCek) loadPublicBoard();
+}
+
+function switchStaffView(viewId, btnEl = null) {
+  const isAdmin = state.user && state.user.role === "admin";
+  if (!isAdmin && !["viewDash", "viewServis"].includes(viewId)) {
+    viewId = "viewServis";
+  }
+
+  document.querySelectorAll(".staff-view").forEach(v => v.classList.add("d-none"));
+  const target = $(viewId);
+  if (target) target.classList.remove("d-none");
+
+  document.querySelectorAll(".bnav-item").forEach(b => {
+    b.classList.toggle("active", b.dataset.target === viewId);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function handleSecretFooterTap() {
+  if (state.user) {
+    toast(`Aktif sebagai ${state.user.nama} (${state.user.role.toUpperCase()})`, "info");
+    return;
+  }
+  openAuthModal();
 }
 
 // ========================================
@@ -1341,7 +1385,7 @@ function getSignatureDataUrl(key) {
 }
 
 // ========================================
-// PEMINDAI QR CODE KAMERA HP (HTML5-QRCODE)
+// PEMINDAI QR CODE KAMERA HP
 // ========================================
 let qrScanner = null;
 let currentScanMode = "public";
@@ -1481,6 +1525,7 @@ async function handleQrDetected(decodedText) {
       toast("Tiket servis " + kode + " tidak ditemukan.", "danger");
     }
   } else {
+    switchPublicTab("cek");
     $("kodeCari").value = kode;
     toast("Kode servis terdeteksi: " + kode, "success");
     if (/^\d{4}$/.test($("hpCari").value.trim())) {
@@ -1495,7 +1540,7 @@ async function handleQrDetected(decodedText) {
 // API HELPER
 // ========================================
 async function apiGet(params) {
-  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi di index.html.");
+  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi.");
   const url = new URL(GAS_URL);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   const res = await fetch(url.toString());
@@ -1503,7 +1548,7 @@ async function apiGet(params) {
 }
 
 async function apiPost(payload) {
-  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi di index.html.");
+  if (!GAS_URL) throw new Error("URL Web App GAS belum diisi.");
   const res = await fetch(GAS_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -1513,7 +1558,7 @@ async function apiPost(payload) {
 }
 
 // ========================================
-// AUTENTIKASI & HAK AKSES
+// AUTENTIKASI & HAK AKSES ROLE
 // ========================================
 function openAuthModal() {
   $("loginUser").value = "";
@@ -1535,8 +1580,9 @@ async function submitLogin() {
     localStorage.setItem(AUTH_KEY, JSON.stringify(state.auth));
     hideModal("modalAuth");
     applyRoleUI();
+    switchStaffView(r.user.role === "mekanik" ? "viewServis" : "viewDash");
     await syncAllData();
-    toast("Selamat datang, " + r.user.nama, "success");
+    toast("Masuk sebagai " + r.user.nama, "success");
   } catch (e) {
     toast(e.message, "danger");
   }
@@ -1547,24 +1593,32 @@ function logoutUser() {
   state.user = null;
   localStorage.removeItem(AUTH_KEY);
   applyRoleUI();
-  toast("Anda telah keluar dari panel staf.");
+  toast("Keluar dari panel staf.");
 }
 
 function applyRoleUI() {
   const loggedIn = Boolean(state.user);
+  $("publicCustomerSection").classList.toggle("d-none", loggedIn);
   $("workspaceSection").classList.toggle("d-none", !loggedIn);
+  $("mobileBottomNav").classList.toggle("d-none", !loggedIn);
   $("userBar").classList.toggle("d-none", !loggedIn);
   $("userBar").classList.toggle("d-flex", loggedIn);
-  $("btnAuth").classList.toggle("d-none", loggedIn);
 
   if (loggedIn) {
     const isAdmin = state.user.role === "admin";
+    $("headerSubtitle").textContent = isAdmin
+      ? "Panel Manajemen Admin Bengkel"
+      : "Panel Kerja Mekanik • Data Servis";
     $("badgeRole").textContent = state.user.role.toUpperCase();
     $("labelUser").textContent = state.user.nama;
     document.querySelectorAll(".admin-only").forEach(el => {
       el.classList.toggle("d-none", !isAdmin);
     });
     $("srvJasa").readOnly = !isAdmin;
+    document.body.style.paddingBottom = "76px";
+  } else {
+    $("headerSubtitle").textContent = "Portal Cek Status Servis Motor";
+    document.body.style.paddingBottom = "24px";
   }
 }
 
@@ -1594,7 +1648,7 @@ async function syncAllData() {
 }
 
 // ========================================
-// DASHBOARD & RENDER TABEL
+// DASHBOARD & RENDER KARTU COMPACT HP
 // ========================================
 function statusBadge(status) {
   const s = String(status || "").toLowerCase();
@@ -1608,9 +1662,9 @@ function statusBadge(status) {
 function renderAllWorkspace() {
   renderDashboard();
   renderServisTable();
-  renderPelangganTable();
-  renderPartTable();
   if (state.user && state.user.role === "admin") {
+    renderPelangganTable();
+    renderPartTable();
     renderKeuangan();
     renderUserTable();
   }
@@ -1630,19 +1684,19 @@ function renderDashboard() {
   const kpis = isAdmin
     ? [
         { label: "Omzet Bulan Ini", val: rupiah(omzetBulan), color: "text-success" },
-        { label: "Motor Dikerjakan", val: aktif.length + " Unit", color: "text-primary" },
-        { label: "Servis Selesai", val: selesai.length + " Unit", color: "text-dark" },
+        { label: "Unit Aktif", val: aktif.length + " Motor", color: "text-primary" },
+        { label: "Servis Selesai", val: selesai.length + " Motor", color: "text-dark" },
         { label: "Stok Menipis", val: lowParts.length + " Item", color: "text-danger" }
       ]
     : [
-        { label: "Antrean Bengkel", val: aktif.length + " Unit", color: "text-primary" },
-        { label: "Dalam Pengerjaan", val: aktif.filter(x => x.status === "Dalam pengerjaan").length + " Unit", color: "text-warning" },
-        { label: "Selesai Dikerjakan", val: selesai.length + " Unit", color: "text-success" },
-        { label: "Stok Menipis", val: lowParts.length + " Item", color: "text-danger" }
+        { label: "Antrean Bengkel", val: aktif.length + " Motor", color: "text-primary" },
+        { label: "Dikerjakan", val: aktif.filter(x => x.status === "Dalam pengerjaan").length + " Motor", color: "text-warning-emphasis" },
+        { label: "Selesai", val: selesai.length + " Motor", color: "text-success" },
+        { label: "Total Tiket", val: state.servis.length + " Tiket", color: "text-dark" }
       ];
 
   $("kpiContainer").innerHTML = kpis.map(k => `
-    <div class="col-6 col-md-3">
+    <div class="col-6">
       <div class="kpi-card">
         <div class="kpi-label">${k.label}</div>
         <div class="kpi-val ${k.color}">${k.val}</div>
@@ -1650,39 +1704,39 @@ function renderDashboard() {
     </div>
   `).join("");
 
-  $("dashActiveList").innerHTML = aktif.length
-    ? aktif.slice(0, 8).map(s => `
-        <tr>
-          <td>
-            <strong>${esc(s.kodeServis)}</strong>
-            <div class="text-muted">${esc(s.motor)} (${esc(s.plat || "-")})</div>
-          </td>
-          <td>
+  $("dashActiveCards").innerHTML = aktif.length
+    ? aktif.slice(0, 6).map(s => `
+        <div class="border rounded-3 p-2 mb-2 bg-light bg-opacity-50">
+          <div class="d-flex justify-content-between align-items-start gap-1 mb-1">
+            <div>
+              <strong class="small">${esc(s.motor)}</strong>
+              <span class="badge bg-white text-dark border ms-1">${esc(s.plat || "-")}</span>
+              <div class="text-muted" style="font-size:11px">${esc(s.kodeServis)} • ${esc(s.nama)}</div>
+            </div>
             ${statusBadge(s.status)}
-            <div class="text-muted mt-1"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
-          </td>
-          <td>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-1 pt-1 border-top">
+            <small class="text-muted"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</small>
             <div class="action-stack">
               <button class="btn btn-outline-primary" onclick="openServisModal('${esc(s.id)}')">Edit</button>
               <button class="btn btn-dark" onclick="printNota58('${esc(s.id)}')"><i class="bi bi-printer"></i> Nota</button>
               <button class="btn btn-outline-dark" onclick="printLabelQR58('${esc(s.id)}')"><i class="bi bi-qr-code"></i> QR</button>
             </div>
-          </td>
-        </tr>
-      `).join("")
-    : `<tr><td colspan="3" class="text-muted">Tidak ada antrean aktif.</td></tr>`;
-
-  $("lowStockList").innerHTML = lowParts.length
-    ? lowParts.map(p => `
-        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-          <div>
-            <strong>${esc(p.namaPart)}</strong>
-            <div class="text-muted">${esc(p.kodePart)}</div>
           </div>
-          <span class="badge bg-danger">Sisa ${p.stok}</span>
         </div>
       `).join("")
-    : `<p class="text-muted mb-0">Semua stok sparepart dalam batas aman.</p>`;
+    : `<div class="text-muted small py-2">Tidak ada antrean aktif.</div>`;
+
+  if (isAdmin) {
+    $("lowStockList").innerHTML = lowParts.length
+      ? lowParts.map(p => `
+          <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+            <span><strong>${esc(p.namaPart)}</strong> <small class="text-muted">(${esc(p.kodePart)})</small></span>
+            <span class="badge bg-danger">Sisa ${p.stok}</span>
+          </div>
+        `).join("")
+      : `<span class="text-muted">Semua stok sparepart aman.</span>`;
+  }
 }
 
 function renderServisTable() {
@@ -1696,46 +1750,48 @@ function renderServisTable() {
     return matchQ && matchSt;
   });
 
-  $("servisTableBody").innerHTML = filtered.length
+  $("servisCardList").innerHTML = filtered.length
     ? filtered.map(s => {
         const hasSigned = s.ttdPelanggan || s.ttdMekanik;
         return `
-          <tr>
-            <td>
-              <strong>${esc(s.kodeServis)}</strong>
-              <div class="text-muted">${esc(s.tanggalMasuk)}</div>
-            </td>
-            <td>
-              <strong>${esc(s.nama)}</strong> <span class="text-muted">(${esc(s.telepon)})</span>
-              <div>${esc(s.motor)} • <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
-              <div class="text-muted"><i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}</div>
-            </td>
-            <td>
-              ${statusBadge(s.status)}
-              ${hasSigned ? `<span class="badge bg-info-subtle text-info-emphasis ms-1" title="Sudah ditandatangani"><i class="bi bi-pen-fill"></i> TTD</span>` : ""}
-              <div class="fw-bold text-primary mt-1">${rupiah(s.estimasiTotal)}</div>
-            </td>
-            <td>
+          <div class="ticket-card">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+              <div>
+                <span class="fw-bold small text-primary">${esc(s.kodeServis)}</span>
+                <span class="text-muted" style="font-size:11px"> • ${esc(s.tanggalMasuk)}</span>
+                <div class="fw-bold">${esc(s.motor)} <span class="badge bg-light text-dark border">${esc(s.plat || "-")}</span></div>
+                <div class="text-muted small">${esc(s.nama)} (${esc(s.telepon)})</div>
+              </div>
+              <div class="text-end">
+                ${statusBadge(s.status)}
+                <div class="fw-bold text-dark small mt-1">${rupiah(s.estimasiTotal)}</div>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 pt-2 mt-1 border-top">
+              <div class="text-muted" style="font-size:11.5px">
+                <i class="bi bi-person-gear"></i> ${esc(s.mekanik || "-")}
+                ${hasSigned ? `<span class="badge bg-info-subtle text-info-emphasis ms-1"><i class="bi bi-pen-fill"></i> TTD</span>` : ""}
+              </div>
               <div class="action-stack">
-                <button class="btn btn-dark fw-semibold" title="Cetak Nota 58mm" onclick="printNota58('${esc(s.id)}')">
+                <button class="btn btn-dark fw-semibold" onclick="printNota58('${esc(s.id)}')">
                   <i class="bi bi-printer"></i> Nota
                 </button>
-                <button class="btn btn-outline-dark" title="Cetak / Lihat QR Tiket" onclick="openQRModal('${esc(s.id)}')">
+                <button class="btn btn-outline-dark" onclick="openQRModal('${esc(s.id)}')">
                   <i class="bi bi-qr-code"></i> QR
                 </button>
-                <button class="btn btn-outline-primary" title="Edit & Tanda Tangan" onclick="openServisModal('${esc(s.id)}')">
+                <button class="btn btn-outline-primary" onclick="openServisModal('${esc(s.id)}')">
                   <i class="bi bi-pencil"></i> Edit
                 </button>
-                <button class="btn btn-success" title="Kirim Nota WA" onclick="kirimWhatsApp('${esc(s.id)}')">
+                <button class="btn btn-success" onclick="kirimWhatsApp('${esc(s.id)}')">
                   <i class="bi bi-whatsapp"></i> WA
                 </button>
-                ${isAdmin ? `<button class="btn btn-outline-danger" title="Hapus" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
+                ${isAdmin ? `<button class="btn btn-outline-danger" onclick="confirmDelete('servis','${esc(s.id)}','${esc(s.kodeServis)}')"><i class="bi bi-trash"></i></button>` : ""}
               </div>
-            </td>
-          </tr>
+            </div>
+          </div>
         `;
       }).join("")
-    : `<tr><td colspan="4" class="text-center text-muted py-3">Data servis tidak ditemukan.</td></tr>`;
+    : `<div class="text-center text-muted small py-3">Data servis tidak ditemukan.</div>`;
 }
 
 // ========================================
@@ -1750,7 +1806,7 @@ function populateMechanicDatalist() {
 
 function openServisModal(id = "", prefill = null) {
   populateMechanicDatalist();
-  $("selectPartStok").innerHTML = `<option value="">-- Pilih dari Stok --</option>` +
+  $("selectPartStok").innerHTML = `<option value="">-- Dari Stok --</option>` +
     state.parts.map(p => `<option value="${esc(p.id)}">${esc(p.namaPart)} (Stok: ${p.stok} | ${rupiah(p.hargaJual)})</option>`).join("");
 
   $("srvPartsContainer").innerHTML = "";
@@ -1787,7 +1843,7 @@ function openServisModal(id = "", prefill = null) {
     btnNota.onclick = () => printNota58(s.id);
     btnQr.onclick = () => printLabelQR58(s.id);
   } else {
-    $("titleModalServis").textContent = "Input Servis Motor Baru";
+    $("titleModalServis").textContent = "Input Servis Baru";
     $("srvId").value = "";
     $("srvNama").value = prefill ? prefill.nama : "";
     $("srvTelepon").value = prefill ? prefill.telepon : "";
@@ -1912,11 +1968,51 @@ async function saveServis(autoPrint = false) {
 }
 
 // ========================================
+// SHARE QR & LINK APLIKASI PELANGGAN
+// ========================================
+function getCustomerAppUrl() {
+  return window.location.origin + window.location.pathname;
+}
+
+function openShareCustomerAppModal() {
+  const url = getCustomerAppUrl();
+  $("shareAppBengkelName").textContent = BENGKEL_INFO.nama;
+  $("qrCustomerAppBox").innerHTML = "";
+  new QRCode($("qrCustomerAppBox"), {
+    text: url,
+    width: 170,
+    height: 170
+  });
+  showModal("modalShareCustomerApp");
+}
+
+async function copyCustomerAppLink() {
+  const url = getCustomerAppUrl();
+  try {
+    await navigator.clipboard.writeText(url);
+    toast("Link aplikasi pelanggan disalin!", "success");
+  } catch (_) {
+    toast("Link: " + url, "info");
+  }
+}
+
+function shareCustomerAppWa() {
+  const url = getCustomerAppUrl();
+  const msg = [
+    `Halo Kak, pantau progres servis motor Anda secara real-time melalui aplikasi *${BENGKEL_INFO.nama}* di tautan berikut:`,
+    url,
+    ``,
+    `Klik *Install / Tambahkan ke Layar Utama* agar mudah dibuka kapan saja.`
+  ].join("\n");
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+// ========================================
 // PENGELUARAN OPERASIONAL BENGKEL (ADMIN)
 // ========================================
 function openExpenseModal(id = "", prefill = null) {
   const exp = id ? state.expenses.find(x => x.id === id) : null;
-  $("titleModalExpense").textContent = exp ? "Edit Pengeluaran Operasional" : "Catat Pengeluaran Operasional";
+  $("titleModalExpense").textContent = exp ? "Edit Pengeluaran" : "Catat Pengeluaran";
   $("expId").value = exp ? exp.id : "";
   $("expTanggal").value = exp ? exp.tanggal : (prefill?.tanggal || todayWIB());
   $("expKategori").value = exp ? exp.kategori : (prefill?.kategori || "Gaji / Komisi Mekanik");
@@ -1979,14 +2075,10 @@ function getMechanicCommissionSummary(rows) {
       );
 
       let rate = defaultRate;
-      let rateSource = "Default";
-
       if (state.komisiOverrides[key] !== undefined) {
         rate = state.komisiOverrides[key];
-        rateSource = "Simulasi";
       } else if (matchedUser) {
         rate = Number(matchedUser.komisiPersen ?? defaultRate);
-        rateSource = "Akun";
       }
 
       map.set(key, {
@@ -1995,7 +2087,6 @@ function getMechanicCommissionSummary(rows) {
         role: matchedUser ? matchedUser.role : "",
         nomorWa: matchedUser ? String(matchedUser.nomorWa || "") : "",
         rate,
-        rateSource,
         unitCount: 0,
         totalJasa: 0,
         tickets: []
@@ -2027,11 +2118,10 @@ function renderKomisiMekanik(cachedRows = null) {
   const rows = cachedRows || getFilteredFinancialRows();
   const summary = getMechanicCommissionSummary(rows);
 
-  let totalUnit = 0, totalJasa = 0, totalKomisi = 0;
+  let totalJasa = 0, totalKomisi = 0;
 
   $("komisiTableBody").innerHTML = summary.length
     ? summary.map(m => {
-        totalUnit += m.unitCount;
         totalJasa += m.totalJasa;
         totalKomisi += m.komisiNominal;
 
@@ -2039,10 +2129,8 @@ function renderKomisiMekanik(cachedRows = null) {
           <tr>
             <td>
               <strong>${esc(m.nama)}</strong>
-              ${m.role ? `<span class="badge bg-info-subtle text-info-emphasis ms-1">${esc(m.role)}</span>` : ""}
-              <div class="text-muted" style="font-size:11px">Tarif: ${esc(m.rateSource)} ${m.nomorWa ? `• WA: ${esc(m.nomorWa)}` : ""}</div>
+              <div class="text-muted" style="font-size:10.5px">${m.unitCount} unit</div>
             </td>
-            <td class="text-center"><span class="badge bg-primary-subtle text-primary">${m.unitCount} unit</span></td>
             <td class="text-end">${rupiah(m.totalJasa)}</td>
             <td class="text-center">
               <input type="number" min="0" max="100" value="${m.rate}"
@@ -2052,34 +2140,26 @@ function renderKomisiMekanik(cachedRows = null) {
             <td class="text-end fw-bold text-primary">${rupiah(m.komisiNominal)}</td>
             <td class="text-end text-nowrap">
               <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-outline-primary py-0 px-2" title="Rincian Unit"
-                        onclick="openDetailKomisiModal('${esc(m.key)}')">
-                  Detail
+                <button type="button" class="btn btn-outline-primary py-0 px-1" onclick="openDetailKomisiModal('${esc(m.key)}')" title="Detail">
+                  <i class="bi bi-list-ul"></i>
                 </button>
-                <button type="button" class="btn btn-dark py-0 px-2" title="Cetak Slip Komisi 58mm"
-                        onclick="printSlipKomisi58('${esc(m.key)}')">
-                  <i class="bi bi-printer"></i> Slip
+                <button type="button" class="btn btn-dark py-0 px-1" onclick="printSlipKomisi58('${esc(m.key)}')" title="Slip 58mm">
+                  <i class="bi bi-printer"></i>
                 </button>
-                <button type="button" class="btn btn-success py-0 px-2" title="Kirim Rekap via WhatsApp"
-                        onclick="kirimWhatsAppKomisi('${esc(m.key)}')">
+                <button type="button" class="btn btn-success py-0 px-1" onclick="kirimWhatsAppKomisi('${esc(m.key)}')" title="WA">
                   <i class="bi bi-whatsapp"></i>
-                </button>
-                <button type="button" class="btn btn-outline-danger py-0 px-2" title="Catat ke Pengeluaran"
-                        onclick="catatKomisiKePengeluaran('${esc(m.key)}')">
-                  <i class="bi bi-cash"></i>
                 </button>
               </div>
             </td>
           </tr>
         `;
       }).join("")
-    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada transaksi jasa mekanik pada periode ini.</td></tr>`;
+    : `<tr><td colspan="5" class="text-center text-muted py-2">Belum ada transaksi jasa pada periode ini.</td></tr>`;
 
   $("komisiTableFoot").innerHTML = summary.length
     ? `
       <tr>
-        <td>TOTAL KOMISI MEKANIK</td>
-        <td class="text-center">${totalUnit} unit</td>
+        <td>TOTAL</td>
         <td class="text-end">${rupiah(totalJasa)}</td>
         <td class="text-center">-</td>
         <td class="text-end text-primary">${rupiah(totalKomisi)}</td>
@@ -2098,19 +2178,18 @@ function openDetailKomisiModal(key) {
   const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
   if (!m) return;
 
-  $("titleDetailKomisi").textContent = `Rincian Jasa & Komisi: ${m.nama}`;
-  $("subDetailKomisi").textContent = `Periode ${getFinPeriodLabel()} • ${m.unitCount} Unit • Tarif ${m.rate}% • Komisi: ${rupiah(m.komisiNominal)}`;
+  $("titleDetailKomisi").textContent = `Komisi: ${m.nama}`;
+  $("subDetailKomisi").textContent = `${getFinPeriodLabel()} • ${m.unitCount} Unit • ${m.rate}% = ${rupiah(m.komisiNominal)}`;
 
   $("bodyDetailKomisi").innerHTML = `
     <div class="table-responsive">
       <table class="table table-sm align-middle small mb-0">
         <thead class="table-light">
           <tr>
-            <th>Tanggal & Kode</th>
-            <th>Motor / Plat</th>
-            <th>Tindakan</th>
-            <th class="text-end">Biaya Jasa</th>
-            <th class="text-end">Komisi (${m.rate}%)</th>
+            <th>Tgl & Kode</th>
+            <th>Motor</th>
+            <th class="text-end">Jasa</th>
+            <th class="text-end">Komisi</th>
           </tr>
         </thead>
         <tbody>
@@ -2120,20 +2199,12 @@ function openDetailKomisiModal(key) {
               <tr>
                 <td><strong>${esc(t.kodeServis)}</strong><div class="text-muted">${esc(t.tanggalMasuk)}</div></td>
                 <td>${esc(t.motor)} (${esc(t.plat || "-")})</td>
-                <td>${esc(t.tindakan || t.keluhan || "-")}</td>
                 <td class="text-end">${rupiah(t.omzetJasa)}</td>
                 <td class="text-end fw-bold text-primary">${rupiah(kom)}</td>
               </tr>
             `;
           }).join("")}
         </tbody>
-        <tfoot class="table-light fw-bold">
-          <tr>
-            <td colspan="3">TOTAL</td>
-            <td class="text-end">${rupiah(m.totalJasa)}</td>
-            <td class="text-end text-primary">${rupiah(m.komisiNominal)}</td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   `;
@@ -2154,8 +2225,6 @@ function printSlipKomisi58(key) {
   if (!m) return;
 
   const periode = getFinPeriodLabel();
-  const basisText = $("finBasis").value === "done" ? "Realisasi Selesai" : "Semua Tiket Aktif";
-
   const itemsHtml = m.tickets.map(t => {
     const kom = Math.round(Number(t.omzetJasa || 0) * (m.rate / 100));
     return `
@@ -2173,32 +2242,18 @@ function printSlipKomisi58(key) {
     <div class="p-line"></div>
     <div class="p-row"><span>Mekanik:</span><span class="p-bold">${esc(m.nama)}</span></div>
     <div class="p-row"><span>Periode:</span><span>${esc(periode)}</span></div>
-    <div class="p-row"><span>Basis:</span><span>${esc(basisText)}</span></div>
-    <div class="p-row"><span>Cetak:</span><span>${esc(todayWIB())}</span></div>
     <div class="p-line"></div>
-    <div class="p-bold">Rincian Unit & Komisi (${m.rate}%):</div>
     ${itemsHtml || "<div>- Tidak ada transaksi</div>"}
     <div class="p-line"></div>
-    <div class="p-row"><span>Jumlah Unit:</span><span>${m.unitCount} unit</span></div>
     <div class="p-row"><span>Total Jasa:</span><span>${rupiah(m.totalJasa)}</span></div>
-    <div class="p-row"><span>Tarif Komisi:</span><span>${m.rate}%</span></div>
-    <div class="p-line"></div>
-    <div class="p-row p-bold" style="font-size:13px"><span>KOMISI BERSIH</span><span>${rupiah(m.komisiNominal)}</span></div>
+    <div class="p-row"><span>Tarif:</span><span>${m.rate}%</span></div>
+    <div class="p-row p-bold" style="font-size:13px"><span>KOMISI</span><span>${rupiah(m.komisiNominal)}</span></div>
     <div class="p-line"></div>
     <div class="p-sig-grid" style="margin-top:8px">
-      <div>
-        <div style="font-size:9px">Admin Bengkel</div>
-        <div class="p-sig-box"></div>
-        <div class="p-sig-name">${esc(state.user?.nama || "Admin")}</div>
-      </div>
-      <div>
-        <div style="font-size:9px">Penerima</div>
-        <div class="p-sig-box"></div>
-        <div class="p-sig-name">${esc(m.nama)}</div>
-      </div>
+      <div><div style="font-size:9px">Admin</div><div class="p-sig-box"></div><div class="p-sig-name">${esc(state.user?.nama || "Admin")}</div></div>
+      <div><div style="font-size:9px">Penerima</div><div class="p-sig-box"></div><div class="p-sig-name">${esc(m.nama)}</div></div>
     </div>
   `;
-
   triggerThermalPrint(html, "");
 }
 
@@ -2208,53 +2263,37 @@ function kirimWhatsAppKomisi(key) {
   if (!m) return;
 
   const periode = getFinPeriodLabel();
-  const listUnit = m.tickets.slice(0, 25).map((t, idx) => {
+  const listUnit = m.tickets.slice(0, 20).map((t, idx) => {
     const kom = Math.round(Number(t.omzetJasa || 0) * (m.rate / 100));
-    return `${idx + 1}. ${t.tanggalMasuk} | ${t.motor} (${t.plat || "-"}) | Jasa ${rupiah(t.omzetJasa)} -> Komisi *${rupiah(kom)}*`;
+    return `${idx + 1}. ${t.tanggalMasuk} | ${t.motor} (${t.plat || "-"}) -> *${rupiah(kom)}*`;
   }).join("\n");
-
-  const extraNote = m.tickets.length > 25 ? `\n...dan ${m.tickets.length - 25} unit lainnya.` : "";
 
   const msg = [
     `*SLIP REKAP KOMISI MEKANIK*`,
     `*${BENGKEL_INFO.nama}*`,
     ``,
-    `Nama Mekanik: *${m.nama}*`,
+    `Mekanik: *${m.nama}*`,
     `Periode: *${periode}*`,
-    `Total Unit Dikerjakan: *${m.unitCount} unit*`,
-    `Total Omzet Jasa: *${rupiah(m.totalJasa)}*`,
-    `Persentase Komisi: *${m.rate}%*`,
-    `Total Komisi Diterima: *${rupiah(m.komisiNominal)}*`,
+    `Unit: *${m.unitCount} unit*`,
+    `Total Jasa: *${rupiah(m.totalJasa)}* (${m.rate}%)`,
+    `Total Komisi: *${rupiah(m.komisiNominal)}*`,
     ``,
-    `*Rincian Pekerjaan:*`,
-    listUnit + extraNote,
-    ``,
-    `Terima kasih atas kerja kerasnya!`
+    listUnit
   ].join("\n");
 
   const waTarget = formatWaNumber(m.nomorWa);
-  if (!waTarget) {
-    toast("Nomor WA mekanik belum diisi di Akun & Akses. Membuka pilihan kontak WA...", "info");
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-  } else {
-    window.open(`https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}`, "_blank");
-  }
+  window.open(waTarget ? `https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
 function catatKomisiKePengeluaran(key) {
   const rows = getFilteredFinancialRows();
   const m = getMechanicCommissionSummary(rows).find(x => x.key === key);
-  if (!m) return;
+  if (!m || m.komisiNominal <= 0) return toast("Nominal komisi Rp0.", "warning");
 
-  if (m.komisiNominal <= 0) {
-    return toast("Nominal komisi Rp0, tidak perlu dicatat ke pengeluaran.", "warning");
-  }
-
-  const periodeText = getFinPeriodLabel();
   openExpenseModal("", {
     tanggal: todayWIB(),
     kategori: "Gaji / Komisi Mekanik",
-    keterangan: `Komisi Mekanik ${m.nama} (${periodeText} • ${m.unitCount} unit • ${m.rate}%)`,
+    keterangan: `Komisi Mekanik ${m.nama} (${getFinPeriodLabel()} • ${m.unitCount} unit)`,
     nominal: m.komisiNominal
   });
 }
@@ -2263,8 +2302,7 @@ function catatKomisiKePengeluaran(key) {
 // LAPORAN KEUANGAN & LABA BERSIH (ADMIN)
 // ========================================
 function toggleFinMonth() {
-  const all = $("finAllMonths").checked;
-  $("finMonth").disabled = all;
+  $("finMonth").disabled = $("finAllMonths").checked;
   renderKeuangan();
 }
 
@@ -2282,33 +2320,28 @@ function getFilteredFinancialRows() {
     })
     .map(s => {
       const omzetJasa = Number(s.biayaJasa || 0);
-      let jualPart = 0;
-      let hppPart = 0;
+      let jualPart = 0, hppPart = 0;
 
       (s.sparepart || []).forEach(p => {
         const qty = Number(p.jumlah || 0);
         const hargaJual = Number(p.harga || 0);
         let hargaBeli = Number(p.hargaBeli || 0);
-
         if (!hargaBeli && p.partId) {
           const master = state.parts.find(mp => mp.id === p.partId);
           if (master) hargaBeli = Number(master.hargaBeli || 0);
         }
-
         jualPart += qty * hargaJual;
         hppPart += qty * hargaBeli;
       });
 
       const totalOmzet = omzetJasa + jualPart;
-      const marginServis = totalOmzet - hppPart;
-
       return {
         ...s,
         omzetJasa,
         jualPart,
         hppPart,
         totalOmzet,
-        marginServis
+        marginServis: totalOmzet - hppPart
       };
     });
 }
@@ -2316,9 +2349,7 @@ function getFilteredFinancialRows() {
 function getFilteredExpenseRows() {
   const allMonths = $("finAllMonths").checked;
   const selectedMonth = $("finMonth").value;
-  return state.expenses.filter(e =>
-    allMonths || !selectedMonth || String(e.tanggal).startsWith(selectedMonth)
-  );
+  return state.expenses.filter(e => allMonths || !selectedMonth || String(e.tanggal).startsWith(selectedMonth));
 }
 
 function renderKeuangan() {
@@ -2331,40 +2362,29 @@ function renderKeuangan() {
   const sumPart = rows.reduce((a, b) => a + b.jualPart, 0);
   const sumHpp = rows.reduce((a, b) => a + b.hppPart, 0);
   const sumExp = expRows.reduce((a, b) => a + Number(b.nominal || 0), 0);
-
   const sumOmzet = sumJasa + sumPart;
   const sumLabaBersih = sumOmzet - sumHpp - sumExp;
   const marginPct = sumOmzet > 0 ? ((sumLabaBersih / sumOmzet) * 100).toFixed(1) : "0.0";
 
   $("finKpiContainer").innerHTML = `
-    <div class="col-6 col-md">
+    <div class="col-6">
       <div class="kpi-card">
-        <div class="kpi-label">Omzet Jasa Servis</div>
-        <div class="kpi-val text-primary">${rupiah(sumJasa)}</div>
+        <div class="kpi-label">Omzet Jasa & Part</div>
+        <div class="kpi-val text-primary">${rupiah(sumOmzet)}</div>
       </div>
     </div>
-    <div class="col-6 col-md">
+    <div class="col-6">
       <div class="kpi-card">
-        <div class="kpi-label">Penjualan Sparepart</div>
-        <div class="kpi-val text-dark">${rupiah(sumPart)}</div>
+        <div class="kpi-label">HPP Modal + Biaya</div>
+        <div class="kpi-val text-danger">${rupiah(sumHpp + sumExp)}</div>
       </div>
     </div>
-    <div class="col-6 col-md">
-      <div class="kpi-card">
-        <div class="kpi-label">HPP Modal Sparepart</div>
-        <div class="kpi-val text-danger">${rupiah(sumHpp)}</div>
-      </div>
-    </div>
-    <div class="col-6 col-md">
-      <div class="kpi-card">
-        <div class="kpi-label">Biaya Operasional</div>
-        <div class="kpi-val text-warning-emphasis">${rupiah(sumExp)}</div>
-      </div>
-    </div>
-    <div class="col-12 col-md">
+    <div class="col-12">
       <div class="kpi-card border ${sumLabaBersih >= 0 ? "border-success border-opacity-25 bg-success-subtle bg-opacity-10" : "border-danger border-opacity-25 bg-danger-subtle bg-opacity-10"}">
-        <div class="kpi-label">Laba Bersih (${marginPct}%)</div>
-        <div class="kpi-val ${sumLabaBersih >= 0 ? "text-success" : "text-danger"}">${rupiah(sumLabaBersih)}</div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="kpi-label fw-semibold">Laba Bersih (${marginPct}%)</div>
+          <div class="kpi-val ${sumLabaBersih >= 0 ? "text-success" : "text-danger"}">${rupiah(sumLabaBersih)}</div>
+        </div>
       </div>
     </div>
   `;
@@ -2375,19 +2395,15 @@ function renderKeuangan() {
   const expPct = Math.min(100 - profitPct - hppPct, Math.round((sumExp / baseTotal) * 100));
 
   $("finMarginBox").innerHTML = `
-    <div class="d-flex flex-wrap justify-content-between align-items-center small mb-1">
-      <span><strong>Total Pendapatan Kotor:</strong> ${rupiah(sumOmzet)}</span>
-      <span class="${sumLabaBersih >= 0 ? "text-success" : "text-danger"} fw-bold">Margin Bersih: ${marginPct}%</span>
+    <div class="progress mb-1" style="height:8px;border-radius:99px">
+      <div class="progress-bar bg-success" style="width:${profitPct}%"></div>
+      <div class="progress-bar bg-danger" style="width:${hppPct}%"></div>
+      <div class="progress-bar bg-warning" style="width:${expPct}%"></div>
     </div>
-    <div class="progress" style="height:10px;border-radius:99px">
-      <div class="progress-bar bg-success" style="width:${profitPct}%" title="Laba Bersih"></div>
-      <div class="progress-bar bg-danger" style="width:${hppPct}%" title="HPP Modal Sparepart"></div>
-      <div class="progress-bar bg-warning" style="width:${expPct}%" title="Pengeluaran Operasional"></div>
-    </div>
-    <div class="d-flex flex-wrap justify-content-between text-muted mt-1 gap-2" style="font-size:11px">
-      <span><i class="bi bi-square-fill text-success me-1"></i>Laba Bersih (${rupiah(sumLabaBersih)})</span>
-      <span><i class="bi bi-square-fill text-danger me-1"></i>HPP Modal (${rupiah(sumHpp)})</span>
-      <span><i class="bi bi-square-fill text-warning me-1"></i>Operasional (${rupiah(sumExp)})</span>
+    <div class="d-flex flex-wrap justify-content-between text-muted" style="font-size:10.5px">
+      <span><i class="bi bi-square-fill text-success me-1"></i>Laba ${rupiah(sumLabaBersih)}</span>
+      <span><i class="bi bi-square-fill text-danger me-1"></i>Modal ${rupiah(sumHpp)}</span>
+      <span><i class="bi bi-square-fill text-warning me-1"></i>Biaya ${rupiah(sumExp)}</span>
     </div>
   `;
 
@@ -2396,52 +2412,44 @@ function renderKeuangan() {
   $("expenseTableBody").innerHTML = expRows.length
     ? expRows.map(e => `
         <tr>
-          <td>${esc(e.tanggal)}</td>
-          <td><span class="badge bg-light text-dark border">${esc(e.kategori)}</span></td>
-          <td>${esc(e.keterangan)}</td>
-          <td>${esc(e.metode)}</td>
-          <td class="text-end fw-semibold text-danger">${rupiah(e.nominal)}</td>
-          <td class="text-end">
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary py-0 px-1" onclick="openExpenseModal('${esc(e.id)}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-outline-danger py-0 px-1" onclick="confirmDelete('expense','${esc(e.id)}','${esc(e.keterangan)}')"><i class="bi bi-trash"></i></button>
-            </div>
+          <td>
+            <strong>${esc(e.keterangan)}</strong>
+            <div class="text-muted" style="font-size:10.5px">${esc(e.tanggal)} • ${esc(e.kategori)}</div>
+          </td>
+          <td class="text-end text-danger fw-semibold">${rupiah(e.nominal)}</td>
+          <td class="text-end text-nowrap">
+            <button class="btn btn-outline-primary btn-sm py-0 px-1" onclick="openExpenseModal('${esc(e.id)}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-outline-danger btn-sm py-0 px-1" onclick="confirmDelete('expense','${esc(e.id)}','${esc(e.keterangan)}')"><i class="bi bi-trash"></i></button>
           </td>
         </tr>
       `).join("")
-    : `<tr><td colspan="6" class="text-center text-muted py-2">Belum ada pengeluaran operasional tercatat pada periode ini.</td></tr>`;
+    : `<tr><td colspan="3" class="text-center text-muted py-2">Belum ada pengeluaran.</td></tr>`;
 
   $("expenseTableFoot").innerHTML = expRows.length
-    ? `<tr><td colspan="4">TOTAL PENGELUARAN OPERASIONAL</td><td class="text-end text-danger">${rupiah(sumExp)}</td><td></td></tr>`
+    ? `<tr><td>TOTAL BIAYA</td><td class="text-end text-danger">${rupiah(sumExp)}</td><td></td></tr>`
     : "";
 
-  $("finCountBadge").textContent = rows.length + " Transaksi";
+  $("finCountBadge").textContent = rows.length + " Tiket";
 
   $("finTableBody").innerHTML = rows.length
     ? rows.map(r => `
         <tr>
           <td>
             <strong>${esc(r.kodeServis)}</strong>
-            <div class="text-muted">${esc(r.tanggalMasuk)}</div>
+            <div class="text-muted" style="font-size:10.5px">${esc(r.motor)} (${esc(r.plat || "-")})</div>
           </td>
-          <td>
-            <strong>${esc(r.nama)}</strong>
-            <div class="text-muted">${esc(r.motor)} (${esc(r.plat || "-")})</div>
-          </td>
-          <td class="text-end">${rupiah(r.omzetJasa)}</td>
-          <td class="text-end">${rupiah(r.jualPart)}</td>
+          <td class="text-end">${rupiah(r.totalOmzet)}</td>
           <td class="text-end text-danger">${rupiah(r.hppPart)}</td>
           <td class="text-end fw-bold text-success">${rupiah(r.marginServis)}</td>
         </tr>
       `).join("")
-    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada transaksi servis pada periode ini.</td></tr>`;
+    : `<tr><td colspan="4" class="text-center text-muted py-2">Belum ada transaksi.</td></tr>`;
 
   $("finTableFoot").innerHTML = rows.length
     ? `
       <tr>
-        <td colspan="2">TOTAL PENDAPATAN & MARGIN SERVIS</td>
-        <td class="text-end">${rupiah(sumJasa)}</td>
-        <td class="text-end">${rupiah(sumPart)}</td>
+        <td>TOTAL</td>
+        <td class="text-end">${rupiah(sumOmzet)}</td>
         <td class="text-end text-danger">${rupiah(sumHpp)}</td>
         <td class="text-end text-success">${rupiah(sumOmzet - sumHpp)}</td>
       </tr>
@@ -2452,87 +2460,42 @@ function renderKeuangan() {
 function exportKeuanganCSV() {
   const rows = getFilteredFinancialRows();
   const expRows = getFilteredExpenseRows();
-  const komisiRows = getMechanicCommissionSummary(rows);
+  if (!rows.length && !expRows.length) return toast("Tidak ada data keuangan.", "warning");
 
-  if (!rows.length && !expRows.length) {
-    return toast("Tidak ada data keuangan untuk diekspor.", "warning");
-  }
-
-  const periodeLabel = $("finAllMonths").checked ? "Semua_Periode" : ($("finMonth").value || "Bulan_Ini");
+  const periodeLabel = getFinPeriodLabel().replace(/\s+/g, "_");
   const csvEsc = val => `"${String(val ?? "").replace(/"/g, '""')}"`;
 
   let sumJasa = 0, sumPart = 0, sumHpp = 0, sumOmzet = 0, sumMarginServis = 0;
   rows.forEach(r => {
-    sumJasa += r.omzetJasa;
-    sumPart += r.jualPart;
-    sumHpp += r.hppPart;
-    sumOmzet += r.totalOmzet;
-    sumMarginServis += r.marginServis;
+    sumJasa += r.omzetJasa; sumPart += r.jualPart; sumHpp += r.hppPart;
+    sumOmzet += r.totalOmzet; sumMarginServis += r.marginServis;
   });
   const sumExp = expRows.reduce((a, b) => a + Number(b.nominal || 0), 0);
-  const labaBersih = sumMarginServis - sumExp;
 
   const lines = [
-    [csvEsc("LAPORAN KEUANGAN, KOMISI MEKANIK & LABA BERSIH - " + BENGKEL_INFO.nama)],
-    [csvEsc("Periode: " + periodeLabel), csvEsc("Basis: " + ($("finBasis").value === "done" ? "Realisasi Selesai" : "Semua Tiket Aktif"))],
+    [csvEsc("LAPORAN KEUANGAN - " + BENGKEL_INFO.nama)],
+    [csvEsc("Periode: " + periodeLabel)],
     [],
-    [csvEsc("RINGKASAN LABA RUGI")],
-    [csvEsc("Omzet Jasa Servis"), sumJasa],
-    [csvEsc("Penjualan Sparepart"), sumPart],
-    [csvEsc("Total Pendapatan Kotor"), sumOmzet],
-    [csvEsc("HPP Modal Sparepart"), sumHpp],
-    [csvEsc("Laba Kotor Servis"), sumMarginServis],
-    [csvEsc("Total Pengeluaran Operasional"), sumExp],
-    [csvEsc("LABA BERSIH"), labaBersih],
+    ["Tanggal", "Kode", "Pelanggan", "Motor", "Plat", "Jasa", "Part", "Omzet", "HPP", "Margin"].map(csvEsc),
+    ...rows.map(r => [r.tanggalMasuk, r.kodeServis, r.nama, r.motor, r.plat || "-", r.omzetJasa, r.jualPart, r.totalOmzet, r.hppPart, r.marginServis].map(csvEsc)),
+    ["TOTAL", "", "", "", "", sumJasa, sumPart, sumOmzet, sumHpp, sumMarginServis].map(csvEsc),
     [],
-    [csvEsc("REKAP KOMISI MEKANIK")],
-    ["Nama Mekanik", "Jumlah Unit", "Total Omzet Jasa", "Tarif Komisi (%)", "Nominal Komisi"].map(csvEsc)
+    ["Total Pengeluaran Operasional", sumExp],
+    ["LABA BERSIH", sumMarginServis - sumExp]
   ];
 
-  let totalKomUnit = 0, totalKomJasa = 0, totalKomNominal = 0;
-  komisiRows.forEach(m => {
-    totalKomUnit += m.unitCount;
-    totalKomJasa += m.totalJasa;
-    totalKomNominal += m.komisiNominal;
-    lines.push([m.nama, m.unitCount, m.totalJasa, m.rate, m.komisiNominal].map(csvEsc));
-  });
-  lines.push(["TOTAL KOMISI MEKANIK", totalKomUnit, totalKomJasa, "", totalKomNominal].map(csvEsc));
-
-  lines.push([]);
-  lines.push([csvEsc("RINCIAN TRANSAKSI SERVIS")]);
-  lines.push(["Tanggal", "Kode Servis", "Pelanggan", "Motor", "Plat Nomor", "Mekanik", "Status", "Omzet Jasa", "Penjualan Sparepart", "Total Omzet", "HPP Modal", "Margin Servis"].map(csvEsc));
-
-  rows.forEach(r => {
-    lines.push([
-      r.tanggalMasuk, r.kodeServis, r.nama, r.motor, r.plat || "-", r.mekanik || "-", r.status,
-      r.omzetJasa, r.jualPart, r.totalOmzet, r.hppPart, r.marginServis
-    ].map(csvEsc));
-  });
-
-  lines.push(["TOTAL SERVIS", "", "", "", "", "", "", sumJasa, sumPart, sumOmzet, sumHpp, sumMarginServis].map(csvEsc));
-  lines.push([]);
-  lines.push([csvEsc("RINCIAN PENGELUARAN OPERASIONAL")]);
-  lines.push(["Tanggal", "Kategori", "Keterangan", "Metode", "Nominal", "Dicatat Oleh"].map(csvEsc));
-
-  expRows.forEach(e => {
-    lines.push([e.tanggal, e.kategori, e.keterangan, e.metode, e.nominal, e.dicatatOleh].map(csvEsc));
-  });
-
-  lines.push(["TOTAL PENGELUARAN OPERASIONAL", "", "", "", sumExp, ""].map(csvEsc));
-
-  const csvContent = "\uFEFF" + lines.map(row => row.join(",")).join("\r\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["\uFEFF" + lines.map(r => r.join(",")).join("\r\n")], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `Laporan_Keuangan_Bengkel_${periodeLabel}.csv`;
+  link.download = `Laporan_Keuangan_${periodeLabel}.csv`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  toast("File CSV laporan keuangan & komisi mekanik berhasil diunduh.", "success");
+  toast("CSV berhasil diunduh.", "success");
 }
 
 // ========================================
-// PELANGGAN & RIWAYAT SERVIS
+// PELANGGAN, STOK & AKUN (KARTU HP)
 // ========================================
 function buildCustomerIndex() {
   const map = new Map();
@@ -2540,12 +2503,8 @@ function buildCustomerIndex() {
     const key = String(s.telepon || "").replace(/\D/g, "") || s.nama.toLowerCase();
     if (!map.has(key)) {
       map.set(key, {
-        nama: s.nama,
-        telepon: s.telepon,
-        motors: new Set(),
-        plats: new Set(),
-        history: [],
-        totalSpend: 0
+        nama: s.nama, telepon: s.telepon,
+        motors: new Set(), plats: new Set(), history: [], totalSpend: 0
       });
     }
     const c = map.get(key);
@@ -2561,49 +2520,41 @@ function buildCustomerIndex() {
 function renderPelangganTable() {
   const q = $("filterPelanggan").value.trim().toLowerCase();
   const list = buildCustomerIndex().filter(c =>
-    !q ||
-    c.nama.toLowerCase().includes(q) ||
-    c.telepon.includes(q) ||
-    [...c.plats].join(" ").toLowerCase().includes(q)
+    !q || c.nama.toLowerCase().includes(q) || c.telepon.includes(q) || [...c.plats].join(" ").toLowerCase().includes(q)
   );
 
-  $("pelangganTableBody").innerHTML = list.length
+  $("pelangganCardList").innerHTML = list.length
     ? list.map(c => `
-        <tr>
-          <td><strong>${esc(c.nama)}</strong><div class="text-muted">${esc(c.telepon)}</div></td>
-          <td>${esc([...c.motors].join(", "))}<div class="text-muted">${esc([...c.plats].join(", "))}</div></td>
-          <td><span class="badge bg-primary-subtle text-primary">${c.history.length}x Servis</span></td>
-          <td class="fw-semibold">${rupiah(c.totalSpend)}</td>
-          <td>
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary" onclick="openRiwayatModal('${esc(c.telepon)}')">Riwayat</button>
-              <button class="btn btn-primary" onclick="servisLagi('${esc(c.telepon)}')">+ Servis</button>
+        <div class="border rounded-3 p-2 mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <strong class="small">${esc(c.nama)}</strong> <span class="text-muted small">(${esc(c.telepon)})</span>
+              <div class="text-muted" style="font-size:11px">${esc([...c.motors].join(", "))} • ${c.history.length}x Servis</div>
             </div>
-          </td>
-        </tr>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary py-0 px-2" onclick="openRiwayatModal('${esc(c.telepon)}')">Riwayat</button>
+              <button class="btn btn-primary py-0 px-2" onclick="servisLagi('${esc(c.telepon)}')">+ Servis</button>
+            </div>
+          </div>
+        </div>
       `).join("")
-    : `<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data pelanggan.</td></tr>`;
+    : `<div class="text-center text-muted small py-2">Belum ada data pelanggan.</div>`;
 }
 
 function openRiwayatModal(telepon) {
   const c = buildCustomerIndex().find(x => x.telepon === telepon);
   if (!c) return;
-  $("titleRiwayat").textContent = `Riwayat Servis: ${c.nama} (${c.telepon})`;
+  $("titleRiwayat").textContent = `Riwayat: ${c.nama}`;
   $("bodyRiwayat").innerHTML = c.history.map(h => `
-    <div class="border rounded-3 p-3 mb-2">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
-        <strong>${esc(h.kodeServis)} • ${esc(h.tanggalMasuk)}</strong>
-        <div class="d-flex align-items-center gap-1">
-          ${statusBadge(h.status)}
-          <button type="button" class="btn btn-dark btn-sm py-0 px-2" onclick="printNota58('${esc(h.id)}')">
-            <i class="bi bi-printer"></i> Nota 58mm
-          </button>
-        </div>
+    <div class="border rounded-3 p-2 mb-2">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <strong class="small">${esc(h.kodeServis)} • ${esc(h.tanggalMasuk)}</strong>
+        <button type="button" class="btn btn-dark btn-sm py-0 px-2" onclick="printNota58('${esc(h.id)}')">
+          <i class="bi bi-printer"></i> Nota
+        </button>
       </div>
-      <div class="small text-muted mb-1">${esc(h.motor)} (${esc(h.plat || "-")}) • Mekanik: ${esc(h.mekanik || "-")}</div>
-      <div class="small"><strong>Keluhan:</strong> ${esc(h.keluhan || "-")}</div>
-      <div class="small"><strong>Tindakan:</strong> ${esc(h.tindakan || "-")}</div>
-      <div class="small mt-1 fw-bold text-primary">Total Biaya: ${rupiah(h.estimasiTotal)}</div>
+      <div class="small text-muted">${esc(h.motor)} (${esc(h.plat || "-")}) • ${esc(h.status)}</div>
+      <div class="small">Tindakan: ${esc(h.tindakan || "-")} • <strong>${rupiah(h.estimasiTotal)}</strong></div>
     </div>
   `).join("");
   showModal("modalRiwayat");
@@ -2616,37 +2567,32 @@ function servisLagi(telepon) {
   openServisModal("", { nama: c.nama, telepon: c.telepon, motor: last.motor, plat: last.plat });
 }
 
-// ========================================
-// DATABASE STOK SPAREPART & USER
-// ========================================
 function renderPartTable() {
   const q = $("filterPart").value.trim().toLowerCase();
-  const isAdmin = state.user && state.user.role === "admin";
   const list = state.parts.filter(p =>
     !q || p.namaPart.toLowerCase().includes(q) || p.kodePart.toLowerCase().includes(q)
   );
 
-  $("partTableBody").innerHTML = list.length
+  $("partCardList").innerHTML = list.length
     ? list.map(p => `
-        <tr>
-          <td><strong>${esc(p.namaPart)}</strong><div class="text-muted">${esc(p.kodePart)}</div></td>
-          <td>${esc(p.kategori)}</td>
-          ${isAdmin ? `<td>${rupiah(p.hargaBeli)}</td>` : ""}
-          <td class="fw-semibold">${rupiah(p.hargaJual)}</td>
-          <td>
-            <span class="badge ${p.stok <= p.minStok ? "bg-danger" : "bg-success"}">${p.stok} pcs</span>
-          </td>
-          ${isAdmin ? `
-            <td>
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-primary" onclick="openPartModal('${esc(p.id)}')"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-outline-danger" onclick="confirmDelete('part','${esc(p.id)}','${esc(p.namaPart)}')"><i class="bi bi-trash"></i></button>
+        <div class="ticket-card">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <strong class="small">${esc(p.namaPart)}</strong>
+              <div class="text-muted" style="font-size:11px">${esc(p.kodePart)} • ${esc(p.kategori)}</div>
+              <div class="small mt-1">Modal: ${rupiah(p.hargaBeli)} • Jual: <strong class="text-primary">${rupiah(p.hargaJual)}</strong></div>
+            </div>
+            <div class="text-end">
+              <span class="badge ${p.stok <= p.minStok ? "bg-danger" : "bg-success"} mb-1">${p.stok} pcs</span>
+              <div>
+                <button class="btn btn-outline-primary btn-sm py-0 px-1" onclick="openPartModal('${esc(p.id)}')"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-outline-danger btn-sm py-0 px-1" onclick="confirmDelete('part','${esc(p.id)}','${esc(p.namaPart)}')"><i class="bi bi-trash"></i></button>
               </div>
-            </td>
-          ` : ""}
-        </tr>
+            </div>
+          </div>
+        </div>
       `).join("")
-    : `<tr><td colspan="6" class="text-center text-muted py-3">Belum ada data sparepart.</td></tr>`;
+    : `<div class="text-center text-muted small py-2">Belum ada data sparepart.</div>`;
 }
 
 function openPartModal(id = "") {
@@ -2688,30 +2634,29 @@ async function savePart() {
 }
 
 function renderUserTable() {
-  $("userTableBody").innerHTML = state.users.map(u => `
-    <tr>
-      <td><strong>${esc(u.username)}</strong></td>
-      <td>
-        ${esc(u.nama)}
-        ${u.nomorWa ? `<div class="text-muted" style="font-size:11px"><i class="bi bi-whatsapp text-success"></i> ${esc(u.nomorWa)}</div>` : ""}
-      </td>
-      <td><span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span></td>
-      <td><strong>${Number(u.komisiPersen ?? 0)}%</strong></td>
-      <td>${u.aktif ? '<span class="text-success">Aktif</span>' : '<span class="text-muted">Nonaktif</span>'}</td>
-      <td>
-        <div class="btn-group btn-group-sm">
-          <button class="btn btn-outline-primary" onclick="openUserModal('${esc(u.id)}')">Edit</button>
-          <button class="btn btn-outline-danger" onclick="confirmDelete('user','${esc(u.id)}','${esc(u.username)}')">Hapus</button>
+  $("userCardList").innerHTML = state.users.map(u => `
+    <div class="border rounded-3 p-2 mb-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <strong class="small">${esc(u.nama)}</strong> <span class="text-muted small">(@${esc(u.username)})</span>
+          <div style="font-size:11px">
+            <span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span>
+            <span class="text-muted ms-1">Komisi ${Number(u.komisiPersen ?? 0)}%</span>
+            ${u.nomorWa ? `<span class="text-success ms-1">• ${esc(u.nomorWa)}</span>` : ""}
+          </div>
         </div>
-      </td>
-    </tr>
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-primary py-0 px-2" onclick="openUserModal('${esc(u.id)}')">Edit</button>
+          <button class="btn btn-outline-danger py-0 px-2" onclick="confirmDelete('user','${esc(u.id)}','${esc(u.username)}')"><i class="bi bi-trash"></i></button>
+        </div>
+      </div>
+    </div>
   `).join("");
 }
 
 function onRoleSelectChange() {
-  const role = $("usrRole").value;
   if (!$("usrId").value) {
-    $("usrKomisi").value = role === "mekanik" ? 40 : 0;
+    $("usrKomisi").value = $("usrRole").value === "mekanik" ? 40 : 0;
   }
 }
 
@@ -2744,7 +2689,7 @@ async function saveUser() {
     if (!r.success) return toast(r.message, "danger");
     hideModal("modalUser");
     state.komisiOverrides = {};
-    toast("Akun, tarif komisi & WA disimpan.", "success");
+    toast("Akun staf disimpan.", "success");
     await syncAllData();
   } catch (e) {
     toast(e.message, "danger");
@@ -2775,11 +2720,10 @@ function confirmDelete(type, id, label) {
 }
 
 // ========================================
-// QR CODE, CETAK NOTA 58MM, LAPORAN & WHATSAPP
+// QR CODE, CETAK NOTA 58MM & WHATSAPP
 // ========================================
 function getTrackingUrl(kodeServis) {
-  const base = window.location.origin + window.location.pathname;
-  return `${base}?kode=${encodeURIComponent(kodeServis)}`;
+  return `${getCustomerAppUrl()}?kode=${encodeURIComponent(kodeServis)}`;
 }
 
 function openQRModal(id) {
@@ -2809,9 +2753,7 @@ function triggerThermalPrint(htmlBuilder, qrText) {
 }
 
 function printLatestServis(type = "nota") {
-  if (!state.servis.length) {
-    return toast("Belum ada data tiket servis untuk dicetak.", "warning");
-  }
+  if (!state.servis.length) return toast("Belum ada data tiket servis.", "warning");
   const latest = state.servis[0];
   if (type === "qr") printLabelQR58(latest.id);
   else printNota58(latest.id);
@@ -2844,12 +2786,8 @@ function printNota58(id) {
     <div class="p-row"><span>${p.jumlah} x ${rupiah(p.harga)}</span><span>${rupiah(p.jumlah * p.harga)}</span></div>
   `).join("");
 
-  const sigMekHtml = s.ttdMekanik
-    ? `<img src="${s.ttdMekanik}" class="p-sig-img" alt="TTD Mekanik">`
-    : ``;
-  const sigPlgHtml = s.ttdPelanggan
-    ? `<img src="${s.ttdPelanggan}" class="p-sig-img" alt="TTD Pelanggan">`
-    : ``;
+  const sigMekHtml = s.ttdMekanik ? `<img src="${s.ttdMekanik}" class="p-sig-img" alt="TTD">` : ``;
+  const sigPlgHtml = s.ttdPelanggan ? `<img src="${s.ttdPelanggan}" class="p-sig-img" alt="TTD">` : ``;
 
   const html = `
     <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
@@ -2873,16 +2811,8 @@ function printNota58(id) {
     <div class="p-line"></div>
     <div class="p-center" style="font-size:10px">Serah Terima Kendaraan</div>
     <div class="p-sig-grid">
-      <div>
-        <div style="font-size:9px">Mekanik</div>
-        <div class="p-sig-box">${sigMekHtml}</div>
-        <div class="p-sig-name">${esc(s.mekanik || "Mekanik")}</div>
-      </div>
-      <div>
-        <div style="font-size:9px">Pelanggan</div>
-        <div class="p-sig-box">${sigPlgHtml}</div>
-        <div class="p-sig-name">${esc(s.nama)}</div>
-      </div>
+      <div><div style="font-size:9px">Mekanik</div><div class="p-sig-box">${sigMekHtml}</div><div class="p-sig-name">${esc(s.mekanik || "Mekanik")}</div></div>
+      <div><div style="font-size:9px">Pelanggan</div><div class="p-sig-box">${sigPlgHtml}</div><div class="p-sig-name">${esc(s.nama)}</div></div>
     </div>
     <div class="p-line"></div>
     <div class="p-center" style="font-size:10px">Scan QR untuk cek status servis:</div>
@@ -2906,12 +2836,7 @@ function printLaporanKeuangan58() {
   const labaBersih = sumOmzet - sumHpp - sumExp;
 
   const komHtml = komisiRows.length
-    ? komisiRows.map(m => `
-        <div class="p-row">
-          <span>${esc(m.nama)} (${m.unitCount}u/${m.rate}%)</span>
-          <span>${rupiah(m.komisiNominal)}</span>
-        </div>
-      `).join("")
+    ? komisiRows.map(m => `<div class="p-row"><span>${esc(m.nama)} (${m.rate}%)</span><span>${rupiah(m.komisiNominal)}</span></div>`).join("")
     : "<div>- Tidak ada komisi</div>";
 
   const html = `
@@ -2929,34 +2854,25 @@ function printLaporanKeuangan58() {
     <div class="p-line"></div>
     <div class="p-row p-bold" style="font-size:12px"><span>LABA BERSIH</span><span>${rupiah(labaBersih)}</span></div>
     <div class="p-line"></div>
-    <div class="p-bold">Rekap Komisi Mekanik:</div>
+    <div class="p-bold">Komisi Mekanik:</div>
     ${komHtml}
-    <div class="p-line"></div>
-    <div class="p-center" style="font-size:10px">Dicetak: ${esc(todayWIB())}</div>
   `;
   triggerThermalPrint(html, "");
 }
 
 function printStok58() {
-  if (!state.parts.length) {
-    return toast("Belum ada data stok sparepart.", "warning");
-  }
+  if (!state.parts.length) return toast("Belum ada data stok sparepart.", "warning");
   const itemsHtml = state.parts.map(p => `
     <div>${esc(p.namaPart)} (${esc(p.kodePart)})</div>
-    <div class="p-row">
-      <span>${rupiah(p.hargaJual)}</span>
-      <span class="p-bold">${p.stok} pcs${Number(p.stok) <= Number(p.minStok) ? " [MIN]" : ""}</span>
-    </div>
+    <div class="p-row"><span>${rupiah(p.hargaJual)}</span><span class="p-bold">${p.stok} pcs</span></div>
   `).join("");
 
   const html = `
     <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
-    <div class="p-center p-bold">LAPORAN STOK SPAREPART</div>
-    <div class="p-center" style="font-size:10px">Tanggal: ${esc(todayWIB())}</div>
+    <div class="p-center p-bold">STOK SPAREPART</div>
+    <div class="p-center" style="font-size:10px">${esc(todayWIB())}</div>
     <div class="p-line"></div>
     ${itemsHtml}
-    <div class="p-line"></div>
-    <div class="p-row p-bold"><span>Total Item:</span><span>${state.parts.length} jenis</span></div>
   `;
   triggerThermalPrint(html, "");
 }
@@ -2965,7 +2881,6 @@ function kirimWhatsApp(id) {
   const s = state.servis.find(x => x.id === id);
   if (!s) return;
   const hp = formatWaNumber(s.telepon);
-
   const isDone = ["Selesai", "Sudah diambil"].includes(s.status);
   const header = isDone
     ? `Halo Kak *${s.nama}*, motor *${s.motor}* (${s.plat || "-"}) Anda telah *SELESAI* diservis dan siap diambil.`
@@ -2979,11 +2894,11 @@ function kirimWhatsApp(id) {
     s.tindakan ? `Tindakan: ${s.tindakan}` : "",
     `Total Biaya: *${rupiah(s.estimasiTotal)}*`,
     ``,
-    `Cek detail nota & riwayat:`,
+    `Cek detail nota:`,
     getTrackingUrl(s.kodeServis),
     ``,
     `Terima kasih - *${BENGKEL_INFO.nama}*`
-  ].filter(v => v !== null && v !== undefined).join("\n");
+  ].filter(Boolean).join("\n");
 
   window.open(`https://wa.me/${hp}?text=${encodeURIComponent(msg)}`, "_blank");
 }
@@ -2999,22 +2914,27 @@ async function loadPublicBoard() {
     renderPublicBoard();
   } catch (e) {
     if (state.publicBoard.length) renderPublicBoard();
-    else $("publicBoardBody").innerHTML = `<tr><td colspan="5" class="text-muted">${esc(e.message)}</td></tr>`;
+    else $("publicBoardCards").innerHTML = `<div class="text-muted small">${esc(e.message)}</div>`;
   }
 }
 
 function renderPublicBoard() {
-  $("publicBoardBody").innerHTML = state.publicBoard.length
+  $("publicBoardCards").innerHTML = state.publicBoard.length
     ? state.publicBoard.map(x => `
-        <tr>
-          <td class="fw-bold">${esc(x.kodeServis)}</td>
-          <td>${esc(x.motor)} <span class="text-muted">(${esc(x.platMasked || "-")})</span></td>
-          <td>${esc(x.mekanik || "-")}</td>
-          <td>${statusBadge(x.status)}</td>
-          <td>${esc(x.estimasiSelesai || "-")}</td>
-        </tr>
+        <div class="border rounded-3 p-2 mb-2 bg-light bg-opacity-50">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <strong class="small">${esc(x.motor)}</strong> <span class="text-muted small">(${esc(x.platMasked || "-")})</span>
+              <div class="text-muted" style="font-size:11px">${esc(x.kodeServis)} • Mekanik: ${esc(x.mekanik || "-")}</div>
+            </div>
+            <div class="text-end">
+              ${statusBadge(x.status)}
+              ${x.estimasiSelesai ? `<div class="text-muted" style="font-size:10.5px">Est: ${esc(x.estimasiSelesai)}</div>` : ""}
+            </div>
+          </div>
+        </div>
       `).join("")
-    : `<tr><td colspan="5" class="text-muted">Belum ada antrean servis.</td></tr>`;
+    : `<div class="text-muted small">Belum ada antrean servis hari ini.</div>`;
 }
 
 async function cariServisPublik() {
@@ -3047,18 +2967,18 @@ async function cariServisPublik() {
       ? `
         <div class="row g-2 text-center mt-2 pt-2 border-top small">
           <div class="col-6">
-            <div class="text-muted">Tanda Tangan Mekanik</div>
-            <div class="bg-white rounded p-1 my-1 border" style="height:64px;display:grid;place-items:center">
-              ${d.ttdMekanik ? `<img src="${d.ttdMekanik}" style="max-height:54px;max-width:100%" alt="TTD Mekanik">` : `<span class="text-muted">-</span>`}
+            <div class="text-muted" style="font-size:11px">TTD Mekanik</div>
+            <div class="bg-white rounded p-1 my-1 border" style="height:54px;display:grid;place-items:center">
+              ${d.ttdMekanik ? `<img src="${d.ttdMekanik}" style="max-height:46px;max-width:100%" alt="TTD">` : `<span class="text-muted">-</span>`}
             </div>
-            <strong>${esc(d.mekanik || "-")}</strong>
+            <strong style="font-size:11.5px">${esc(d.mekanik || "-")}</strong>
           </div>
           <div class="col-6">
-            <div class="text-muted">Tanda Tangan Pelanggan</div>
-            <div class="bg-white rounded p-1 my-1 border" style="height:64px;display:grid;place-items:center">
-              ${d.ttdPelanggan ? `<img src="${d.ttdPelanggan}" style="max-height:54px;max-width:100%" alt="TTD Pelanggan">` : `<span class="text-muted">-</span>`}
+            <div class="text-muted" style="font-size:11px">TTD Pelanggan</div>
+            <div class="bg-white rounded p-1 my-1 border" style="height:54px;display:grid;place-items:center">
+              ${d.ttdPelanggan ? `<img src="${d.ttdPelanggan}" style="max-height:46px;max-width:100%" alt="TTD">` : `<span class="text-muted">-</span>`}
             </div>
-            <strong>${esc(d.nama)}</strong>
+            <strong style="font-size:11.5px">${esc(d.nama)}</strong>
           </div>
         </div>
       `
@@ -3066,27 +2986,30 @@ async function cariServisPublik() {
 
     box.innerHTML = `
       <div class="border rounded-4 p-3 bg-light">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
           <div>
-            <span class="text-muted small">Kode Servis</span>
-            <h5 class="fw-bold mb-0">${esc(d.kodeServis)}</h5>
+            <span class="text-muted" style="font-size:11px">Kode Servis</span>
+            <h6 class="fw-bold mb-0">${esc(d.kodeServis)}</h6>
           </div>
-          ${statusBadge(d.status)}
+          <div class="d-flex align-items-center gap-1">
+            ${statusBadge(d.status)}
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="$('hasilPublik').classList.add('d-none')">×</button>
+          </div>
         </div>
-        <div class="row g-2 small mb-2">
+        <div class="row g-1 small mb-2">
           <div class="col-6"><strong>Pelanggan:</strong> ${esc(d.nama)}</div>
-          <div class="col-6"><strong>Motor:</strong> ${esc(d.motor)} (${esc(d.plat || "-")})</div>
+          <div class="col-6"><strong>Unit:</strong> ${esc(d.motor)} (${esc(d.plat || "-")})</div>
           <div class="col-6"><strong>Masuk:</strong> ${esc(d.tanggalMasuk)}</div>
           <div class="col-6"><strong>Mekanik:</strong> ${esc(d.mekanik || "-")}</div>
           <div class="col-12"><strong>Keluhan:</strong> ${esc(d.keluhan || "-")}</div>
-          <div class="col-12"><strong>Diagnosa & Tindakan:</strong> ${esc(d.kerusakan || "-")} / ${esc(d.tindakan || "-")}</div>
+          <div class="col-12"><strong>Tindakan:</strong> ${esc(d.tindakan || "-")}</div>
         </div>
-        <table class="table table-sm bg-white rounded small mb-2">
-          <thead><tr><th>Sparepart</th><th>Qty</th><th class="text-end">Subtotal</th></tr></thead>
+        <table class="table table-sm bg-white rounded small mb-1">
+          <thead><tr><th>Rincian</th><th>Qty</th><th class="text-end">Subtotal</th></tr></thead>
           <tbody>
-            ${parts || `<tr><td colspan="3" class="text-muted">Tidak ada penggantian sparepart</td></tr>`}
+            ${parts || `<tr><td colspan="3" class="text-muted">Tanpa penggantian sparepart</td></tr>`}
             <tr><td colspan="2">Biaya Jasa</td><td class="text-end">${rupiah(d.biayaJasa)}</td></tr>
-            <tr class="table-primary fw-bold"><td colspan="2">TOTAL ESTIMASI</td><td class="text-end">${rupiah(d.estimasiTotal)}</td></tr>
+            <tr class="table-primary fw-bold"><td colspan="2">TOTAL BIAYA</td><td class="text-end">${rupiah(d.estimasiTotal)}</td></tr>
           </tbody>
         </table>
         ${sigSection}
@@ -3098,7 +3021,7 @@ async function cariServisPublik() {
 }
 
 // ========================================
-// PWA INSTALL BANNER, PINTASAN & BOOTSTRAP
+// PWA INSTALL BANNER & BOOTSTRAP
 // ========================================
 let deferredPrompt = null;
 
@@ -3121,7 +3044,7 @@ async function triggerInstallApp() {
       $("installBannerBox").classList.add("d-none");
     }
   } else {
-    toast("Buka menu browser (⋮ atau Share) lalu pilih 'Tambahkan ke Layar Utama' untuk memasang logo aplikasi.", "info");
+    toast("Buka menu browser (⋮ atau Share) lalu pilih 'Tambahkan ke Layar Utama'.", "info");
   }
 }
 
@@ -3140,7 +3063,7 @@ window.addEventListener("appinstalled", () => {
   deferredPrompt = null;
   $("btnInstall").classList.add("d-none");
   $("installBannerBox").classList.add("d-none");
-  toast("Bengkel Pro berhasil dipasang ke layar utama!", "success");
+  toast("Aplikasi Cek Status Servis berhasil dipasang!", "success");
 });
 
 if ("serviceWorker" in navigator) {
@@ -3149,7 +3072,6 @@ if ("serviceWorker" in navigator) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   initSignaturePads();
-
   $("finMonth").value = todayWIB().slice(0, 7);
 
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -3165,15 +3087,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
   const urlKode = params.get("kode");
-  const urlMode = params.get("mode");
-
   if (urlKode) {
     $("kodeCari").value = urlKode.toUpperCase();
     $("hpCari").focus();
-  } else if (urlMode === "cek") {
-    $("kodeCari").focus();
-  } else if (urlMode === "staf" && !state.auth) {
-    openAuthModal();
   }
 
   const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
@@ -3189,6 +3105,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (state.auth) {
     await syncAllData();
+    if (state.user) {
+      switchStaffView(state.user.role === "mekanik" ? "viewServis" : "viewDash");
+    }
+  } else {
+    applyRoleUI();
   }
 });
 </script>
