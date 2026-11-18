@@ -19,6 +19,11 @@
       --blue: #2563eb;
       --bg: #f1f5f9;
     }
+    /* ANTI-REFRESH: Mencegah pull-to-refresh browser HP saat swipe ke bawah */
+    html, body {
+      overscroll-behavior-y: none;
+      overscroll-behavior-x: none;
+    }
     body {
       background: var(--bg);
       color: #1e293b;
@@ -368,7 +373,7 @@
           <button class="btn btn-warning btn-sm py-0 px-2 fw-semibold" onclick="openScannerModal('staff')">
             <i class="bi bi-qr-code-scan"></i> Scan
           </button>
-          <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData()">
+          <button class="btn btn-outline-light btn-sm py-0 px-2" onclick="syncAllData(true)" title="Sinkron Data">
             <i class="bi bi-arrow-repeat"></i>
           </button>
           <button class="btn btn-danger btn-sm py-0 px-2" onclick="logoutUser()">Keluar</button>
@@ -430,7 +435,7 @@
           <div class="col-12 col-sm-5">
             <div class="input-group input-group-sm">
               <span class="input-group-text bg-white"><i class="bi bi-upc-scan text-muted"></i></span>
-              <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode (cth: SRV-261117-XXXX)">
+              <input id="kodeCari" class="form-control text-uppercase" placeholder="Kode (cth: SRV-261118-XXXX)">
             </div>
           </div>
           <div class="col-7 col-sm-4">
@@ -662,13 +667,13 @@
         </div>
       </div>
 
-      <!-- VIEW STAF 5: PELANGGAN, AKUN & QR APLIKASI PELANGGAN (ADMIN ONLY) -->
+      <!-- VIEW STAF 5: PENGATURAN, PERTANYAAN KEAMANAN LUPA PIN & AKUN (ADMIN ONLY) -->
       <div class="staff-view d-none admin-only" id="viewPengaturan">
         <div class="card card-soft p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center gap-2">
             <div>
               <h6 class="fw-bold mb-0 small"><i class="bi bi-phone-vibrate text-primary me-1"></i>Aplikasi Cek Status Pelanggan</h6>
-              <small class="text-muted" style="font-size:11.5px">Bagikan link atau QR ke pelanggan agar bisa menginstal aplikasi cek servis di HP.</small>
+              <small class="text-muted" style="font-size:11.5px">Bagikan link khusus pelanggan agar langsung membuka halaman cek servis.</small>
             </div>
             <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold flex-shrink-0" onclick="openShareCustomerAppModal()">
               <i class="bi bi-qr-code me-1"></i>QR App
@@ -676,11 +681,44 @@
           </div>
         </div>
 
+        <!-- PENGATURAN PERTANYAAN KEAMANAN UNTUK LUPA PIN -->
+        <div class="card card-soft p-3 mb-2 border border-warning border-opacity-50">
+          <div class="mb-2">
+            <h6 class="fw-bold mb-0 small"><i class="bi bi-shield-check text-warning-emphasis me-1"></i>Pertanyaan Keamanan (Pemulihan Lupa PIN)</h6>
+            <small class="text-muted" style="font-size:11px">Digunakan untuk membuat PIN baru jika Admin/Staf lupa PIN masuk.</small>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small fw-semibold mb-1">Pertanyaan Keamanan *</label>
+            <input id="secQuestionInput" list="listSecQuestions" class="form-control form-control-sm"
+                   placeholder="Pilih atau ketik pertanyaan keamanan...">
+            <datalist id="listSecQuestions">
+              <option value="Apa nama bengkel pertama Anda?">
+              <option value="Apa merk motor pertama yang Anda miliki?">
+              <option value="Apa nama hewan peliharaan pertama Anda?">
+              <option value="Di kota mana Anda dilahirkan?">
+              <option value="Siapa nama panggilan masa kecil Anda?">
+            </datalist>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small fw-semibold mb-1">Jawaban Keamanan *</label>
+            <div class="input-group input-group-sm">
+              <input id="secAnswerInput" type="password" class="form-control"
+                     placeholder="Ketik jawaban pemulihan (tidak peka huruf besar/kecil)">
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleSecAnswerVisibility()">
+                <i class="bi bi-eye" id="iconSecAnswer"></i>
+              </button>
+            </div>
+          </div>
+          <button type="button" id="btnSaveSecQuestion" class="btn btn-warning btn-sm fw-semibold w-100" onclick="saveSecurityQuestion()">
+            <i class="bi bi-check2-circle me-1"></i>Simpan Pertanyaan & Jawaban Pemulihan
+          </button>
+        </div>
+
         <!-- MANAJEMEN AKUN & PIN ADMIN / MEKANIK -->
         <div class="card card-soft p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <h6 class="fw-bold mb-0 small"><i class="bi bi-key-fill text-warning-emphasis me-1"></i>PIN & Hak Akses Staf</h6>
+              <h6 class="fw-bold mb-0 small"><i class="bi bi-key-fill text-primary me-1"></i>PIN & Hak Akses Staf</h6>
               <small class="text-muted" style="font-size:11px">Gunakan PIN unik untuk tiap staf. Mekanik hanya mengakses Data Servis.</small>
             </div>
             <button class="btn btn-dark btn-sm py-1 px-2" onclick="openUserModal()">+ PIN Staf</button>
@@ -702,7 +740,7 @@
     <!-- FOOTER SEBAGAI KUNCI LOGIN PIN ADMIN & KARYAWAN -->
     <footer class="text-center text-muted small mt-4 mb-2">
       <span id="secretFooterTrigger" class="secret-footer-key" onclick="handleSecretFooterTap()">
-        Bengkel Pro v2.9 • Powered by Ari GPM
+        Bengkel Pro v3.0 • Powered by Ari GPM
       </span>
     </footer>
   </main>
@@ -764,7 +802,7 @@
                  placeholder="No. WA tujuan (opsional, cth: 0812...)">
         </div>
         <p class="text-muted mb-3" style="font-size:11px">
-          Kosongkan nomor WA untuk memilih kontak langsung di WhatsApp, atau isi nomor untuk kirim otomatis dengan kode negara <strong>+62</strong>.
+          Tautan ini terkunci pada <strong>Mode Pelanggan</strong> (tidak akan masuk ke halaman Admin).
         </p>
         <div class="d-grid gap-2">
           <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="shareCustomerAppWa()">
@@ -782,30 +820,75 @@
   </div>
 </div>
 
-<!-- MODAL LOGIN PIN APLIKASI (DIBUKA LEWAT FOOTER) -->
+<!-- MODAL LOGIN PIN & LUPA PIN (PERTANYAAN KEAMANAN) -->
 <div class="modal fade" id="modalAuth" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content rounded-4 border-0">
       <div class="modal-header border-0 pb-0">
         <div>
-          <h6 class="modal-title fw-bold"><i class="bi bi-shield-lock-fill text-primary me-1"></i>PIN Akses Staf</h6>
-          <small class="text-muted" style="font-size:11px">Masukkan PIN Admin atau Mekanik</small>
+          <h6 class="modal-title fw-bold" id="authModalTitle"><i class="bi bi-shield-lock-fill text-primary me-1"></i>PIN Akses Staf</h6>
+          <small class="text-muted" style="font-size:11px" id="authModalSub">Masukkan PIN Admin atau Mekanik</small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body pt-2">
-        <div class="input-group mb-3">
-          <input id="loginPin" type="password" inputmode="numeric" maxlength="10"
-                 class="form-control pin-input-box" placeholder="••••••"
-                 oninput="handlePinAutoInput()"
-                 onkeydown="if(event.key==='Enter')submitLogin()">
-          <button class="btn btn-outline-secondary" type="button" onclick="togglePinVisibility()" title="Lihat/Sembunyikan PIN">
-            <i class="bi bi-eye" id="iconTogglePin"></i>
+        <!-- LAYAR 1: INPUT PIN -->
+        <div id="authPinView">
+          <div class="input-group mb-3">
+            <input id="loginPin" type="password" inputmode="numeric" maxlength="10"
+                   class="form-control pin-input-box" placeholder="••••••"
+                   oninput="handlePinAutoInput()"
+                   onkeydown="if(event.key==='Enter')submitLogin()">
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePinVisibility()" title="Lihat/Sembunyikan PIN">
+              <i class="bi bi-eye" id="iconTogglePin"></i>
+            </button>
+          </div>
+          <button id="btnSubmitPin" class="btn btn-primary btn-sm w-100 fw-semibold py-2 mb-2" onclick="submitLogin()">
+            <i class="bi bi-unlock-fill me-1"></i>BUKA AKSES
           </button>
+          <div class="text-center">
+            <button type="button" class="btn btn-link btn-sm text-decoration-none text-muted" style="font-size:12px" onclick="openForgotPinView()">
+              <i class="bi bi-question-circle me-1"></i>Lupa PIN? Reset dengan Pertanyaan
+            </button>
+          </div>
         </div>
-        <button id="btnSubmitPin" class="btn btn-primary btn-sm w-100 fw-semibold py-2" onclick="submitLogin()">
-          <i class="bi bi-unlock-fill me-1"></i>BUKA AKSES
-        </button>
+
+        <!-- LAYAR 2: LUPA PIN (SISTEM PERTANYAAN KEAMANAN) -->
+        <div id="authForgotView" class="d-none">
+          <div class="alert alert-warning py-2 px-2 mb-2 small">
+            <div class="text-muted" style="font-size:10.5px">Pertanyaan Keamanan:</div>
+            <strong id="forgotQuestionDisplay">Apa nama bengkel ini?</strong>
+          </div>
+          <div class="mb-2">
+            <label class="form-label small fw-semibold mb-1">Jawaban Anda *</label>
+            <input id="forgotAnswerInput" class="form-control form-control-sm" placeholder="Ketik jawaban pemulihan...">
+          </div>
+          <div class="mb-2">
+            <label class="form-label small fw-semibold mb-1">Akun yang Direset</label>
+            <select id="forgotTargetRole" class="form-select form-select-sm">
+              <option value="admin">Akun Admin Utama</option>
+              <option value="mekanik">Akun Mekanik</option>
+            </select>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-semibold mb-1">PIN Baru (6 Digit) *</label>
+              <input id="forgotNewPin" type="password" inputmode="numeric" maxlength="6" class="form-control form-control-sm text-center fw-bold" placeholder="123456">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-semibold mb-1">Ulangi PIN *</label>
+              <input id="forgotConfirmPin" type="password" inputmode="numeric" maxlength="6" class="form-control form-control-sm text-center fw-bold" placeholder="123456">
+            </div>
+          </div>
+          <button type="button" id="btnSubmitResetPin" class="btn btn-warning btn-sm w-100 fw-semibold py-2 mb-2" onclick="submitResetPinByQuestion()">
+            <i class="bi bi-key-fill me-1"></i>Buat PIN Baru
+          </button>
+          <div class="text-center">
+            <button type="button" class="btn btn-link btn-sm text-decoration-none text-secondary" style="font-size:12px" onclick="backToPinLoginView()">
+              <i class="bi bi-arrow-left me-1"></i>Kembali ke Login PIN
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1245,11 +1328,23 @@ const BENGKEL_INFO = {
   alamat: "Jl. Raya Bengkel No. 10 • Telp/WA: 0812-0000-0000"
 };
 
-const CACHE_KEY = "bengkel_pro_cache_v2";
-const AUTH_KEY = "bengkel_pro_auth_v2";
+const CACHE_KEY = "bengkel_pro_cache_v3";
+const SESSION_AUTH_KEY = "bengkel_pro_session_auth_v3";
+const SEC_QA_KEY = "bengkel_pro_sec_qa_v3";
+const DEFAULT_SEC_QUESTION = "Apa nama bengkel ini?";
+const DEFAULT_SEC_ANSWER = "bengkel motor pro";
+
+// Bersihkan sisa auto-login permanen dari versi lama agar tidak membajak layar pelanggan
+localStorage.removeItem("bengkel_pro_auth_v2");
+
+const urlParams = new URLSearchParams(window.location.search);
+const IS_CUSTOMER_LINK = urlParams.get("mode") === "customer" || Boolean(urlParams.get("kode"));
+if (IS_CUSTOMER_LINK) {
+  sessionStorage.removeItem(SESSION_AUTH_KEY);
+}
 
 let state = {
-  auth: JSON.parse(localStorage.getItem(AUTH_KEY) || "null"),
+  auth: IS_CUSTOMER_LINK ? null : JSON.parse(sessionStorage.getItem(SESSION_AUTH_KEY) || "null"),
   user: null,
   servis: [],
   parts: [],
@@ -1257,7 +1352,8 @@ let state = {
   staffNames: [],
   expenses: [],
   publicBoard: [],
-  komisiOverrides: {}
+  komisiOverrides: {},
+  securityQuestion: DEFAULT_SEC_QUESTION
 };
 
 const $ = id => document.getElementById(id);
@@ -1271,7 +1367,6 @@ const rupiah = n => new Intl.NumberFormat("id-ID", {
 
 const todayWIB = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
 
-// Normalisasi nomor WA otomatis dengan kode negara Indonesia (+62)
 function formatWaNumber(raw) {
   let hp = String(raw || "").replace(/\D/g, "");
   if (!hp) return "";
@@ -1281,7 +1376,6 @@ function formatWaNumber(raw) {
   return hp.length >= 10 ? hp : "";
 }
 
-// Buka WhatsApp dengan endpoint universal (anti-error kode negara)
 function openWhatsAppUrl(phoneRaw, messageText) {
   const hp = formatWaNumber(phoneRaw);
   const encoded = encodeURIComponent(messageText);
@@ -1304,6 +1398,59 @@ function showModal(id) {
 function hideModal(id) {
   const inst = bootstrap.Modal.getInstance($(id));
   if (inst) inst.hide();
+}
+
+// ========================================
+// ANTI-REFRESH & IDLE AUTO-LOCK KEAMANAN
+// ========================================
+let activeModalCount = 0;
+let idleTimer = null;
+const IDLE_TIMEOUT_MS = 5 * 60 * 1000; // 5 menit idle kembali ke portal pelanggan
+
+function isFormEditingActive() {
+  return activeModalCount > 0 || Boolean(state.user);
+}
+
+function resetIdleTimer() {
+  if (idleTimer) clearTimeout(idleTimer);
+  if (state.user) {
+    idleTimer = setTimeout(() => {
+      if (state.user && activeModalCount === 0) {
+        logoutUser();
+        toast("Sesi staf dikunci otomatis karena tidak aktif 5 menit.", "info");
+      }
+    }, IDLE_TIMEOUT_MS);
+  }
+}
+
+function initAntiRefreshGuards() {
+  ["modalServis", "modalPart", "modalExpense", "modalUser", "modalAuth"].forEach(mid => {
+    const el = $(mid);
+    if (!el) return;
+    el.addEventListener("shown.bs.modal", () => { activeModalCount++; });
+    el.addEventListener("hidden.bs.modal", () => { activeModalCount = Math.max(0, activeModalCount - 1); });
+  });
+
+  // Cegah F5 / Ctrl+R saat sedang login atau mengisi form
+  window.addEventListener("keydown", e => {
+    const isReloadKey = e.key === "F5" || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "r");
+    if (isReloadKey && isFormEditingActive()) {
+      e.preventDefault();
+      toast("Anti-Refresh aktif: gunakan tombol Sinkron di pojok atas.", "info");
+    }
+  });
+
+  // Peringatan sebelum reload / tutup tab jika sedang membuka form input
+  window.addEventListener("beforeunload", e => {
+    if (activeModalCount > 0) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+
+  ["pointerdown", "keydown", "touchstart"].forEach(evt => {
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
 }
 
 // ========================================
@@ -1565,7 +1712,7 @@ async function handleQrDetected(decodedText) {
     let tiket = state.servis.find(x => String(x.kodeServis).toUpperCase() === kode);
     if (!tiket) {
       toast("Menyinkronkan data tiket terbaru...", "info");
-      await syncAllData();
+      await syncAllData(false);
       tiket = state.servis.find(x => String(x.kodeServis).toUpperCase() === kode);
     }
 
@@ -1609,18 +1756,133 @@ async function apiPost(payload) {
 }
 
 // ========================================
-// AUTENTIKASI PIN LANGSUNG & HAK AKSES ROLE
+// AUTENTIKASI PIN + LUPA PIN (PERTANYAAN KEAMANAN)
 // ========================================
 let pinLoginInProgress = false;
 
+function getSavedSecQA() {
+  try {
+    return JSON.parse(localStorage.getItem(SEC_QA_KEY) || "null");
+  } catch (_) {
+    return null;
+  }
+}
+
 function openAuthModal() {
+  backToPinLoginView();
+  const modalEl = $("modalAuth");
+  modalEl.addEventListener("shown.bs.modal", () => $("loginPin").focus(), { once: true });
+  showModal("modalAuth");
+}
+
+function backToPinLoginView() {
+  $("authPinView").classList.remove("d-none");
+  $("authForgotView").classList.add("d-none");
+  $("authModalTitle").innerHTML = `<i class="bi bi-shield-lock-fill text-primary me-1"></i>PIN Akses Staf`;
+  $("authModalSub").textContent = "Masukkan PIN Admin atau Mekanik";
   const input = $("loginPin");
   input.value = "";
   input.type = "password";
   $("iconTogglePin").className = "bi bi-eye";
-  const modalEl = $("modalAuth");
-  modalEl.addEventListener("shown.bs.modal", () => input.focus(), { once: true });
-  showModal("modalAuth");
+}
+
+function openForgotPinView() {
+  const localQA = getSavedSecQA();
+  const questionText = (localQA && localQA.question) || state.securityQuestion || DEFAULT_SEC_QUESTION;
+  $("forgotQuestionDisplay").textContent = questionText;
+  $("forgotAnswerInput").value = "";
+  $("forgotNewPin").value = "";
+  $("forgotConfirmPin").value = "";
+  $("authPinView").classList.add("d-none");
+  $("authForgotView").classList.remove("d-none");
+  $("authModalTitle").innerHTML = `<i class="bi bi-question-circle-fill text-warning-emphasis me-1"></i>Pemulihan PIN`;
+  $("authModalSub").textContent = "Jawab pertanyaan keamanan untuk membuat PIN baru";
+  $("forgotAnswerInput").focus();
+}
+
+function toggleSecAnswerVisibility() {
+  const inp = $("secAnswerInput");
+  const isPass = inp.type === "password";
+  inp.type = isPass ? "text" : "password";
+  $("iconSecAnswer").className = isPass ? "bi bi-eye-slash" : "bi bi-eye";
+}
+
+async function saveSecurityQuestion() {
+  const question = $("secQuestionInput").value.trim();
+  const answer = $("secAnswerInput").value.trim();
+  if (!question || !answer) {
+    return toast("Pertanyaan dan jawaban keamanan wajib diisi.", "danger");
+  }
+
+  const btn = $("btnSaveSecQuestion");
+  btn.disabled = true;
+  try {
+    localStorage.setItem(SEC_QA_KEY, JSON.stringify({
+      question,
+      answerLower: answer.toLowerCase()
+    }));
+    state.securityQuestion = question;
+
+    const r = await apiPost({
+      action: "saveSecurityQuestion",
+      auth: state.auth,
+      data: { question, answer }
+    });
+    if (r && !r.success && r.message) {
+      toast("Tersimpan di perangkat (update Code.gs untuk sinkron cloud).", "warning");
+    } else {
+      toast("Pertanyaan & jawaban pemulihan PIN berhasil disimpan!", "success");
+    }
+    $("secAnswerInput").value = "";
+  } catch (e) {
+    toast("Pertanyaan keamanan disimpan secara lokal.", "success");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function submitResetPinByQuestion() {
+  const answer = $("forgotAnswerInput").value.trim();
+  const targetRole = $("forgotTargetRole").value;
+  const newPin = $("forgotNewPin").value.trim();
+  const confirmPin = $("forgotConfirmPin").value.trim();
+
+  if (!answer) return toast("Masukkan jawaban pertanyaan keamanan.", "danger");
+  if (!/^\d{4,8}$/.test(newPin)) return toast("PIN baru harus berupa 4–8 digit angka.", "danger");
+  if (newPin !== confirmPin) return toast("Konfirmasi PIN baru tidak cocok.", "danger");
+
+  const btn = $("btnSubmitResetPin");
+  btn.disabled = true;
+
+  try {
+    const r = await apiPost({
+      action: "resetPinByQuestion",
+      data: { answer, targetRole, newPin }
+    });
+
+    if (r && r.success) {
+      toast(r.message || "PIN baru berhasil dibuat! Silakan masuk.", "success");
+      backToPinLoginView();
+      $("loginPin").focus();
+      return;
+    }
+
+    // Fallback verifikasi lokal jika backend Code.gs belum di-deploy ulang
+    const localQA = getSavedSecQA();
+    const expectedAns = (localQA && localQA.answerLower) ? localQA.answerLower : DEFAULT_SEC_ANSWER;
+    if (answer.toLowerCase() === expectedAns) {
+      localStorage.setItem("bengkel_pro_local_pin_" + targetRole, newPin);
+      toast("PIN baru disimpan di perangkat. Silakan masuk dengan PIN baru.", "success");
+      backToPinLoginView();
+      $("loginPin").focus();
+    } else {
+      toast((r && r.message) || "Jawaban keamanan tidak sesuai.", "danger");
+    }
+  } catch (e) {
+    toast(e.message, "danger");
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function togglePinVisibility() {
@@ -1664,11 +1926,12 @@ async function submitLogin() {
 
     state.auth = { username: r.user.username, pin };
     state.user = r.user;
-    localStorage.setItem(AUTH_KEY, JSON.stringify(state.auth));
+    sessionStorage.setItem(SESSION_AUTH_KEY, JSON.stringify(state.auth));
     hideModal("modalAuth");
     applyRoleUI();
+    resetIdleTimer();
     switchStaffView(r.user.role === "mekanik" ? "viewServis" : "viewDash");
-    await syncAllData();
+    await syncAllData(false);
     toast("Masuk sebagai " + r.user.nama, "success");
   } catch (e) {
     toast(e.message, "danger");
@@ -1679,9 +1942,10 @@ async function submitLogin() {
 }
 
 function logoutUser() {
+  if (idleTimer) clearTimeout(idleTimer);
   state.auth = null;
   state.user = null;
-  localStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem(SESSION_AUTH_KEY);
   applyRoleUI();
   toast("Keluar dari panel staf.");
 }
@@ -1706,16 +1970,24 @@ function applyRoleUI() {
     });
     $("srvJasa").readOnly = !isAdmin;
     document.body.style.paddingBottom = "76px";
+
+    const localQA = getSavedSecQA();
+    if ($("secQuestionInput") && !$("secQuestionInput").value) {
+      $("secQuestionInput").value = (localQA && localQA.question) || state.securityQuestion || "";
+    }
   } else {
     $("headerSubtitle").textContent = "Portal Cek Status Servis Motor";
     document.body.style.paddingBottom = "24px";
   }
 }
 
-async function syncAllData() {
+async function syncAllData(showSuccessToast = false) {
   if (!state.auth) return;
   try {
     const r = await apiPost({ action: "sync", auth: state.auth });
+    // Guard: jangan pernah masuk ke workspace jika user sudah logout saat request berjalan
+    if (!state.auth) return;
+
     if (!r.success) {
       logoutUser();
       return toast(r.message, "danger");
@@ -1726,12 +1998,18 @@ async function syncAllData() {
     state.users = r.users || [];
     state.staffNames = r.staffNames || [];
     state.expenses = r.expenses || [];
+    if (r.securityQuestion) {
+      state.securityQuestion = r.securityQuestion;
+      if ($("secQuestionInput")) $("secQuestionInput").value = r.securityQuestion;
+    }
+
     localStorage.setItem(CACHE_KEY, JSON.stringify({
       servis: state.servis, parts: state.parts, expenses: state.expenses, publicBoard: state.publicBoard
     }));
     applyRoleUI();
     renderAllWorkspace();
     loadPublicBoard();
+    if (showSuccessToast) toast("Data berhasil disinkronkan.", "success");
   } catch (e) {
     toast("Mode offline: menampilkan data cache lokal.", "warning");
   }
@@ -2044,7 +2322,7 @@ async function saveServis(autoPrint = false) {
 
     hideModal("modalServis");
     toast("Tersimpan! Kode Servis: " + r.kodeServis, "success");
-    await syncAllData();
+    await syncAllData(false);
 
     if (autoPrint && r.id) {
       printNota58(r.id);
@@ -2058,10 +2336,14 @@ async function saveServis(autoPrint = false) {
 }
 
 // ========================================
-// BAGI LINK & QR APLIKASI PELANGGAN
+// BAGI LINK & QR APLIKASI PELANGGAN (TERKUNCI MODE CUSTOMER)
 // ========================================
-function getCustomerAppUrl() {
+function getBaseAppUrl() {
   return window.location.origin + window.location.pathname;
+}
+
+function getCustomerAppUrl() {
+  return `${getBaseAppUrl()}?mode=customer`;
 }
 
 function openShareCustomerAppModal() {
@@ -2151,7 +2433,7 @@ async function saveExpense() {
     if (!r.success) return toast(r.message, "danger");
     hideModal("modalExpense");
     toast(r.message, "success");
-    await syncAllData();
+    await syncAllData(false);
   } catch (e) {
     toast(e.message, "danger");
   } finally {
@@ -2734,7 +3016,7 @@ async function savePart() {
     if (!r.success) return toast(r.message, "danger");
     hideModal("modalPart");
     toast("Stok sparepart diperbarui.", "success");
-    await syncAllData();
+    await syncAllData(false);
   } catch (e) {
     toast(e.message, "danger");
   }
@@ -2809,7 +3091,7 @@ async function saveUser() {
     hideModal("modalUser");
     state.komisiOverrides = {};
     toast("PIN & akun staf disimpan.", "success");
-    await syncAllData();
+    await syncAllData(false);
   } catch (e) {
     toast(e.message, "danger");
   }
@@ -2829,7 +3111,7 @@ function confirmDelete(type, id, label) {
       hideModal("modalConfirm");
       if (!r.success) return toast(r.message, "danger");
       toast(r.message, "success");
-      await syncAllData();
+      await syncAllData(false);
     } catch (e) {
       hideModal("modalConfirm");
       toast(e.message, "danger");
@@ -2842,7 +3124,7 @@ function confirmDelete(type, id, label) {
 // QR CODE, CETAK NOTA 58MM & WHATSAPP
 // ========================================
 function getTrackingUrl(kodeServis) {
-  return `${getCustomerAppUrl()}?kode=${encodeURIComponent(kodeServis)}`;
+  return `${getBaseAppUrl()}?mode=customer&kode=${encodeURIComponent(kodeServis)}`;
 }
 
 function openQRModal(id) {
@@ -3029,6 +3311,9 @@ async function loadPublicBoard() {
     const r = await apiGet({ action: "board" });
     if (!r.success) throw new Error(r.message);
     state.publicBoard = r.data || [];
+    if (r.securityQuestion) {
+      state.securityQuestion = r.securityQuestion;
+    }
     renderPublicBoard();
   } catch (e) {
     if (state.publicBoard.length) renderPublicBoard();
@@ -3189,6 +3474,7 @@ if ("serviceWorker" in navigator) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  initAntiRefreshGuards();
   initSignaturePads();
   $("finMonth").value = todayWIB().slice(0, 7);
 
@@ -3203,8 +3489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     stopScanner();
   });
 
-  const params = new URLSearchParams(window.location.search);
-  const urlKode = params.get("kode");
+  const urlKode = urlParams.get("kode");
   if (urlKode) {
     $("kodeCari").value = urlKode.toUpperCase();
     $("hpCari").focus();
@@ -3221,9 +3506,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadPublicBoard();
 
-  if (state.auth) {
-    await syncAllData();
+  // Hanya sinkron sesi aktif jika bukan dari tautan pelanggan (?mode=customer)
+  if (state.auth && !IS_CUSTOMER_LINK) {
+    await syncAllData(false);
     if (state.user) {
+      resetIdleTimer();
       switchStaffView(state.user.role === "mekanik" ? "viewServis" : "viewDash");
     }
   } else {
