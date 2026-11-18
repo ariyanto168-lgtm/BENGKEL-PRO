@@ -183,17 +183,24 @@
       white-space: nowrap;
     }
 
-    /* Kunci Login Tersembunyi di Footer */
+    /* Kunci Login PIN Tersembunyi di Footer */
     .secret-footer-key {
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       display: inline-block;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      transition: background .15s ease;
     }
     .secret-footer-key:active {
-      opacity: 0.65;
+      background: #e2e8f0;
+    }
+    .pin-input-box {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      text-align: center;
     }
 
     .qr-box {
@@ -292,7 +299,7 @@
 <body>
 
 <div id="appRoot">
-  <!-- HEADER RINGKAS -->
+  <!-- HEADER RINGKAS + TOMBOL BAGI LINK -->
   <header class="hero-header mb-3">
     <div class="container" style="max-width:960px">
       <div class="d-flex justify-content-between align-items-center gap-2">
@@ -308,13 +315,16 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-1">
+          <button type="button" class="btn btn-outline-light btn-sm fw-semibold py-1 px-2" onclick="openShareCustomerAppModal()">
+            <i class="bi bi-share-fill"></i> Bagi Link
+          </button>
           <button id="btnInstall" class="btn btn-warning btn-sm fw-semibold py-1 px-2 d-none" onclick="triggerInstallApp()">
             <i class="bi bi-download"></i> Install
           </button>
         </div>
       </div>
 
-      <!-- BILAH STAF AKTIF (HANYA MUNCUL SAAT LOGIN) -->
+      <!-- BILAH STAF AKTIF (HANYA MUNCUL SAAT LOGIN PIN) -->
       <div id="userBar" class="mt-2 pt-2 border-top border-white border-opacity-25 d-none flex-wrap justify-content-between align-items-center gap-2">
         <div class="small">
           <span class="badge bg-warning text-dark text-uppercase me-1" id="badgeRole">ADMIN</span>
@@ -335,6 +345,11 @@
               <li>
                 <button class="dropdown-item" type="button" onclick="printLatestServis('qr')">
                   <i class="bi bi-qr-code me-2 text-dark"></i>Label QR Terakhir
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" type="button" onclick="printCustomerAppPoster58()">
+                  <i class="bi bi-phone me-2 text-info"></i>QR Aplikasi Pelanggan
                 </button>
               </li>
               <li class="admin-only"><hr class="dropdown-divider"></li>
@@ -392,7 +407,6 @@
          1. PORTAL PELANGGAN (1 LAYAR RINGKAS)
          ===================================== -->
     <section id="publicCustomerSection">
-      <!-- Switcher 2 Tab Pelanggan (Tanpa Scroll) -->
       <div class="seg-pills mb-3">
         <button type="button" class="seg-btn active" id="btnPubTabCek" onclick="switchPublicTab('cek')">
           <i class="bi bi-qr-code-scan me-1"></i>Cek Status Nota
@@ -464,7 +478,12 @@
         <div class="card card-soft p-3">
           <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
             <h6 class="fw-bold mb-0 small"><i class="bi bi-tools text-primary me-1"></i>Antrean Sedang Dikerjakan</h6>
-            <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold" onclick="openServisModal()">+ Servis</button>
+            <div class="d-flex gap-1">
+              <button class="btn btn-outline-primary btn-sm py-1 px-2" onclick="openShareCustomerAppModal()" title="Bagikan Link & QR App Pelanggan">
+                <i class="bi bi-qr-code"></i> Link App
+              </button>
+              <button class="btn btn-primary btn-sm py-1 px-2 fw-semibold" onclick="openServisModal()">+ Servis</button>
+            </div>
           </div>
           <div id="dashActiveCards"></div>
         </div>
@@ -645,7 +664,6 @@
 
       <!-- VIEW STAF 5: PELANGGAN, AKUN & QR APLIKASI PELANGGAN (ADMIN ONLY) -->
       <div class="staff-view d-none admin-only" id="viewPengaturan">
-        <!-- QR & LINK INSTALASI APLIKASI PELANGGAN -->
         <div class="card card-soft p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center gap-2">
             <div>
@@ -658,14 +676,14 @@
           </div>
         </div>
 
-        <!-- MANAJEMEN AKUN ADMIN & MEKANIK -->
+        <!-- MANAJEMEN AKUN & PIN ADMIN / MEKANIK -->
         <div class="card card-soft p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <h6 class="fw-bold mb-0 small"><i class="bi bi-person-badge text-dark me-1"></i>Akun & Hak Akses Staf</h6>
-              <small class="text-muted" style="font-size:11px">Mekanik hanya mengakses Data Servis.</small>
+              <h6 class="fw-bold mb-0 small"><i class="bi bi-key-fill text-warning-emphasis me-1"></i>PIN & Hak Akses Staf</h6>
+              <small class="text-muted" style="font-size:11px">Gunakan PIN unik untuk tiap staf. Mekanik hanya mengakses Data Servis.</small>
             </div>
-            <button class="btn btn-dark btn-sm py-1 px-2" onclick="openUserModal()">+ Akun</button>
+            <button class="btn btn-dark btn-sm py-1 px-2" onclick="openUserModal()">+ PIN Staf</button>
           </div>
           <div id="userCardList"></div>
         </div>
@@ -681,10 +699,10 @@
       </div>
     </section>
 
-    <!-- FOOTER SEBAGAI KUNCI LOGIN ADMIN & KARYAWAN -->
+    <!-- FOOTER SEBAGAI KUNCI LOGIN PIN ADMIN & KARYAWAN -->
     <footer class="text-center text-muted small mt-4 mb-2">
       <span id="secretFooterTrigger" class="secret-footer-key" onclick="handleSecretFooterTap()">
-        Bengkel Pro v2.7 • Powered by Ari GPM
+        Bengkel Pro v2.9 • Powered by Ari GPM
       </span>
     </footer>
   </main>
@@ -723,28 +741,71 @@
      MODALS
      ===================================== -->
 
-<!-- MODAL QR & SHARE APLIKASI PELANGGAN -->
+<!-- MODAL BAGI LINK & QR APLIKASI PELANGGAN -->
 <div class="modal fade" id="modalShareCustomerApp" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content rounded-4 border-0 text-center">
       <div class="modal-header border-0 pb-0">
-        <h6 class="modal-title fw-bold">Aplikasi Cek Servis Pelanggan</h6>
+        <h6 class="modal-title fw-bold"><i class="bi bi-share-fill text-primary me-1"></i>Bagi Link Aplikasi</h6>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div class="qr-box mb-2" id="qrCustomerAppBox"></div>
         <div class="fw-bold small mb-1" id="shareAppBengkelName">BENGKEL MOTOR PRO</div>
-        <p class="text-muted mb-3" style="font-size:11.5px">
-          Pelanggan cukup scan QR ini lewat kamera HP lalu pilih <strong>Install / Tambahkan ke Layar Utama</strong> untuk memantau status servis.
-        </p>
-        <div class="d-grid gap-2">
-          <button type="button" class="btn btn-primary btn-sm fw-semibold" onclick="copyCustomerAppLink()">
-            <i class="bi bi-clipboard me-1"></i>Salin Link Aplikasi
-          </button>
-          <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="shareCustomerAppWa()">
-            <i class="bi bi-whatsapp me-1"></i>Bagikan via WhatsApp
+        <div class="input-group input-group-sm mb-2">
+          <input id="shareAppUrlInput" class="form-control bg-light text-muted" style="font-size:11px" readonly>
+          <button class="btn btn-outline-primary" type="button" onclick="copyCustomerAppLink()" title="Salin">
+            <i class="bi bi-clipboard"></i>
           </button>
         </div>
+        <div class="input-group input-group-sm mb-2">
+          <span class="input-group-text bg-white text-success"><i class="bi bi-whatsapp"></i></span>
+          <input id="shareAppWaInput" inputmode="tel" class="form-control" style="font-size:12px"
+                 placeholder="No. WA tujuan (opsional, cth: 0812...)">
+        </div>
+        <p class="text-muted mb-3" style="font-size:11px">
+          Kosongkan nomor WA untuk memilih kontak langsung di WhatsApp, atau isi nomor untuk kirim otomatis dengan kode negara <strong>+62</strong>.
+        </p>
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-success btn-sm fw-semibold" onclick="shareCustomerAppWa()">
+            <i class="bi bi-whatsapp me-1"></i>Kirim Link via WhatsApp
+          </button>
+          <button type="button" class="btn btn-primary btn-sm fw-semibold" onclick="copyCustomerAppLink()">
+            <i class="bi bi-clipboard-check me-1"></i>Salin Link Aplikasi
+          </button>
+          <button type="button" class="btn btn-outline-dark btn-sm" onclick="printCustomerAppPoster58()">
+            <i class="bi bi-printer me-1"></i>Cetak QR Aplikasi (58mm)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOGIN PIN APLIKASI (DIBUKA LEWAT FOOTER) -->
+<div class="modal fade" id="modalAuth" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h6 class="modal-title fw-bold"><i class="bi bi-shield-lock-fill text-primary me-1"></i>PIN Akses Staf</h6>
+          <small class="text-muted" style="font-size:11px">Masukkan PIN Admin atau Mekanik</small>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-2">
+        <div class="input-group mb-3">
+          <input id="loginPin" type="password" inputmode="numeric" maxlength="10"
+                 class="form-control pin-input-box" placeholder="••••••"
+                 oninput="handlePinAutoInput()"
+                 onkeydown="if(event.key==='Enter')submitLogin()">
+          <button class="btn btn-outline-secondary" type="button" onclick="togglePinVisibility()" title="Lihat/Sembunyikan PIN">
+            <i class="bi bi-eye" id="iconTogglePin"></i>
+          </button>
+        </div>
+        <button id="btnSubmitPin" class="btn btn-primary btn-sm w-100 fw-semibold py-2" onclick="submitLogin()">
+          <i class="bi bi-unlock-fill me-1"></i>BUKA AKSES
+        </button>
       </div>
     </div>
   </div>
@@ -856,29 +917,6 @@
           </button>
           <input type="file" id="qrFileInput" accept="image/*" class="d-none" onchange="scanFromFile(event)">
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGIN STAF (DIBUKA LEWAT KUNCI FOOTER) -->
-<div class="modal fade" id="modalAuth" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content rounded-4 border-0">
-      <div class="modal-header border-0 pb-0">
-        <div>
-          <h6 class="modal-title fw-bold"><i class="bi bi-shield-lock-fill text-primary me-1"></i>Akses Staf Bengkel</h6>
-          <small class="text-muted" style="font-size:11px">Masuk sesuai akun Admin atau Mekanik</small>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label small fw-semibold">Username</label>
-        <input id="loginUser" class="form-control form-control-sm mb-2" placeholder="admin / mekanik">
-        <label class="form-label small fw-semibold">PIN Akses</label>
-        <input id="loginPin" type="password" inputmode="numeric" class="form-control form-control-sm mb-3" placeholder="••••••"
-               onkeydown="if(event.key==='Enter')submitLogin()">
-        <button class="btn btn-primary btn-sm w-100 fw-semibold py-2" onclick="submitLogin()">MASUK PANEL</button>
       </div>
     </div>
   </div>
@@ -1124,20 +1162,22 @@
   </div>
 </div>
 
-<!-- MODAL USER / AKUN -->
+<!-- MODAL USER / PIN STAF -->
 <div class="modal fade" id="modalUser" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content rounded-4 border-0">
       <div class="modal-header">
-        <h6 class="modal-title fw-bold">Akun Staf Bengkel</h6>
+        <h6 class="modal-title fw-bold">Atur PIN & Hak Akses Staf</h6>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="usrId">
+        <label class="form-label small fw-semibold">PIN Login (6 Digit Unik) *</label>
+        <input id="usrPin" inputmode="numeric" maxlength="10" class="form-control form-control-sm fw-bold mb-2" placeholder="cth: 111111">
+        <label class="form-label small">Nama Lengkap Staf *</label>
+        <input id="usrNama" class="form-control form-control-sm mb-2" placeholder="cth: Budi Mekanik">
         <label class="form-label small">Username *</label>
-        <input id="usrUsername" class="form-control form-control-sm mb-2">
-        <label class="form-label small">Nama Lengkap *</label>
-        <input id="usrNama" class="form-control form-control-sm mb-2">
+        <input id="usrUsername" class="form-control form-control-sm mb-2" placeholder="cth: budi">
         <label class="form-label small">Nomor WhatsApp Staf</label>
         <input id="usrWa" inputmode="tel" class="form-control form-control-sm mb-2" placeholder="08xxxxxxxxxx">
         <div class="row g-2 mb-2">
@@ -1153,15 +1193,13 @@
             <input id="usrKomisi" type="number" min="0" max="100" value="40" class="form-control form-control-sm">
           </div>
         </div>
-        <label class="form-label small">PIN Login *</label>
-        <input id="usrPin" inputmode="numeric" class="form-control form-control-sm mb-2">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="usrAktif" checked>
-          <label class="form-check-label small" for="usrAktif">Akun Aktif</label>
+          <label class="form-check-label small" for="usrAktif">PIN Aktif</label>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-sm w-100" onclick="saveUser()">Simpan Akun</button>
+        <button class="btn btn-primary btn-sm w-100" onclick="saveUser()">Simpan PIN Staf</button>
       </div>
     </div>
   </div>
@@ -1233,11 +1271,24 @@ const rupiah = n => new Intl.NumberFormat("id-ID", {
 
 const todayWIB = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
 
+// Normalisasi nomor WA otomatis dengan kode negara Indonesia (+62)
 function formatWaNumber(raw) {
   let hp = String(raw || "").replace(/\D/g, "");
   if (!hp) return "";
-  if (hp.startsWith("0")) hp = "62" + hp.slice(1);
-  return hp;
+  if (hp.startsWith("620")) hp = "62" + hp.slice(3);
+  else if (hp.startsWith("0")) hp = "62" + hp.slice(1);
+  else if (hp.startsWith("8")) hp = "62" + hp;
+  return hp.length >= 10 ? hp : "";
+}
+
+// Buka WhatsApp dengan endpoint universal (anti-error kode negara)
+function openWhatsAppUrl(phoneRaw, messageText) {
+  const hp = formatWaNumber(phoneRaw);
+  const encoded = encodeURIComponent(messageText);
+  const url = hp
+    ? `https://api.whatsapp.com/send?phone=${hp}&text=${encoded}`
+    : `https://api.whatsapp.com/send?text=${encoded}`;
+  window.open(url, "_blank");
 }
 
 function toast(msg, type = "dark") {
@@ -1267,7 +1318,7 @@ function switchPublicTab(tab) {
   if (!isCek) loadPublicBoard();
 }
 
-function switchStaffView(viewId, btnEl = null) {
+function switchStaffView(viewId) {
   const isAdmin = state.user && state.user.role === "admin";
   if (!isAdmin && !["viewDash", "viewServis"].includes(viewId)) {
     viewId = "viewServis";
@@ -1558,24 +1609,60 @@ async function apiPost(payload) {
 }
 
 // ========================================
-// AUTENTIKASI & HAK AKSES ROLE
+// AUTENTIKASI PIN LANGSUNG & HAK AKSES ROLE
 // ========================================
+let pinLoginInProgress = false;
+
 function openAuthModal() {
-  $("loginUser").value = "";
-  $("loginPin").value = "";
+  const input = $("loginPin");
+  input.value = "";
+  input.type = "password";
+  $("iconTogglePin").className = "bi bi-eye";
+  const modalEl = $("modalAuth");
+  modalEl.addEventListener("shown.bs.modal", () => input.focus(), { once: true });
   showModal("modalAuth");
 }
 
+function togglePinVisibility() {
+  const input = $("loginPin");
+  const isPass = input.type === "password";
+  input.type = isPass ? "text" : "password";
+  $("iconTogglePin").className = isPass ? "bi bi-eye-slash" : "bi bi-eye";
+  input.focus();
+}
+
+function handlePinAutoInput() {
+  const val = $("loginPin").value.trim();
+  if (val.length === 6 && !pinLoginInProgress) {
+    submitLogin();
+  }
+}
+
 async function submitLogin() {
-  const username = $("loginUser").value.trim();
+  if (pinLoginInProgress) return;
   const pin = $("loginPin").value.trim();
-  if (!username || !pin) return toast("Isi username dan PIN.", "danger");
+  if (!pin) return toast("Masukkan PIN akses.", "danger");
+
+  pinLoginInProgress = true;
+  const btn = $("btnSubmitPin");
+  btn.disabled = true;
 
   try {
-    const r = await apiPost({ action: "login", auth: { username, pin } });
-    if (!r.success) return toast(r.message, "danger");
+    let r = await apiPost({ action: "login", auth: { username: "", pin } });
 
-    state.auth = { username, pin };
+    if (!r.success && pin === "123456") {
+      r = await apiPost({ action: "login", auth: { username: "admin", pin } });
+    } else if (!r.success && pin === "111111") {
+      r = await apiPost({ action: "login", auth: { username: "mekanik", pin } });
+    }
+
+    if (!r.success) {
+      $("loginPin").value = "";
+      $("loginPin").focus();
+      return toast(r.message || "PIN tidak valid.", "danger");
+    }
+
+    state.auth = { username: r.user.username, pin };
     state.user = r.user;
     localStorage.setItem(AUTH_KEY, JSON.stringify(state.auth));
     hideModal("modalAuth");
@@ -1585,6 +1672,9 @@ async function submitLogin() {
     toast("Masuk sebagai " + r.user.nama, "success");
   } catch (e) {
     toast(e.message, "danger");
+  } finally {
+    pinLoginInProgress = false;
+    btn.disabled = false;
   }
 }
 
@@ -1968,7 +2058,7 @@ async function saveServis(autoPrint = false) {
 }
 
 // ========================================
-// SHARE QR & LINK APLIKASI PELANGGAN
+// BAGI LINK & QR APLIKASI PELANGGAN
 // ========================================
 function getCustomerAppUrl() {
   return window.location.origin + window.location.pathname;
@@ -1977,11 +2067,13 @@ function getCustomerAppUrl() {
 function openShareCustomerAppModal() {
   const url = getCustomerAppUrl();
   $("shareAppBengkelName").textContent = BENGKEL_INFO.nama;
+  $("shareAppUrlInput").value = url;
+  if ($("shareAppWaInput")) $("shareAppWaInput").value = "";
   $("qrCustomerAppBox").innerHTML = "";
   new QRCode($("qrCustomerAppBox"), {
     text: url,
-    width: 170,
-    height: 170
+    width: 165,
+    height: 165
   });
   showModal("modalShareCustomerApp");
 }
@@ -1992,19 +2084,35 @@ async function copyCustomerAppLink() {
     await navigator.clipboard.writeText(url);
     toast("Link aplikasi pelanggan disalin!", "success");
   } catch (_) {
-    toast("Link: " + url, "info");
+    const inp = $("shareAppUrlInput");
+    inp.select();
+    document.execCommand("copy");
+    toast("Link aplikasi disalin!", "success");
   }
 }
 
 function shareCustomerAppWa() {
   const url = getCustomerAppUrl();
+  const targetWa = $("shareAppWaInput") ? $("shareAppWaInput").value.trim() : "";
   const msg = [
     `Halo Kak, pantau progres servis motor Anda secara real-time melalui aplikasi *${BENGKEL_INFO.nama}* di tautan berikut:`,
     url,
     ``,
     `Klik *Install / Tambahkan ke Layar Utama* agar mudah dibuka kapan saja.`
   ].join("\n");
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+  openWhatsAppUrl(targetWa, msg);
+}
+
+function printCustomerAppPoster58() {
+  const html = `
+    <div class="p-center p-bold" style="font-size:13px">${esc(BENGKEL_INFO.nama)}</div>
+    <div class="p-center" style="font-size:10px">CEK STATUS SERVIS ONLINE</div>
+    <div class="p-line"></div>
+    <div class="p-qr"></div>
+    <div class="p-line"></div>
+    <div class="p-center" style="font-size:10px">Scan QR di atas dengan kamera HP Anda untuk cek progres servis & install aplikasi.</div>
+  `;
+  triggerThermalPrint(html, getCustomerAppUrl());
 }
 
 // ========================================
@@ -2281,8 +2389,7 @@ function kirimWhatsAppKomisi(key) {
     listUnit
   ].join("\n");
 
-  const waTarget = formatWaNumber(m.nomorWa);
-  window.open(waTarget ? `https://wa.me/${waTarget}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+  openWhatsAppUrl(m.nomorWa, msg);
 }
 
 function catatKomisiKePengeluaran(key) {
@@ -2495,7 +2602,7 @@ function exportKeuanganCSV() {
 }
 
 // ========================================
-// PELANGGAN, STOK & AKUN (KARTU HP)
+// PELANGGAN, STOK & PIN STAF (KARTU HP)
 // ========================================
 function buildCustomerIndex() {
   const map = new Map();
@@ -2638,8 +2745,9 @@ function renderUserTable() {
     <div class="border rounded-3 p-2 mb-2">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <strong class="small">${esc(u.nama)}</strong> <span class="text-muted small">(@${esc(u.username)})</span>
-          <div style="font-size:11px">
+          <strong class="small">${esc(u.nama)}</strong>
+          <span class="badge bg-warning-subtle text-warning-emphasis border ms-1">PIN: ${esc(u.pin)}</span>
+          <div style="font-size:11px" class="mt-1">
             <span class="badge ${u.role === "admin" ? "bg-dark" : "bg-info text-dark"}">${esc(u.role)}</span>
             <span class="text-muted ms-1">Komisi ${Number(u.komisiPersen ?? 0)}%</span>
             ${u.nomorWa ? `<span class="text-success ms-1">• ${esc(u.nomorWa)}</span>` : ""}
@@ -2647,7 +2755,7 @@ function renderUserTable() {
         </div>
         <div class="btn-group btn-group-sm">
           <button class="btn btn-outline-primary py-0 px-2" onclick="openUserModal('${esc(u.id)}')">Edit</button>
-          <button class="btn btn-outline-danger py-0 px-2" onclick="confirmDelete('user','${esc(u.id)}','${esc(u.username)}')"><i class="bi bi-trash"></i></button>
+          <button class="btn btn-outline-danger py-0 px-2" onclick="confirmDelete('user','${esc(u.id)}','${esc(u.nama)}')"><i class="bi bi-trash"></i></button>
         </div>
       </div>
     </div>
@@ -2674,22 +2782,33 @@ function openUserModal(id = "") {
 }
 
 async function saveUser() {
+  const pinVal = $("usrPin").value.trim();
+  const editId = $("usrId").value;
+  if (!pinVal) return toast("PIN wajib diisi.", "danger");
+
+  const dupPin = state.users.find(u => u.id !== editId && String(u.pin).trim() === pinVal);
+  if (dupPin) {
+    return toast(`PIN ${pinVal} sudah dipakai oleh ${dupPin.nama}. Gunakan PIN berbeda.`, "danger");
+  }
+
   const data = {
-    id: $("usrId").value,
-    username: $("usrUsername").value.trim(),
+    id: editId,
+    username: $("usrUsername").value.trim() || ("staf_" + pinVal),
     nama: $("usrNama").value.trim(),
     nomorWa: $("usrWa").value.trim(),
     role: $("usrRole").value,
     komisiPersen: Number($("usrKomisi").value || 0),
-    pin: $("usrPin").value.trim(),
+    pin: pinVal,
     aktif: $("usrAktif").checked
   };
+  if (!data.nama) return toast("Nama staf wajib diisi.", "danger");
+
   try {
     const r = await apiPost({ action: "saveUser", auth: state.auth, data });
     if (!r.success) return toast(r.message, "danger");
     hideModal("modalUser");
     state.komisiOverrides = {};
-    toast("Akun staf disimpan.", "success");
+    toast("PIN & akun staf disimpan.", "success");
     await syncAllData();
   } catch (e) {
     toast(e.message, "danger");
@@ -2880,7 +2999,6 @@ function printStok58() {
 function kirimWhatsApp(id) {
   const s = state.servis.find(x => x.id === id);
   if (!s) return;
-  const hp = formatWaNumber(s.telepon);
   const isDone = ["Selesai", "Sudah diambil"].includes(s.status);
   const header = isDone
     ? `Halo Kak *${s.nama}*, motor *${s.motor}* (${s.plat || "-"}) Anda telah *SELESAI* diservis dan siap diambil.`
@@ -2900,7 +3018,7 @@ function kirimWhatsApp(id) {
     `Terima kasih - *${BENGKEL_INFO.nama}*`
   ].filter(Boolean).join("\n");
 
-  window.open(`https://wa.me/${hp}?text=${encodeURIComponent(msg)}`, "_blank");
+  openWhatsAppUrl(s.telepon, msg);
 }
 
 // ========================================
